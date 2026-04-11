@@ -3,7 +3,7 @@
 *{
     margin: 0;
     padding: 0;
-
+    box-sizing: border-box;
 }
 
 /* REMOVER SETINHAS INPUT NUMBER */
@@ -21,7 +21,7 @@
 
 /* HEADER */
 header{
-    background-color: gray;
+    background-color: rgb(128, 128, 128);
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
@@ -66,7 +66,8 @@ header{
     display: grid;
     grid-template-columns: 1fr 3fr;
     grid-template-rows: auto auto;
-    height: 100vh;
+    height: 95.5vh;
+
 }
 
 /* FORMULARIO */
@@ -77,6 +78,12 @@ header{
 
 .form > h2{
     text-align: center;
+}
+
+#pedidoForm{
+    display: flex;
+    flex-flow: column nowrap;
+    height: 96%;
 }
 
 .cliente{
@@ -104,12 +111,12 @@ header{
     cursor: grab;
   }
   
-  .item-cardapio:active {
+.item-cardapio:active {
     cursor: grabbing;
   }
   
-  .item-cardapio button,
-  .item-cardapio input {
+.item-cardapio button,
+.item-cardapio input {
     cursor: default;
   }
 
@@ -119,6 +126,7 @@ header{
 
 .criar{
     background-color: antiquewhite;
+
     display: flex;
     flex-flow: column nowrap;
     margin-top: 10px;
@@ -135,6 +143,7 @@ header{
 .lista{
     background-color: lightcyan;
     width: 100%;
+    
 }
 
 /* KANBAN */
@@ -142,6 +151,7 @@ header{
     background-color: lightcyan;
     display: flex;
     grid-area: 2 / 2 / -1 / -1;
+
 }
 
 .coluna{

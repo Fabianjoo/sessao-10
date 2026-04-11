@@ -32,23 +32,23 @@
           <!-- POPOVERS -->
 
           <!-- ITEM MANUAL -->
-          <div class="itensManuaisPopover">
+          <div class="itensManuaisPopover" style="display: none;">
             <div id="itensManuais">
               <h3>Adicionar Item ao Pedido</h3>
-              <input type="text" id="itemAvulso">
-
-              <label for="precoAvulso">R$</label>
-              <input type="number" id="precoAvulso" step="0.01" min="0" placeholder="R$ 0.00">
-
-              <label for="quantidadeAvulso">Quantidade</label>
-              <input type="number" id="quantidadeAvulso" min="0">
-
-              <button>Adicionar</button>
-
+          
+              <input type="text" id="itemAvulso" placeholder="Nome do item">
+          
+              <label>R$</label>
+              <input type="number" id="precoAvulso" step="0.01" min="0" placeholder="0.00">
+          
+              <label>Quantidade</label>
+              <input type="number" id="quantidadeAvulso" min="1" value="1">
+          
+              <button id="addItemAvulso">Adicionar</button>
+          
               <div class="itemAvulso"></div>
             </div>
           </div>
-
           
         <!-- MAIN -->
           <main class="conteiner">
