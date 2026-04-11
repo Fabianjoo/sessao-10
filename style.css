@@ -6,6 +6,19 @@
 
 }
 
+/* REMOVER SETINHAS INPUT NUMBER */
+/* Chrome, Edge, Safari */
+.qtd::-webkit-outer-spin-button,
+.qtd::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.qtd {
+  -moz-appearance: textfield;
+}
+
 /* HEADER */
 header{
     background-color: gray;
@@ -47,30 +60,6 @@ header{
     height: 50%;
 }
 
-/* CARDAPIO */
-.cardapioPopover{
-    background-color: rgba(0, 0, 0, 0.4);
-    position: fixed;
-    left: 0;
-    top: 0;
-    height: 100vh;
-    width: 100vw;
-    z-index: 999;
-
-    display: none;
-    justify-content: center;
-    align-items: center;
-}
-
-#cardapio{
-    background-color: white;
-    border-radius: 10px;
-    width: 50%;
-    height: 50%;
-}
-
-
-
 /* MAIN */
 
 .conteiner{
@@ -110,6 +99,19 @@ header{
     background-color: gold;
     margin-top: 10px;
 }
+
+.item-cardapio {
+    cursor: grab;
+  }
+  
+  .item-cardapio:active {
+    cursor: grabbing;
+  }
+  
+  .item-cardapio button,
+  .item-cardapio input {
+    cursor: default;
+  }
 
 #addProduto{
     cursor: pointer;

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pastelaria - Painel de Pedidos</title>
+    <title>Painel de Pedidos</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -34,17 +34,22 @@
           <!-- ITEM MANUAL -->
           <div class="itensManuaisPopover">
             <div id="itensManuais">
-              a
+              <h3>Adicionar Item ao Pedido</h3>
+              <input type="text" id="itemAvulso">
+
+              <label for="precoAvulso">R$</label>
+              <input type="number" id="precoAvulso" step="0.01" min="0" placeholder="R$ 0.00">
+
+              <label for="quantidadeAvulso">Quantidade</label>
+              <input type="number" id="quantidadeAvulso" min="0">
+
+              <button>Adicionar</button>
+
+              <div class="itemAvulso"></div>
             </div>
           </div>
 
-          <!-- CARDAPIO -->
-          <div class="cardapioPopover">
-            <div id="cardapio">
-              b
-            </div>
-          </div>
-
+          
         <!-- MAIN -->
           <main class="conteiner">
               <!-- ➕ FORMULÁRIO -->
@@ -57,8 +62,8 @@
                   <div class="cliente">
                     <h3>Informações do Cliente</h3>
               
-                    <label for="nome">Nome</label>
-                    <input type="text" id="nome" required>
+                    <label for="nomeCliente">Nome</label>
+                    <input type="text" id="nomeCliente" required>
               
                     <label for="telefone">Telefone</label>
                     <input type="tel" id="telefone">
@@ -89,13 +94,17 @@
               
                   <!-- 📋 CARDÁPIO -->
                   <div class="cardapio">
-                    <h3>Itens do Cardápio</h3>
-              
-                    <div id="listaCardapio"></div>
-              
+                    <h3>Cardápio</h3>
+                    
+                    <input type="text" id="inputCardapio" maxlength="50">
+                    <label for="preco">R$</label>
+                    <input type="number" id="preco" step="0.01" min="0" placeholder="R$ 0.00">
                     <button type="button" id="addProduto"> + Adicionar Produto ao Cardápio</button>
+                    <div id="listaCardapio"></div>
                   </div>
               
+
+                  <!-- CRIAR PEDIDO -->
                   <div class="criar">
                     <h3>Total: R$ <span id="total">0.00</span></h3>
                     <!-- OBS -->
@@ -157,7 +166,8 @@
           </main>
 
       
-    <script src="scripts/item-avulso.js"></script>
-    <script src="scripts/cardapio.js"></script>
+    <script src="scripts/formulario/item-avulso.js"></script>
+    <script src="scripts/formulario/cardapio.js"></script>
+    <script src="scripts/formulario/calculoTotal.js"></script>
 </body>
 </html>
