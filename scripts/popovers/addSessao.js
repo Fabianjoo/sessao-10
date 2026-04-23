@@ -86,6 +86,7 @@ function cadastrarSessao() {
   cliente.sessoes.push(novaSessao);
 
   console.log('Sessões:', sessoes);
+  salvarDados(); // 👈 salva tudo
   alert(`✅ Sessão cadastrada para ${cliente.nome}!`);
   fecharPopoverSessao();
 }
