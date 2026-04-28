@@ -12,6 +12,7 @@
     flex-flow: row nowrap;
     justify-content: center;
     align-items: center;
+    z-index: 999;
 }
 
 .infoSessao{
@@ -26,7 +27,7 @@
 .infoCliente{
     padding: 10px;
     background-color: white;
-    width: 80%;
+    width: 65%;
     height: 80%;
     border-radius: 5px;
     word-break: break-word;
@@ -117,7 +118,7 @@
     justify-content: center;
 }
 
-.sessao-acoes > button{
+.sessao-acoes > button#cadastrar-sessao{
     padding: 10px;
     background-color: var(--cor-primaria-escura);
     color: white;
@@ -126,7 +127,7 @@
     cursor: pointer;
 }
 
-.sessao-acoes > button:hover{
+.sessao-acoes > button#cadastrar-sessao:hover{
     background-color: white;
     color: var(--cor-primaria-escura);
 }

@@ -9,6 +9,29 @@
     padding: 10px;
 }
 
+.listaClientes h2 {
+    color: #2e6b2e;
+  }
+
+/* ==================== BUSCA DE CLIENTES ==================== */
+#BuscarCliente {
+    width: 50%;
+    border: 1.5px solid #c8dfc8;
+    font-size: 0.9rem;
+    color: #2a2a2a;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  
+  #BuscarCliente:focus {
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15);
+    background-color: #fff;
+  }
+  
+  #BuscarCliente::placeholder {
+    color: #8aab8a;
+    font-style: italic;
+  }
+
 .clientesConteiner{
     display: flex;
     flex-flow: row wrap;
@@ -24,15 +47,33 @@
 }
 
 .cliente-card{
+    position: relative;
     background-color: white;
     width: 230px;
     height: 82px;
     padding: 10px;
     border: 1px solid black;
     border-radius: 5px;
-    margin: 2px;
+    margin: 9px;
     cursor: pointer;
 }
+
+.btn-excluir {
+    position: absolute;
+    top: -8px;
+    right: -12px;
+    background: var(--cor-primaria-escura);
+    border: 1px solid black;
+    border-radius: 50%;
+    padding: 3px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: opacity 0.2s;
+  }
+
+  .btn-excluir:hover{
+    transform: translate(3px, -3px);
+  }
 
 .cliente-card:hover{
     background-color: var(--cor-primaria-fundo);

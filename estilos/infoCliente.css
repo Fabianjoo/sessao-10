@@ -5,107 +5,304 @@
 .infoCliente > h3{
     text-align: center;
     margin-bottom: 10px;
+    color: green;
+}
+  
+  /* ==================== ABAS DO CLIENTE ==================== */
+.abas-cliente {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+  border-bottom: 2px solid #c8dfc8;
+  padding-bottom: 0;
 }
 
-/* ===== ABAS DO POPOVER CLIENTE ===== */
+.aba-btn {
+  padding: 8px 20px;
+  border: none;
+  background: transparent;
+  color: #5a7a5a;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border-radius: 8px 8px 0 0;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s ease;
+  margin-bottom: -2px;
+}
+
+.aba-btn:hover {
+  background: #e8f5e8;
+  color: #2e5e2e;
+}
+
+.aba-btn.ativa {
+  background: #e8f5e8;
+  color: #2e6b2e;
+  border-bottom: 3px solid #3a7a3a;
+}
+
+/* ==================== PAINÉIS DAS ABAS ==================== */
 .aba-painel {
-    display: none;
-    flex-flow: row wrap;
-    overflow-y: auto;
-    width: 100%;
-  }
-  
-  .aba-painel.ativa {
-    display: flex;
+  display: none;
+  flex-flow: row wrap;
+  padding: 5px;
+  gap: 10px;
+  animation: fadeIn 0.2s ease;
+  overflow-y: auto;
+  height: 635px;
+  align-items: flex-start;
+}
 
-  }
+.aba-painel.ativa {
+  display: flex;
   
-  .abas-cliente {
-    display: flex;
-    border-bottom: 1px solid #ddd;
-    margin-bottom: 12px;
-  }
-  
-  .aba-btn {
-    flex: 1;
-    padding: 8px 0;
-    font-size: 13px;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    color: #888;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-  }
-  
-  .aba-btn.ativa {
-    color: #1a5fa8;
-    border-bottom: 2px solid #4a90d9;
-    font-weight: 500;
-  }
-  
-  /* ===== CARDS DE SESSÃO ===== */
-  .sessao-card {
-    width: 200px;
-    margin-right: 5px;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    padding: 10px 12px;
-    margin-bottom: 8px;
-    font-size: 13px;
-  }
-  
-  .sessao-card-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 4px;
-  }
-  
-  .sessao-card p {
-    margin: 3px 0;
-    color: #555;
-  }
-  
-  /* ===== BADGES DE STATUS ===== */
-  .badge {
-    font-size: 11px;
-    padding: 2px 8px;
-    border-radius: 20px;
-    font-weight: 500;
-  }
-  
-  .badge-agendada  { background: #e0f0ff; color: #1a5fa8; }
-  .badge-realizada { background: #e6f4ea; color: #1e7e34; }
-  .badge-cancelada { background: #fdecea; color: #c0392b; }
-  .badge-ativo     { background: #fff3cd; color: #856404; }
-  
-  /* ===== PACOTE - BARRA DE PROGRESSO ===== */
-  .progresso-bar {
-    height: 6px;
-    background: #eee;
-    border-radius: 3px;
-    margin: 8px 0 4px;
-    overflow: hidden;
-  }
-  
-  .progresso-fill {
-    height: 100%;
-    background: #4a90d9;
-    border-radius: 3px;
-    transition: width 0.3s;
-  }
-  
-  .progresso-label {
-    font-size: 12px;
-    color: #888;
-    margin: 0 0 6px;
-  }
+}
 
-  /* ===== VAZIO ===== */
-  .vazio {
-    font-size: 13px;
-    color: #aaa;
-    text-align: center;
-    padding: 16px 0;
-  }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+/* ==================== CARDS DE SESSÃO ==================== */
+.sessao-card {
+  background: #f4faf4;
+  border: 1px solid #c8dfc8;
+  border-left: 4px solid #4a8a4a;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 0.88rem;
+  width: 250px;
+  position: relative;
+  color: #2a2a2a;
+  height: 155px;
+}
+
+.sessao-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.sessao-card p {
+  margin: 3px 0;
+  color: #444;
+}
+
+.btn-excluir-sessao {
+  background: none;
+  position: absolute;
+  top: -7px;
+  right: -8px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+
+}
+
+.btn-excluir-sessao:hover {
+  transform: translate(2px, -2px);
+}
+
+/* ==================== PACOTE CARD ==================== */
+.pacote-card {
+  border-left-color: #2e7d32;
+  background: #f0faf0;
+  height: fit-content;
+}
+
+.progresso-bar {
+  background: #d0e8d0;
+  border-radius: 20px;
+  height: 8px;
+  margin: 8px 0 4px;
+  overflow: hidden;
+}
+
+.progresso-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4caf50, #2e7d32);
+  border-radius: 20px;
+  transition: width 0.4s ease;
+}
+
+.progresso-label {
+  font-size: 0.78rem;
+  color: #4a7a4a;
+  margin: 0 0 6px;
+}
+
+/* ==================== BADGES ==================== */
+.badge {
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.badge-agendada  { background: #e3f2e3; color: #2e6b2e; }
+.badge-realizada { background: #c8e6c9; color: #1b5e20; }
+.badge-cancelada { background: #fce4e4; color: #b71c1c; }
+.badge-ativo     { background: #dcedc8; color: #33691e; }
+.badge-concluido { background: #c8e6c9; color: #1b5e20; }
+
+/* ==================== BOTÃO MARCAR SESSÃO ==================== */
+.sessao-acoes button {
+  margin-top: 8px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sessao-acoes button:hover {
+  background: #2e7d32;
+}
+
+/* ==================== VAZIO ==================== */
+.vazio {
+  color: #888;
+  font-style: italic;
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 20px 0;
+}
+
+/* ==================== MODO VISUALIZAR ==================== */
+#modoVisualizar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: fadeIn 0.2s ease;
+}
+
+#modoVisualizar h4 {
+  font-size: 1.1rem;
+  color: #2e6b2e;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #c8dfc8;
+  margin-bottom: 4px;
+}
+
+#modoVisualizar p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: #333;
+  background: #f4faf4;
+  border: 1px solid #dceedd;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin: 0;
+}
+
+#modoVisualizar button {
+  align-self: flex-start;
+  margin-top: 6px;
+  background: transparent;
+  color: #4a7a4a;
+  border: 1.5px solid #4a7a4a;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+#modoVisualizar button:hover {
+  background: #4caf50;
+  color: white;
+  border-color: #4caf50;
+}
+
+/* ==================== MODO EDITAR ==================== */
+#modoEditar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  animation: fadeIn 0.2s ease;
+}
+
+#modoEditar h4 {
+  color: #2e6b2e;
+  font-size: 1rem;
+  margin-bottom: 4px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #c8dfc8;
+}
+
+#modoEditar label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #4a7a4a;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 4px;
+}
+
+#modoEditar input {
+  padding: 8px 10px;
+  border: 1.5px solid #c8dfc8;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #2a2a2a;
+  background: #f4faf4;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+
+#modoEditar input:focus {
+  border-color: #4caf50;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15);
+  background: #fff;
+}
+
+/* ==================== BOTÕES SALVAR / CANCELAR ==================== */
+#modoEditar .sessao-acoes {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+#modoEditar .sessao-acoes button:first-child {
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex: 1;
+}
+
+#modoEditar .sessao-acoes button:first-child:hover {
+  background: #2e7d32;
+}
+
+#modoEditar .sessao-acoes button:last-child {
+  background: transparent;
+  color: #888;
+  border: 1.5px solid #ddd;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex: 1;
+}
+
+#modoEditar .sessao-acoes button:last-child:hover {
+  border-color: #b71c1c;
+  color: #b71c1c;
+  background: #fce4e4;
+}

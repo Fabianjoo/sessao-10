@@ -32,6 +32,7 @@ function renderizarClientes() {
     const card = document.createElement('div');
     card.classList.add('cliente-card');
     card.innerHTML = `
+      <button class="btn-excluir" onclick="excluirCliente(${cliente.id}, event)">🗑️</button>
       <h4>${truncar(cliente.nome, 25)}</h4>
       ${cliente.telefone ? `<p>📞 ${cliente.telefone}</p>` : ''}
       ${enderecoCompleto ? `<p>📍 ${truncar(enderecoCompleto, 23)}</p>` : ''}
@@ -45,6 +46,15 @@ function renderizarClientes() {
 
     conteiner.appendChild(card);
   });
+}
+
+function excluirCliente(id, event) {
+  event.stopPropagation(); // evita abrir o popover ao clicar na lixeira
+  if (!confirm('Excluir este cliente?')) return;
+  clientes = clientes.filter(c => c.id !== id);
+  sessoes  = sessoes.filter(s => s.clienteId !== id);
+  salvarDados();
+  renderizarClientes();
 }
 
 function cadastrarCliente() {
@@ -93,20 +103,6 @@ function abrirPopover(cliente) {
 
   const sessoesAvulsas = (cliente.sessoes || []).filter(s => s.tipo === 'avulsa' || !s.tipo);
   const pacotes        = (cliente.sessoes || []).filter(s => s.tipo === 'pacote');
-
-  const sessoesHTML = sessoesAvulsas.length > 0
-    ? sessoesAvulsas.map(s => `
-        <div class="sessao-card">
-          <div class="sessao-card-top">
-            <strong>${s.servico}</strong>
-            <span class="badge badge-${s.status}">${s.status}</span>
-          </div>
-          <p>📅 ${s.data} às ${s.hora}</p>
-          ${s.valor ? `<p>💰 ${s.valor}</p>` : ''}
-          ${s.obs   ? `<p>📝 ${s.obs}</p>`   : ''}
-        </div>
-      `).join('')
-    : '<p class="vazio">Nenhuma sessão avulsa marcada.</p>';
 
   const pacotesHTML = pacotes.length > 0
     ? pacotes.map(p => {
@@ -197,11 +193,51 @@ function trocarAbaCliente(id, el) {
 function modoEditar(id) {
   document.getElementById('modoVisualizar').style.display = 'none';
   document.getElementById('modoEditar').style.display     = 'block';
+  document.querySelector('.abas-cliente').style.display   = 'none';
+  document.querySelector('#abaCliente-info').style.display   = 'none';
+
+  // máscaras aplicadas após os inputs existirem no DOM
+  document.getElementById('editTelefone').addEventListener('input', function(e) {
+    let v = e.target.value.replace(/\D/g, '').slice(0, 11);
+    let r = '';
+    if (v.length > 0) r += '(' + v.slice(0, 2);
+    if (v.length >= 2) r += ') ' + v.slice(2, 7);
+    if (v.length >= 7) r += '-' + v.slice(7, 11);
+    e.target.value = r;
+  });
+
+  document.getElementById('editCpf').addEventListener('input', function(e) {
+    let v = e.target.value.replace(/\D/g, '').slice(0, 11);
+    let r = '';
+    if (v.length > 0) r += v.slice(0, 3);
+    if (v.length >= 3) r += '.' + v.slice(3, 6);
+    if (v.length >= 6) r += '.' + v.slice(6, 9);
+    if (v.length >= 9) r += '-' + v.slice(9, 11);
+    e.target.value = r;
+  });
+
+  document.getElementById('editCep').addEventListener('input', function(e) {
+    let v = e.target.value.replace(/\D/g, '').slice(0, 8);
+    let r = '';
+    if (v.length > 0) r += v.slice(0, 5);
+    if (v.length >= 5) r += '-' + v.slice(5, 8);
+    e.target.value = r;
+  });
+
+  document.getElementById('editNumero').addEventListener('input', function(e) {
+    e.target.value = e.target.value.replace(/\D/g, '');
+  });
+
+  document.getElementById('editNome').addEventListener('input', function(e) {
+    e.target.value = e.target.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '');
+  });
 }
 
 function modoVisualizar() {
   document.getElementById('modoVisualizar').style.display = 'block';
   document.getElementById('modoEditar').style.display     = 'none';
+  document.querySelector('.abas-cliente').style.display   = 'flex';
+  document.querySelector('#abaCliente-info').style.display   = 'flex';
 }
 
 function salvarEdicaoCliente(id) {
@@ -221,6 +257,7 @@ function salvarEdicaoCliente(id) {
   salvarDados();
   renderizarClientes();
   abrirPopover(clientes[index]);
+  document.querySelector('#abaCliente-info').style.display   = 'flex';
 }
 
 // ==================== POPOVER SESSÃO ====================
@@ -405,3 +442,47 @@ document.querySelector('.popoverSessao').addEventListener('click', function(e) {
 // ==================== INICIALIZAÇÃO ====================
 carregarDados();
 renderizarClientes();
+
+
+// FILTRAR CLIENTE
+
+function filtrarClientesLista() {
+  const termo = document.getElementById('BuscarCliente').value.trim().toLowerCase();
+  const conteiner = document.querySelector('.clientesConteiner');
+  conteiner.innerHTML = '';
+
+  const filtrados = clientes.filter(c => {
+    return (
+      c.nome?.toLowerCase().includes(termo)     ||
+      c.telefone?.toLowerCase().includes(termo) ||
+      c.cep?.toLowerCase().includes(termo)
+    );
+  });
+
+  if (filtrados.length === 0) {
+    conteiner.innerHTML = '<p class="vazio">Nenhum cliente encontrado.</p>';
+    return;
+  }
+
+  filtrados.forEach(cliente => {
+    let enderecoCompleto = '';
+    if (cliente.endereco) enderecoCompleto += cliente.endereco;
+
+    const card = document.createElement('div');
+    card.classList.add('cliente-card');
+    card.innerHTML = `
+      <button class="btn-excluir" onclick="excluirCliente(${cliente.id}, event)">🗑️</button>
+      <h4>${truncar(cliente.nome, 25)}</h4>
+      ${cliente.telefone ? `<p>📞 ${cliente.telefone}</p>` : ''}
+      ${enderecoCompleto ? `<p>📍 ${truncar(enderecoCompleto, 23)}</p>` : ''}
+    `;
+
+    card.dataset.id = cliente.id;
+    card.addEventListener('click', function () {
+      const c = clientes.find(c => c.id === Number(this.dataset.id));
+      abrirPopover(c);
+    });
+
+    conteiner.appendChild(card);
+  });
+}

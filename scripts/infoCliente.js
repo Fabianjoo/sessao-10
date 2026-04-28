@@ -13,18 +13,20 @@ function abrirPopover(cliente) {
 
   // ---- HTML: aba sessões ----
   const sessoesHTML = sessoesAvulsas.length > 0
-    ? sessoesAvulsas.map(s => `
-        <div class="sessao-card">
-          <div class="sessao-card-top">
-            <strong>${s.servico}</strong>
-            <span class="badge badge-${s.status}">${s.status}</span>
-          </div>
-          <p>📅 ${s.data} às ${s.hora}</p>
-          ${s.valor ? `<p>💰 ${s.valor}</p>` : ''}
-          ${s.obs   ? `<p>📝 ${s.obs}</p>`   : ''}
+  ? sessoesAvulsas.map(s => `
+      <div class="sessao-card">
+        <div class="sessao-card-top">
+          <strong>${s.servico}</strong>
+          <span class="badge badge-${s.status}">${s.status}</span>
+          <button class="btn-excluir-sessao" onclick="excluirSessao(${cliente.id}, ${s.id})">🗑️</button>
         </div>
-      `).join('')
-    : '<p class="vazio">Nenhuma sessão avulsa marcada.</p>';
+        <p>📅 ${s.data} às ${s.hora}</p>
+        ${s.valor ? `<p>💰 ${s.valor}</p>` : ''}
+        ${s.obs   ? `<p>📝 ${s.obs}</p>`   : ''}
+      </div>
+    `).join('')
+  : '<p class="vazio">Nenhuma sessão avulsa marcada.</p>';
+
 
   // ---- HTML: aba pacotes ----
   const pacotesHTML = pacotes.length > 0
@@ -37,6 +39,7 @@ function abrirPopover(cliente) {
             <div class="sessao-card-top">
               <strong>${p.servico}</strong>
               <span class="badge badge-${p.status}">${p.status}</span>
+              <button class="btn-excluir-sessao" onclick="excluirPacote(${cliente.id}, ${p.id})">🗑️</button>
             </div>
             <div class="progresso-bar">
               <div class="progresso-fill" style="width:${pct}%"></div>
@@ -92,9 +95,9 @@ function abrirPopover(cliente) {
         <label>CPF</label>
         <input id="editCpf"      value="${cliente.cpf      || ''}">
         <label>Endereço</label>
-        <input id="editEndereco" value="${cliente.endereco || ''}">
+        <input id="editEndereco" maxlength="100" value="${cliente.endereco || ''}">
         <label>Número</label>
-        <input id="editNumero"   value="${cliente.numero   || ''}">
+        <input id="editNumero" maxlength="10"  value="${cliente.numero   || ''}">
         <label>CEP</label>
         <input id="editCep"      value="${cliente.cep      || ''}">
         <div class="sessao-acoes">
@@ -116,6 +119,32 @@ function abrirPopover(cliente) {
   `;
 
   popover.style.display = 'flex';
+}
+
+function excluirSessao(clienteId, sessaoId) {
+  if (!confirm('Excluir esta sessão?')) return;
+
+  // remove do array global
+  sessoes = sessoes.filter(s => s.id !== sessaoId);
+
+  // remove do array dentro do cliente
+  const cliente = clientes.find(c => c.id === clienteId);
+  if (cliente) cliente.sessoes = cliente.sessoes.filter(s => s.id !== sessaoId);
+
+  salvarDados();
+  abrirPopover(cliente); // re-renderiza o popover
+}
+
+function excluirPacote(clienteId, pacoteId) {
+  if (!confirm('Excluir este pacote?')) return;
+
+  sessoes = sessoes.filter(s => s.id !== pacoteId);
+
+  const cliente = clientes.find(c => c.id === clienteId);
+  if (cliente) cliente.sessoes = cliente.sessoes.filter(s => s.id !== pacoteId);
+
+  salvarDados();
+  abrirPopover(cliente);
 }
 
 function trocarAbaCliente(id, el) {

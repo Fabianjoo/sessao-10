@@ -46,7 +46,7 @@
           
               <!-- Serviço (comum aos dois) -->
               <label for="servicoSessao">Serviço</label>
-              <input type="text" id="servicoSessao" placeholder="Ex: Drenagem Linfática...">
+              <input type="text" maxlength="50" id="servicoSessao" placeholder="Ex: Drenagem Linfática...">
           
               <!-- SESSÃO AVULSA -->
               <div id="campos-avulsa">
@@ -60,7 +60,7 @@
                 <input type="time" id="horaSessao">
           
                 <label for="obsSessao">Observações</label>
-                <textarea id="obsSessao" placeholder="Observações..."></textarea>
+                <textarea id="obsSessao" maxlength="100" placeholder="Observações..."></textarea>
               </div>
           
               <!-- PACOTE DE SESSÕES -->
@@ -72,11 +72,11 @@
                 <input type="text" id="valorPacote" placeholder="R$ 0,00" oninput="mascaraValor(this)">
           
                 <label for="obsPacote">Observações</label>
-                <textarea id="obsPacote" placeholder="Observações..."></textarea>
+                <textarea id="obsPacote" maxlength="100" placeholder="Observações..."></textarea>
               </div>
           
               <div class="sessao-acoes">
-                <button type="button" onclick="cadastrarSessao()">✅ Cadastrar</button>
+                <button type="button" id="cadastrar-sessao" onclick="cadastrarSessao()">✅ Cadastrar</button>
               </div>
             </div>
           </div>
@@ -104,13 +104,13 @@
                     <input type="text" id="cpf"  placeholder="000.000.000-00">
                 
                     <label for="endereco">Endereço</label>
-                    <input type="text" id="endereco">
+                    <input maxlength="100" type="text" id="endereco">
 
                     <label for="cep">CEP</label>
                     <input type="text" id="cep" placeholder="00000-000">
 
                     <label for="numero">Número</label>
-                    <input type="text" id="numero">
+                    <input type="text" id="numero" maxlength="10">
                   </div>
                 
                   <div class="cadastrar">
@@ -141,19 +141,9 @@
               <!-- LISTA DE CLIENTES -->
               <section class="listaClientes">
                 <h2>Clientes Cadastrados</h2>
-                <input type="text" id="BuscarCliente" placeholder="Buscar Cliente...">
+                <input type="text" id="BuscarCliente" placeholder="Buscar Cliente..." oninput="filtrarClientesLista()">
                 <div class="clientesConteiner">
-                  <div class="cliente-card">
-                    <h4>João Silva</h4>
-              
-                    <p>📞 (54) 99999-1234</p>
-                    <p>📍 Centro - Caxias do Sul</p>
-              
-                  </div>
-                  
-                  
-                  
-                  
+
                 </div>
               </section>
 
@@ -220,9 +210,9 @@
 
 
 
-<script src="scripts/popovers/addCliente.js"></script>
-<script src="scripts/formulario/padronizacao.js"></script>
-<script src="scripts/popovers/infoCliente.js"></script>
+<script src="scripts/addCliente.js"></script>
+<script src="scripts/padronizacao.js"></script>
+<script src="scripts/infoCliente.js"></script>
 
 
           
