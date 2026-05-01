@@ -1,64 +1,140 @@
 @charset "UTF-8";
 
 /* FORMULARIO */
-.form{
+.form {
     background-color: var(--cor-primaria-clara);
-    grid-area: 1 / 1 / 2 / 2;
-    width: 100%;
+    width: 255px;
+    height: 448px;
     padding: 10px;
+    border-radius: 10px;
 
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
 }
 
-.form > h2{
+/* TÍTULO */
+.form > h2 {
     text-align: center;
+    font-size: 1rem;
+    margin-bottom: 5px;
 }
 
-.informacoesCliente{
+/* FORM */
+#clienteForm {
     display: flex;
-    flex-flow: column nowrap;
+    flex-direction: column;
+    flex: 1;
+}
+
+/* BLOCO CLIENTE */
+.informacoesCliente {
+    display: flex;
+    flex-direction: column;
+
     background-color: var(--cor-primaria-fundo);
-    border: 1px solid black;
-    border-radius: 5px;
-    padding: 10px;
-    margin-top: 10px;
+    border-radius: 8px;
+    padding: 8px;
+
+    gap: 5px;
 }
 
-.cadastrar{
-    margin-top: 10px;
+/* SUBTÍTULO */
+.informacoesCliente h3 {
+    text-align: center;
+    font-size: 0.85rem;
+    margin-bottom: 3px;
+}
+
+/* LABEL */
+.informacoesCliente label {
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+/* INPUT */
+.informacoesCliente input {
+    width: 100%;
+    padding: 4px;
+    font-size: 0.7rem;
+
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    outline: none;
+    transition: 0.2s;
+}
+
+/* HOVER INPUT */
+.informacoesCliente input:hover {
+    border-color: var(--cor-primaria-media);
+}
+
+/* FOCUS INPUT */
+.informacoesCliente input:focus {
+    border-color: var(--cor-primaria-media);
+    box-shadow: 0 0 3px rgba(0,0,0,0.2);
+}
+
+/* BOTÃO */
+.cadastrar {
+    margin-top: 5px;
     display: flex;
-    flex-flow: row nowrap;
     justify-content: center;
-
 }
 
-.cadastrar > button{
-    padding: 10px;
-    border-radius: 5px;
+.cadastrar > button {
+    width: 100%;
+    padding: 6px;
+    border-radius: 6px;
     cursor: pointer;
     background-color: var(--cor-primaria-media);
     color: white;
     font-weight: bold;
+    border: none;
+    font-size: 0.8rem;
+    transition: 0.2s;
 }
 
-.cadastrar > button:hover{
+/* HOVER BOTÃO */
+.cadastrar > button:hover {
     background-color: white;
     color: var(--cor-primaria-media);
-    
+    border: 1px solid var(--cor-primaria-media);
 }
 
-.sessaoBtn{
+/* CLICK BOTÃO */
+.cadastrar > button:active {
+    transform: scale(0.98);
+}
+
+/* SESSÃO */
+.sessaoBtn {
     display: flex;
-    flex-flow: row nowrap;
     justify-content: center;
+    align-items: center;
+
     background-color: var(--cor-primaria-escura);
-    border: 2px solid green;
     color: white;
-    margin-top: 10px;
+
+    margin-top: 5px;
+    padding: 6px;
+    border-radius: 6px;
+
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    font-size: 0.8rem;
+    text-align: center;
+
+    transition: 0.2s;
 }
 
-.sessaoBtn:hover{
-    background-color:white ;
+/* HOVER SESSÃO */
+.sessaoBtn:hover {
+    background-color: white;
     color: var(--cor-primaria-escura);
+    border: 1px solid var(--cor-primaria-escura);
+}
+
+/* CLICK SESSÃO */
+.sessaoBtn:active {
+    transform: scale(0.98);
 }

@@ -70,6 +70,11 @@ function cadastrarCliente() {
     return;
   }
 
+  if (!telefone) {
+    alert('⚠️ Por favor, preencha o telefone do cliente.');
+    return;
+  }
+
   const novoCliente = {
     id: Date.now(),
     nome,
