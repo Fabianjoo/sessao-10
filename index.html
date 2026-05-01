@@ -14,10 +14,13 @@
 </head>
 <body>
       <!-- HEADER -->
-        <header class="header">
-            <h1>Gerenciador de Sessões (provisorio)</h1>
-            relogio
-          </header>
+      <header class="header">
+        <h1>Gerenciador de Sessões</h1>
+        <div class="relogio-box">
+          <span id="relogio">00:00:00</span>
+          <span id="dataHoje"></span>
+        </div>
+      </header>
 
           <!-- POPOVERS -->
 
@@ -163,38 +166,50 @@
 
 
             <!-- LISTA DE SESSÕES -->
-            <section class="listaSessoes">
+          <section id="listaSessoes">
+            <div class="sessoes-header">
               <h2>Sessões</h2>
-              <div class="conteinerSessoes">
-            
-                <h3>📅 Sessões de Hoje</h2>
-                  <div class="semSessão">
-                    <p>Não há sessões marcadas.</p>
-                  </div>
+            </div>
 
-                  <div class="comSessão">
-                    
-                  </div>
+            <!-- ABAS -->
+            <div class="tabs">
+              <button class="tab ativo" onclick="trocarAba('hoje')" id="tab-hoje">
+                <span class="pulsing-dot" id="dot-hoje"></span>
+                Sessões de Hoje
+              </button>
+              <button class="tab" onclick="trocarAba('calendario')" id="tab-calendario">
+                📅 Calendário
+              </button>
+              <button class="tab" onclick="trocarAba('historico')" id="tab-historico">
+                📜 Histórico
+              </button>
+            </div>
 
-                  <div class="sessoesBtn">
-                    <button id="btnCalendario">📅 Calendário</button>
-                    <button id="btnHistorico">📜 Histórico</button>
-                  </div>
-
-                  <div>
-                    (aqui colocar card com o mes/ano, um botao de proximo e anterior, e uma lista mostrando todas as sessoes marcadas em cada mes)
-                  </div>
-                  <div>
-                    (aqui colocar conteiner com todas as sessoes ja finalizadas)
-                  </div>
-               
-
-
+            <!-- ABA: HOJE -->
+            <div class="painel ativo" id="painel-hoje">
+              <div id="lista-hoje">
+                <p class="vazio">Nenhuma sessão marcada para hoje.</p>
               </div>
-            
-            
-            
-            </section>
+            </div>
+
+            <!-- ABA: CALENDÁRIO -->
+            <div class="painel" id="painel-calendario">
+              <div class="cal-header">
+                <button class="cal-nav" onclick="mudarMes(-1)">← Anterior</button>
+                <span class="cal-mes" id="calMes"></span>
+                <button class="cal-nav" onclick="mudarMes(1)">Próximo →</button>
+              </div>
+              <div id="calLista"></div>
+            </div>
+
+            <!-- ABA: HISTÓRICO -->
+            <div class="painel" id="painel-historico">
+              <div id="lista-historico">
+                <p class="vazio">Nenhuma sessão finalizada ainda.</p>
+              </div>
+            </div>
+
+          </section>
 
 
 
@@ -213,6 +228,7 @@
 <script src="scripts/addCliente.js"></script>
 <script src="scripts/padronizacao.js"></script>
 <script src="scripts/infoCliente.js"></script>
+<script src="scripts/sessoes.js"></script>
 
 
           

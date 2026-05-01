@@ -1,6 +1,268 @@
 @charset "UTF-8";
 
-.listaSessoes{
-    background-color: lightcyan;
-    padding: 10px;
+/* ── Paleta de cores ── */
+:root {
+  --azul-900: #0B3C6F;  /* títulos */
+  --azul-700: #185FA5;  /* principal */
+  --azul-500: #3A86D1;  /* destaque */
+  --azul-300: #A9CFF5;  /* bordas / hover */
+  --azul-100: #EAF4FD;  /* fundos leves */
+  --azul-50:  #F4F9FF;  /* fundo geral */
+
+  --cinza-700: #444;
+  --cinza-500: #888;
+  --cinza-300: #D3D1C7;
+}
+
+/* ── Seção de sessões ── */
+#listaSessoes {
+  background-color: var(--azul-50);
+  padding: 20px;
+}
+
+#listaSessoes h2 {
+  color: var(--azul-900);
+  margin-bottom: 10px;
+}
+
+/* ── Abas ── */
+.tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--azul-300);
+  background: white;
+  color: var(--azul-700);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.tab.ativo {
+  background: var(--azul-700);
+  color: white;
+  border-color: var(--azul-700);
+}
+
+.tab:hover:not(.ativo) {
+  background: var(--azul-300);
+}
+
+/* ── Ponto pulsante ── */
+.pulsing-dot {
+  display: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--azul-500);
+  flex-shrink: 0;
+  animation: pulsar 1.2s infinite;
+}
+
+.pulsing-dot.visivel {
+  display: inline-block;
+}
+
+.tab.ativo .pulsing-dot.visivel {
+  background: white;
+}
+
+@keyframes pulsar {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* ── Painéis ── */
+.painel {
+  display: none;
+}
+
+.painel.ativo {
+  display: block;
+}
+
+/* ── Cards de sessão ── */
+.sessao-card-lista {
+  background: white;
+  border: 1px solid var(--azul-300);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  margin-bottom: 8px;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.sessao-card-lista:hover {
+  background: var(--azul-100);
+}
+
+.sessao-hora {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--azul-700);
+  min-width: 52px;
+  font-family: monospace;
+}
+
+.sessao-info {
+  flex: 1;
+}
+
+.sessao-nome {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--azul-900);
+}
+
+.sessao-detalhe {
+  font-size: 12px;
+  color: var(--cinza-500);
+  margin-top: 2px;
+}
+
+/* ── Status badges ── */
+.sessao-status {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.s-pendente  { background: var(--azul-100); color: var(--azul-900); }
+.s-andamento { background: var(--azul-300); color: var(--azul-900); }
+.s-concluida { background: var(--cinza-300); color: var(--cinza-700); }
+
+/* ── Calendário ── */
+.cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.cal-mes {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--azul-900);
+}
+
+.cal-nav {
+  background: white;
+  border: 1px solid var(--azul-300);
+  border-radius: 8px;
+  padding: 5px 14px;
+  cursor: pointer;
+  color: var(--azul-700);
+  font-size: 13px;
+  transition: background 0.15s;
+}
+
+.cal-nav:hover {
+  background: var(--azul-300);
+}
+
+.cal-grupo {
+  background: white;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 6px;
+}
+
+.cal-dia-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--azul-500);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.cal-item {
+  font-size: 13px;
+  color: var(--azul-900);
+  padding: 3px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cal-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--azul-500);
+  flex-shrink: 0;
+}
+
+/* ── Histórico ── */
+.hist-item {
+  background: white;
+  border: 1px solid var(--azul-300);
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hist-data {
+  font-size: 11px;
+  color: var(--azul-500);
+  min-width: 72px;
+}
+
+.hist-nome {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--azul-900);
+}
+
+.hist-detalhe {
+  font-size: 12px;
+  color: var(--cinza-500);
+}
+
+/* ── Badges pagamento ── */
+.badge-pago {
+  font-size: 11px;
+  padding: 2px 10px;
+  border-radius: 20px;
+  background: var(--azul-100);
+  color: var(--azul-900);
+  font-weight: 500;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.badge-pendente-pag {
+  font-size: 11px;
+  padding: 2px 10px;
+  border-radius: 20px;
+  background: var(--azul-300);
+  color: var(--azul-900);
+  font-weight: 500;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+/* ── Vazio ── */
+.vazio {
+  color: var(--cinza-500);
+  font-size: 13px;
+  padding: 1.5rem 0;
+  text-align: center;
 }

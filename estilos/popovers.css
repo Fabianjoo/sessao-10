@@ -28,7 +28,7 @@
     padding: 10px;
     background-color: white;
     width: 65%;
-    height: 80%;
+    height: 760px;
     border-radius: 5px;
     word-break: break-word;
 }
@@ -87,7 +87,7 @@
 
 #obsSessao,#obsPacote{
     resize: none;
-    height: 100px;
+    height: 50px;
 }
 
 #campos-avulsa{

@@ -28,8 +28,43 @@ header{
     color: white;
     display: flex;
     flex-flow: row nowrap;
-    height: 40px;
+    height: 55px;
+    background: var(--cor-primaria);
+    padding: 12px 20px;
+    align-items: center;
+    justify-content: space-between;
 }
+  
+  .header h1 {
+    font-size: 18px;
+    font-weight: 500;
+    color: #E6F1FB;
+    margin: 0;
+  }
+  
+  .relogio-box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+
+  }
+  
+  #relogio {
+    font-size: 22px;
+    font-weight: 500;
+    font-family: monospace;
+    letter-spacing: 2px;
+    background: var(--cor-primaria-clara);
+    color: var(--cor-primaria);
+    padding: 4px 14px;
+    border-radius: 8px;
+  }
+  
+  #dataHoje {
+    font-size: 11px;
+    color: var(--cor-primaria-clara);
+  }
 
 
 /* MAIN */
@@ -38,7 +73,7 @@ header{
     display: grid;
     grid-template-columns: 1fr 4fr;
     grid-template-rows: 1fr 1fr;
-    height: calc(100vh - 40px);
+    height: calc(100vh - 55px);
 
 }
 

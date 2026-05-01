@@ -193,14 +193,13 @@
 #modoVisualizar p {
   display: flex;
   align-items: center;
-  gap: 8px;
   font-size: 0.9rem;
   color: #333;
   background: #f4faf4;
   border: 1px solid #dceedd;
   border-radius: 6px;
   padding: 8px 12px;
-  margin: 0;
+  margin: 5px;
 }
 
 #modoVisualizar button {
@@ -257,6 +256,7 @@
   background: #f4faf4;
   transition: border-color 0.2s, box-shadow 0.2s;
   outline: none;
+  margin: 5px;
 }
 
 #modoEditar input:focus {

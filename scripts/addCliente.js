@@ -451,13 +451,14 @@ function filtrarClientesLista() {
   const conteiner = document.querySelector('.clientesConteiner');
   conteiner.innerHTML = '';
 
-  const filtrados = clientes.filter(c => {
-    return (
-      c.nome?.toLowerCase().includes(termo)     ||
-      c.telefone?.toLowerCase().includes(termo) ||
-      c.cep?.toLowerCase().includes(termo)
-    );
-  });
+const filtrados = clientes.filter(c => {
+  return (
+    c.nome?.toLowerCase().includes(termo)     ||
+    c.telefone?.toLowerCase().includes(termo) ||
+    c.cep?.toLowerCase().includes(termo)      ||
+    c.cpf?.toLowerCase().includes(termo)
+  );
+});
 
   if (filtrados.length === 0) {
     conteiner.innerHTML = '<p class="vazio">Nenhum cliente encontrado.</p>';
