@@ -13,13 +13,6 @@
     box-sizing: border-box;
 }
 
-/* TÍTULO */
-.form > h2 {
-    text-align: center;
-    font-size: 1rem;
-    margin-bottom: 5px;
-}
-
 /* FORM */
 #clienteForm {
     display: flex;
@@ -42,13 +35,13 @@
 /* SUBTÍTULO */
 .informacoesCliente h3 {
     text-align: center;
-    font-size: 0.85rem;
+    font-size: 1em;
     margin-bottom: 3px;
 }
 
 /* LABEL */
 .informacoesCliente label {
-    font-size: 0.75rem;
+    font-size: 1em;
     font-weight: bold;
 }
 
@@ -83,7 +76,7 @@
 }
 
 .cadastrar > button {
-    width: 100%;
+    width: 70%;
     padding: 6px;
     border-radius: 6px;
     cursor: pointer;
@@ -91,7 +84,7 @@
     color: white;
     font-weight: bold;
     border: none;
-    font-size: 0.8rem;
+    font-size: 1em;
     transition: 0.2s;
 }
 
