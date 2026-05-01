@@ -85,6 +85,11 @@
     margin-top: 10px;
 }
 
+#obsSessao,#obsPacote{
+    resize: none;
+    height: 100px;
+}
+
 #campos-avulsa{
     display: flex;
     flex-flow: column nowrap;
