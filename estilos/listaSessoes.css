@@ -153,6 +153,11 @@
   margin-bottom: 1rem;
 }
 
+#calLista{
+    overflow-y: auto;
+    height: 275px;
+}
+
 .cal-mes {
   font-size: 15px;
   font-weight: 500;
@@ -208,6 +213,12 @@
 }
 
 /* ── Histórico ── */
+
+#lista-historico{
+    overflow-y: auto;
+    height: 315px;
+}
+
 .hist-item {
   background: white;
   border: 1px solid var(--azul-300);
