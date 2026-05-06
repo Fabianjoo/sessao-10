@@ -33,8 +33,9 @@ function trocarAba(id) {
   iniciarRelogio();
   
   // ── Status da sessão ──
-  // duracao é opcional — se não existir assume 50 min como padrão
   function getStatus(sessao, agoraMs) {
+    if (sessao.finalizada) return 'concluida';
+  
     if (!sessao.data || !sessao.hora) return 'pendente';
   
     const inicio  = new Date(sessao.data + 'T' + sessao.hora + ':00').getTime();
@@ -46,13 +47,11 @@ function trocarAba(id) {
     return 'concluida';
   }
   
-  // ── Sessões de Hoje ──
   function atualizarSessoesHoje() {
     const agora   = new Date();
     const hojeStr = agora.toISOString().slice(0, 10);
     const hojeMs  = agora.getTime();
   
-    // só sessões avulsas (pacotes não têm data/hora própria)
     const sessoesHoje = sessoes.filter(s =>
       s.tipo !== 'pacote' && s.data === hojeStr
     );
@@ -75,31 +74,23 @@ function trocarAba(id) {
     const classeMap = { pendente: 's-pendente', andamento: 's-andamento', concluida: 's-concluida' };
   
     lista.innerHTML = sessoesHoje.map(s => {
-      const status = getStatus(s, hojeMs);
+      const status = s.finalizada ? 'concluida' : getStatus(s, hojeMs);
+      const btnFinalizar = status !== 'concluida'
+        ? `<button class="btn-finalizar-sessao" onclick="finalizarSessao(${s.id})" title="Finalizar sessão">✅</button>`
+        : '';
       return `
         <div class="sessao-card-lista">
           <div class="sessao-hora">${s.hora}</div>
           <div class="sessao-info">
             <div class="sessao-nome">${s.nomeCliente}</div>
-            <div class="sessao-detalhe">${s.servico}${s.duracao ? ' · ' + s.duracao + ' min' : ''}</div>
+            <div class="sessao-detalhe">${s.servico}</div>
           </div>
           <span class="sessao-status ${classeMap[status]}">${labelMap[status]}</span>
+          ${btnFinalizar}
+          <button class="btn-cancelar-sessao" onclick="cancelarSessao(${s.id})" title="Cancelar sessão">🗑️</button>
         </div>
       `;
     }).join('');
-  }
-  
-  // ── Calendário ──
-  const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
-                 'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-  let calMes = new Date().getMonth();
-  let calAno = new Date().getFullYear();
-  
-  function mudarMes(delta) {
-    calMes += delta;
-    if (calMes < 0)  { calMes = 11; calAno--; }
-    if (calMes > 11) { calMes = 0;  calAno++; }
-    renderCalendario();
   }
   
   function renderCalendario() {
@@ -111,9 +102,8 @@ function trocarAba(id) {
   
     const mesStr = calAno + '-' + String(calMes + 1).padStart(2, '0');
   
-    // só sessões avulsas com data definida
     const doMes = sessoes.filter(s =>
-      s.tipo !== 'pacote' && s.data && s.data.startsWith(mesStr)
+      s.tipo !== 'pacote' && s.data && s.data.startsWith(mesStr) && !s.finalizada
     );
   
     if (doMes.length === 0) {
@@ -121,7 +111,6 @@ function trocarAba(id) {
       return;
     }
   
-    // Agrupa por dia
     const porDia = {};
     doMes.forEach(s => {
       if (!porDia[s.data]) porDia[s.data] = [];
@@ -135,7 +124,9 @@ function trocarAba(id) {
         .map(s => `
           <div class="cal-item">
             <span class="cal-dot"></span>
-            ${s.hora} — ${s.nomeCliente} · ${s.servico}
+            <span>${s.hora} — ${s.nomeCliente} · ${s.servico}</span>
+            <button class="btn-finalizar-sessao" onclick="finalizarSessao(${s.id})" title="Finalizar sessão">✅</button>
+            <button class="btn-cancelar-sessao" onclick="cancelarSessao(${s.id})" title="Cancelar sessão">🗑️</button>
           </div>
         `).join('');
       return `
@@ -147,15 +138,14 @@ function trocarAba(id) {
     }).join('');
   }
   
-  // ── Histórico ──
   function renderHistorico() {
     const agora = new Date().getTime();
     const lista = document.getElementById('lista-historico');
     if (!lista) return;
   
-    // só avulsas já concluídas
     const finalizadas = sessoes.filter(s =>
-      s.tipo !== 'pacote' && s.data && s.hora && getStatus(s, agora) === 'concluida'
+      s.tipo !== 'pacote' && s.data && s.hora &&
+      (s.finalizada || getStatus(s, agora) === 'concluida')
     );
   
     if (finalizadas.length === 0) {
@@ -165,10 +155,16 @@ function trocarAba(id) {
   
     finalizadas.sort((a, b) => (b.data + b.hora).localeCompare(a.data + a.hora));
   
-    lista.innerHTML = finalizadas.map(s => {
+    const btnLimpar = `
+      <div style="display:flex; justify-content:flex-end; margin-bottom:12px;">
+        <button class="btn-limpar-historico" onclick="limparHistorico()">🗑️ Limpar histórico</button>
+      </div>
+    `;
+  
+    lista.innerHTML = btnLimpar + finalizadas.map(s => {
       const [ano, mes, dia] = s.data.split('-');
       const badgeClass = s.pago ? 'badge-pago' : 'badge-pendente-pag';
-      const badgeLabel = s.pago ? 'Pago'       : 'Pendente';
+      const badgeLabel = s.pago ? 'Pago' : 'Pendente';
       return `
         <div class="hist-item">
           <div>
@@ -180,6 +176,65 @@ function trocarAba(id) {
         </div>
       `;
     }).join('');
+  }
+  
+  function finalizarSessao(id) {
+    if (!confirm('Marcar esta sessão como finalizada?')) return;
+  
+    const sessao = sessoes.find(s => s.id === id);
+    if (!sessao) return;
+  
+    sessao.finalizada = true;
+  
+    const cliente = clientes.find(c => c.id === sessao.clienteId);
+    if (cliente && cliente.sessoes) {
+      const s = cliente.sessoes.find(s => s.id === id);
+      if (s) s.finalizada = true;
+    }
+  
+    salvarDados();
+    atualizarSessoesHoje();
+    renderCalendario();
+    renderHistorico();
+  }
+  
+  function cancelarSessao(id) {
+    if (!confirm('Cancelar esta sessão? Ela será removida permanentemente.')) return;
+  
+    const sessao = sessoes.find(s => s.id === id);
+    if (!sessao) return;
+  
+    sessoes = sessoes.filter(s => s.id !== id);
+  
+    const cliente = clientes.find(c => c.id === sessao.clienteId);
+    if (cliente && cliente.sessoes) {
+      cliente.sessoes = cliente.sessoes.filter(s => s.id !== id);
+    }
+  
+    salvarDados();
+    atualizarSessoesHoje();
+    renderCalendario();
+  }
+  
+  function limparHistorico() {
+    if (!confirm('Apagar todas as sessões finalizadas do histórico? Esta ação não pode ser desfeita.')) return;
+  
+    const agora = new Date().getTime();
+  
+    const idsConcluidas = new Set(
+      sessoes
+        .filter(s => s.finalizada || getStatus(s, agora) === 'concluida')
+        .map(s => s.id)
+    );
+  
+    sessoes = sessoes.filter(s => !idsConcluidas.has(s.id));
+  
+    clientes.forEach(c => {
+      if (c.sessoes) c.sessoes = c.sessoes.filter(s => !idsConcluidas.has(s.id));
+    });
+  
+    salvarDados();
+    renderHistorico();
   }
   
   // ── Init ──

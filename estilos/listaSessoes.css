@@ -277,3 +277,60 @@
   padding: 1.5rem 0;
   text-align: center;
 }
+
+
+/* Botão cancelar sessão (hoje e calendário) */
+.btn-cancelar-sessao {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: opacity 0.2s, background 0.2s;
+  flex-shrink: 0;
+}
+.btn-cancelar-sessao:hover {
+  opacity: 1;
+  background: var(--color-background-danger, #fee2e2);
+}
+
+/* Botão limpar histórico */
+.btn-limpar-historico {
+  background: red;
+  border: 1px solid currentColor;
+  color: white;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  opacity: 0.7;
+  transition: opacity 0.2s, background 0.2s;
+}
+.btn-limpar-historico:hover {
+  opacity: 1;
+  background: white;
+  color: red;
+}
+
+/* Ajuste no cal-item para acomodar o botão */
+.cal-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-finalizar-sessao {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: opacity 0.2s, background 0.2s;
+  flex-shrink: 0;
+}
+.btn-finalizar-sessao:hover {
+  opacity: 1;
+  background: var(--color-background-success, #dcfce7);
+}

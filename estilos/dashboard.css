@@ -9,3 +9,161 @@
 
 }
 
+.dash {
+    font-family: 'DM Sans', sans-serif;
+    width: 255px;
+    height: 447px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 2px;
+    box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: #f0d9b5 transparent;
+  }
+  
+  .d-card {
+    background: #FAEEDA;
+    border-radius: 10px;
+    padding: 10px 12px;
+    border: 1px solid #f0d9b5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  
+  .d-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #9b7a4a;
+    margin-bottom: 2px;
+  }
+  
+  .d-valor {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: #2d1f0e;
+    line-height: 1;
+  }
+  
+  .d-sub {
+    font-size: 10px;
+    color: #b8956a;
+    margin-top: 2px;
+  }
+  
+  .d-icon {
+    font-size: 20px;
+    opacity: 0.5;
+  }
+  
+  .d-financeiro {
+    background: #2d1f0e;
+    border-radius: 10px;
+    padding: 10px 12px;
+    border: 1px solid #2d1f0e;
+    flex-shrink: 0;
+  }
+  
+  .d-fin-titulo {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #c9a97a;
+    margin-bottom: 8px;
+  }
+  
+  .d-fin-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 4px;
+  }
+  
+  .d-fin-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #9b7a4a;
+    margin-bottom: 2px;
+  }
+  
+  .d-fin-valor {
+    font-family: 'DM Serif Display', serif;
+    font-size: 15px;
+    color: #FAEEDA;
+    line-height: 1;
+  }
+  
+  .d-proxima {
+    background: #fff8f0;
+    border-radius: 10px;
+    padding: 10px 12px;
+    border: 1px solid #f0d9b5;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  
+  .d-prox-hora {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: #2d1f0e;
+    min-width: 42px;
+    text-align: center;
+    line-height: 1;
+  }
+  
+  .d-prox-div {
+    width: 1px;
+    height: 30px;
+    background: #f0d9b5;
+    flex-shrink: 0;
+  }
+  
+  .d-prox-nome {
+    font-size: 12px;
+    font-weight: 600;
+    color: #2d1f0e;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 130px;
+  }
+  
+  .d-prox-serv {
+    font-size: 10px;
+    color: #9b7a4a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 130px;
+  }
+  
+  .d-secao {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #c9a97a;
+    padding: 2px 0 0;
+    flex-shrink: 0;
+  }
+  
+  .d-vazio {
+    font-size: 11px;
+    color: #c9a97a;
+    text-align: center;
+    padding: 8px;
+    background: #fff8f0;
+    border-radius: 8px;
+    border: 1px dashed #f0d9b5;
+    flex-shrink: 0;
+  }
