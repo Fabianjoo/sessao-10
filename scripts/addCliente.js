@@ -302,6 +302,12 @@ function fecharPopoverSessao() {
   document.getElementById('obsPacote').value            = '';
   document.getElementById('clientesDropdown').innerHTML = '';
   document.querySelector('.popoverSessao').style.display = 'none';
+
+  // Restaura o campo valor para sessões avulsas normais
+  const labelValor = document.querySelector('label[for="valorSessao"]');
+  const inputValor = document.getElementById('valorSessao');
+  if (labelValor) labelValor.style.display = '';
+  if (inputValor) inputValor.style.display = '';
 }
 
 function setTipoSessao(tipo) {
@@ -373,6 +379,12 @@ function marcarSessaoPacote(clienteId, pacoteId) {
   document.getElementById('servicoSessao').value        = pacote.servico;
   document.getElementById('clientesDropdown').innerHTML = '';
   pacoteAtualId = pacoteId;
+
+  // Oculta o campo valor pois o pacote já foi pago
+  const labelValor = document.querySelector('label[for="valorSessao"]');
+  const inputValor = document.getElementById('valorSessao');
+  if (labelValor) labelValor.style.display = 'none';
+  if (inputValor) inputValor.style.display = 'none';
 }
 
 function cadastrarSessao() {
@@ -423,7 +435,8 @@ function cadastrarSessao() {
       totalSessoes: qtd,
       sessoesRealizadas: 0,
       valor, obs,
-      status: 'ativo'
+      status: 'ativo',
+      dataCadastro: new Date().toISOString().slice(0, 10)
     };
   }
 
@@ -431,6 +444,7 @@ function cadastrarSessao() {
   cliente.sessoes.push(novoRegistro);
 
   salvarDados();
+  renderDashboard();
   alert(`✅ ${tipoSessaoAtual === 'avulsa' ? 'Sessão cadastrada' : 'Pacote cadastrado'} para ${cliente.nome}!`);
   fecharPopoverSessao();
 }
