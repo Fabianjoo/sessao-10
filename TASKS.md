@@ -9,6 +9,7 @@ Este arquivo serve para rastrear bugs, ideias de melhorias e tarefas pendentes p
 - [ ] **Ao deletar atualizar a aba esquerda de próxima sessão**
 
 ## 🟡 Melhorias (Próximos Passos)
+- [ ] **Permitir cadastrar prioridade do cliente**
 - [ ] **Ao cadastrar uma sessão do pacote, puxar automaticamente a descrição**
 - [ ] **Mostrar descrição em todos os quadrados de sessão**
 - [ ] **Marcar campos obrigatórios:** Marcar campos obrigatórios nos formulários com um "*".
