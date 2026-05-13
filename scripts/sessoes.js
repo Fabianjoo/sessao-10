@@ -219,18 +219,18 @@ function finalizarSessao(id) {
   renderDashboard();
 }
 
-function cancelarSessao(id) {
+/* function cancelarSessao(id) {
   const sessao = sessoes.find(s => s.id === id);
   if (!sessao) return;
 
-  const motivo = prompt('Motivo do cancelamento (obrigatório, máx. 100 caracteres):');
+  const motivo = prompt('Motivo do cancelamento (obrigatório, máx. 200 caracteres):');
   if (motivo === null) return;
   if (!motivo.trim()) {
     alert('Informe o motivo do cancelamento.');
     return;
   }
-  if (motivo.trim().length > 100) {
-    alert('O motivo deve ter no máximo 100 caracteres.');
+  if (motivo.trim().length > 200) {
+    alert('O motivo deve ter no máximo 200 caracteres.');
     return;
   }
 
@@ -252,7 +252,7 @@ function cancelarSessao(id) {
   renderCalendario();
   renderHistorico();
   renderDashboard();
-}
+} */
 
 function limparHistorico() {
   if (!confirm('Apagar todas as sessões finalizadas do histórico? Esta ação não pode ser desfeita.')) return;
