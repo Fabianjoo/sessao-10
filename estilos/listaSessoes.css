@@ -348,3 +348,8 @@
   margin-top: 4px;
   display: block;
 }
+
+.s-cancelada {
+  background-color: #fde8e8;
+  color: #c62828;
+}

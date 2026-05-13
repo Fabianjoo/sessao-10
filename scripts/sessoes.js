@@ -80,24 +80,32 @@ function atualizarSessoesHoje() {
 
   sessoesHoje.sort((a, b) => a.hora.localeCompare(b.hora));
 
-  const labelMap  = { pendente: 'Pendente', andamento: 'Em andamento', concluida: 'Concluída' };
-  const classeMap = { pendente: 's-pendente', andamento: 's-andamento', concluida: 's-concluida' };
+  const labelMap  = { pendente: 'Pendente', andamento: 'Em andamento', concluida: 'Concluída', cancelada: 'Cancelada' };
+  const classeMap = { pendente: 's-pendente', andamento: 's-andamento', concluida: 's-concluida', cancelada: 's-cancelada' };
 
   lista.innerHTML = sessoesHoje.map(s => {
-    const status = s.finalizada ? 'concluida' : getStatus(s, hojeMs);
-    const btnFinalizar = status !== 'concluida'
+    const isCancelada = s.status === 'cancelada';
+    const status = isCancelada ? 'cancelada' : (s.finalizada ? 'concluida' : getStatus(s, hojeMs));
+
+    const btnFinalizar = (!isCancelada && status !== 'concluida')
       ? `<button class="btn-finalizar-sessao" onclick="finalizarSessao(${s.id})" title="Finalizar sessão">✅</button>`
       : '';
+
+    const btnCancelar = !isCancelada
+      ? `<button class="btn-cancelar-sessao" onclick="cancelarSessao(${s.id})" title="Cancelar sessão">🗑️</button>`
+      : '';
+
     return `
-      <div class="sessao-card-lista">
+      <div class="sessao-card-lista ${isCancelada ? 'sessao-cancelada' : ''}">
         <div class="sessao-hora">${s.hora}</div>
         <div class="sessao-info">
           <div class="sessao-nome">${s.nomeCliente}</div>
           <div class="sessao-detalhe">${s.servico}</div>
+          ${isCancelada ? `<span class="motivo-cancelamento">❌ ${s.observacaoCancelamento}</span>` : ''}
         </div>
         <span class="sessao-status ${classeMap[status]}">${labelMap[status]}</span>
         ${btnFinalizar}
-        <button class="btn-cancelar-sessao" onclick="cancelarSessao(${s.id})" title="Cancelar sessão">🗑️</button>
+        ${btnCancelar}
       </div>
     `;
   }).join('');
@@ -215,11 +223,14 @@ function cancelarSessao(id) {
   const sessao = sessoes.find(s => s.id === id);
   if (!sessao) return;
 
-  // Modal de confirmação com campo de observações
-  const motivo = prompt('Motivo do cancelamento (obrigatório):');
-  if (motivo === null) return; // clicou em cancelar
+  const motivo = prompt('Motivo do cancelamento (obrigatório, máx. 100 caracteres):');
+  if (motivo === null) return;
   if (!motivo.trim()) {
     alert('Informe o motivo do cancelamento.');
+    return;
+  }
+  if (motivo.trim().length > 100) {
+    alert('O motivo deve ter no máximo 100 caracteres.');
     return;
   }
 
@@ -250,7 +261,7 @@ function limparHistorico() {
 
   const idsConcluidas = new Set(
     sessoes
-      .filter(s => s.finalizada || getStatus(s, agora) === 'concluida')
+      .filter(s => s.finalizada || s.status === 'cancelada' || getStatus(s, agora) === 'concluida')
       .map(s => s.id)
   );
 
