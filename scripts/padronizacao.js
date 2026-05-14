@@ -1,5 +1,6 @@
 // Telefone: (00) 00000-0000
 document.getElementById('telefone').addEventListener('input', function(e) {
+    if (e.inputType === 'deleteContentBackward') return;
     let v = e.target.value.replace(/\D/g, '').slice(0, 11);
     let r = '';
   
@@ -13,6 +14,7 @@ document.getElementById('telefone').addEventListener('input', function(e) {
   
   // CPF: 000.000.000-00
   document.getElementById('cpf').addEventListener('input', function(e) {
+    if (e.inputType === 'deleteContentBackward') return;
     let v = e.target.value.replace(/\D/g, '').slice(0, 11);
     let r = '';
   
@@ -27,6 +29,7 @@ document.getElementById('telefone').addEventListener('input', function(e) {
   
   // CEP: 00000-000
   document.getElementById('cep').addEventListener('input', function(e) {
+    if (e.inputType === 'deleteContentBackward') return;
     let v = e.target.value.replace(/\D/g, '').slice(0, 8);
     let r = '';
   
@@ -44,5 +47,5 @@ document.getElementById('telefone').addEventListener('input', function(e) {
   
   
   document.getElementById('nomeCliente').addEventListener('input', function(e) {
-    e.target.value = e.target.value.replace(/[^a-zA-ZÀ-ÿ\s\-0-9]/g, '');
+    e.target.value = e.target.value.replace(/[^a-zA-ZÀ-ÿ\s\-\']/g, '');
   });

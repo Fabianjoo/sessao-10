@@ -3,8 +3,8 @@
 Este arquivo serve para rastrear bugs, ideias de melhorias e tarefas pendentes para o Gerenciador de Pedidos.
 
 ## 🔴 Bugs (Corrigir Agora)
-- [ ] **Permitir caracteres especiais no nome do cliente:** Acentos e hífen, por exemplo.
-- [ ] **Não permitir salvar com dados incompletos:** Não deve ser possível salvar cliente com telefone "(1" ou com CPF "123." por exemplo.
+- [x] **Permitir caracteres especiais no nome do cliente:** Acentos e hífen, por exemplo.
+- [x] **Não permitir salvar com dados incompletos:** Não deve ser possível salvar cliente com telefone "(1" ou com CPF "123." por exemplo.
 - [ ] **Deletar cliente não deve deletar histórico**: Deletar apenas as seções futuras do cliente.
 - [ ] **Ao deletar atualizar a aba esquerda de próxima sessão**
 
