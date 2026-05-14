@@ -208,6 +208,7 @@ function modoEditar(id) {
 
   // máscaras aplicadas após os inputs existirem no DOM
   document.getElementById('editTelefone').addEventListener('input', function(e) {
+    if (e.inputType === 'deleteContentBackward') return;
     let v = e.target.value.replace(/\D/g, '').slice(0, 11);
     let r = '';
     if (v.length > 0) r += '(' + v.slice(0, 2);
@@ -217,6 +218,7 @@ function modoEditar(id) {
   });
 
   document.getElementById('editCpf').addEventListener('input', function(e) {
+    if (e.inputType === 'deleteContentBackward') return;
     let v = e.target.value.replace(/\D/g, '').slice(0, 11);
     let r = '';
     if (v.length > 0) r += v.slice(0, 3);
@@ -227,6 +229,7 @@ function modoEditar(id) {
   });
 
   document.getElementById('editCep').addEventListener('input', function(e) {
+    if (e.inputType === 'deleteContentBackward') return;
     let v = e.target.value.replace(/\D/g, '').slice(0, 8);
     let r = '';
     if (v.length > 0) r += v.slice(0, 5);
