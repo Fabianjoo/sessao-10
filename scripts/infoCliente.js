@@ -154,15 +154,4 @@ function trocarAbaCliente(id, el) {
   el.classList.add('ativa');
 }
 
-  // Abre o popover de nova sessão já com o cliente pré-selecionado e o serviço preenchido
-  clienteSelecionadoId = clienteId;
-  document.getElementById('clienteSessao').value = cliente.nome;
-  document.getElementById('servicoSessao').value = pacote.servico;
-
-  // Guarda referência ao pacote para vincular depois do cadastro
-  pacoteAtualId = pacoteId;
-
-  fecharPopover(); // fecha o popover do cliente
-  abrirPopoverSessao(); // abre o popover de sessão
-
 

@@ -5,8 +5,8 @@ Este arquivo serve para rastrear bugs, ideias de melhorias e tarefas pendentes p
 ## 🔴 Bugs (Corrigir Agora)
 - [x] **Permitir caracteres especiais no nome do cliente:** Acentos e hífen, por exemplo.
 - [x] **Não permitir salvar com dados incompletos:** Não deve ser possível salvar cliente com telefone "(1" ou com CPF "123." por exemplo.
-- [ ] **Deletar cliente não deve deletar histórico**: Deletar apenas as seções futuras do cliente.
-- [ ] **Ao deletar atualizar a aba esquerda de próxima sessão**
+- [x] **Deletar cliente não deve deletar histórico**: Deletar apenas as seções futuras do cliente.
+- [x] **Ao deletar atualizar a aba esquerda de próxima sessão**
 
 ## 🟡 Melhorias (Próximos Passos)
 - [ ] **Permitir cadastrar prioridade do cliente**
