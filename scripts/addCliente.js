@@ -464,6 +464,9 @@ function cadastrarSessao() {
 
     if (!data || !hora) { alert('⚠️ Preencha data e horário.'); return; }
 
+    const inputValor = document.getElementById('valorSessao');
+    if (!valor && inputValor.style.display !== 'none') { alert('⚠️ Preencha o valor da sessão.'); return; } // ← corrigido
+
     novoRegistro = {
       id: Date.now(),
       tipo: 'avulsa',
@@ -485,6 +488,7 @@ function cadastrarSessao() {
     const obs   = document.getElementById('obsPacote').value.trim();
 
     if (!qtd || qtd < 1) { alert('⚠️ Informe a quantidade de sessões.'); return; }
+    if (!valor) { alert('⚠️ Preencha o valor do pacote.'); return; }
 
     novoRegistro = {
       id: Date.now(),
