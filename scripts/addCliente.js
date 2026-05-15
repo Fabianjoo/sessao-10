@@ -51,10 +51,33 @@ function renderizarClientes() {
 function excluirCliente(id, event) {
   event.stopPropagation(); // evita abrir o popover ao clicar na lixeira
   if (!confirm('Excluir este cliente?')) return;
-  clientes = clientes.filter(c => c.id !== id);
-  sessoes  = sessoes.filter(s => s.clienteId !== id);
+
+  const agoraMs = new Date().getTime();
+  const idNum = Number(id);
+
+  // Remove o cliente da lista
+  clientes = clientes.filter(c => Number(c.id) !== idNum);
+
+  // Filtra as sessões: mantém sessões de outros clientes e o que for histórico/andamento deste
+  sessoes = sessoes.filter(s => {
+    if (Number(s.clienteId) !== idNum) return true;
+    
+    // Para o cliente que está sendo excluído, mantemos apenas o histórico ou o que está em andamento
+    const status = getStatus(s, agoraMs);
+    const ehHistoricoOuAndamento = s.finalizada || s.status === 'cancelada' || status === 'concluida' || status === 'andamento';
+    
+    // Mantém apenas se for histórico ou em andamento
+    return ehHistoricoOuAndamento;
+  });
+
   salvarDados();
   renderizarClientes();
+  
+  // Atualiza as visualizações
+  if (typeof renderDashboard === 'function') renderDashboard();
+  if (typeof atualizarSessoesHoje === 'function') atualizarSessoesHoje();
+  if (typeof renderCalendario === 'function') renderCalendario();
+  if (typeof renderHistorico === 'function') renderHistorico();
 }
 
 function cadastrarCliente() {
