@@ -2,7 +2,13 @@
 
 Este arquivo serve para rastrear bugs, ideias de melhorias e tarefas pendentes para o Gerenciador de Pedidos.
 
-## 🔴 Bugs (Corrigir Agora)
+
+## ⚪ Reestruturação (Concluído)
+- [x] **Organização de Diretórios:** Divisão em css/ e js/ com subpastas por responsabilidade.
+- [x] **Centralização de Estado:** Criação do módulo `AppStorage` para gerenciar dados e persistência.
+- [x] **Modularização de Utilitários:** Extração de máscaras e formatadores para arquivos dedicados.
+- [x] **Limpeza do HTML:** Atualização de links e remoção de scripts redundantes.
+
 - [x] **Permitir caracteres especiais no nome do cliente:** Acentos e hífen, por exemplo.
 - [x] **Não permitir salvar com dados incompletos:** Não deve ser possível salvar cliente com telefone "(1" ou com CPF "123." por exemplo.
 - [x] **Deletar cliente não deve deletar histórico**: Deletar apenas as seções futuras do cliente.

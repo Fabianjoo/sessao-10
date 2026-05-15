@@ -125,25 +125,25 @@ function excluirSessao(clienteId, sessaoId) {
   if (!confirm('Excluir esta sessão?')) return;
 
   // remove do array global
-  sessoes = sessoes.filter(s => s.id !== sessaoId);
+  AppStorage.sessoes = AppStorage.sessoes.filter(s => s.id !== sessaoId);
 
   // remove do array dentro do cliente
-  const cliente = clientes.find(c => c.id === clienteId);
+  const cliente = AppStorage.clientes.find(c => c.id === clienteId);
   if (cliente) cliente.sessoes = cliente.sessoes.filter(s => s.id !== sessaoId);
 
-  salvarDados();
+  AppStorage.salvarDados();
   abrirPopover(cliente); // re-renderiza o popover
 }
 
 function excluirPacote(clienteId, pacoteId) {
   if (!confirm('Excluir este pacote?')) return;
 
-  sessoes = sessoes.filter(s => s.id !== pacoteId);
+  AppStorage.sessoes = AppStorage.sessoes.filter(s => s.id !== pacoteId);
 
-  const cliente = clientes.find(c => c.id === clienteId);
+  const cliente = AppStorage.clientes.find(c => c.id === clienteId);
   if (cliente) cliente.sessoes = cliente.sessoes.filter(s => s.id !== pacoteId);
 
-  salvarDados();
+  AppStorage.salvarDados();
   abrirPopover(cliente);
 }
 

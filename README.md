@@ -12,22 +12,21 @@ O desenvolvimento desta plataforma é parte de um projeto de extensão acadêmic
 - **Controle Financeiro:** Centralização de receitas e despesas para uma gestão mais segura e eficiente.
 - **Risco de Perda de Informação:** Migração para um ambiente digital, reduzindo o retrabalho e o risco de extravio de dados.
 
-## 🚀 Funcionalidades
+### Estrutura do Projeto
 
-- **👤 Cadastro de Clientes:** Registro completo com nome, CPF, telefone e endereço.
-- **📅 Gerenciador de Sessões:** Agendamento de sessões avulsas ou pacotes, com controle de status (Pendente, Em Andamento, Concluída).
-- **📜 Histórico:** Acompanhamento de todas as sessões já realizadas por cliente.
-- **📊 Dashboard:** Visão geral das atividades e métricas da clínica.
-- **🕒 Relógio em Tempo Real:** Auxílio no controle de duração das sessões.
+A aplicação foi reestruturada para seguir padrões de modularidade e separação de preocupações:
 
-## 🛠️ Tecnologias Utilizadas
+- **css/**: Estilos segmentados (base, componentes e módulos).
+- **js/core/**: Gestão de estado e persistência (`AppStorage`).
+- **js/utils/**: Utilitários de formatação e máscaras.
+- **js/modules/**: Lógica de interface e funcionalidades específicas.
+- **index.html**: Ponto de entrada da aplicação.
 
-O projeto foi construído utilizando tecnologias web fundamentais (Vanilla Stack) para garantir leveza, compatibilidade e facilidade de manutenção:
+### Tecnologias Utilizadas
 
-- **HTML5**: Estruturação semântica da aplicação.
-- **CSS3**: Estilização modularizada (estilos separados por componentes).
-- **JavaScript (ES6+)**: Lógica de negócio, manipulação do DOM e persistência local.
-- **LocalStorage**: Armazenamento de dados diretamente no navegador, permitindo o funcionamento offline.
+- **HTML5** e **CSS3** (Modularizado).
+- **JavaScript (ES6+)** com arquitetura baseada em módulos.
+- **LocalStorage** para persistência de dados.
 
 ## ⚙️ Como Executar
 

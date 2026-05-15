@@ -1,19 +1,10 @@
-function parseMoeda(str) {
-  if (!str) return 0;
-  return parseFloat(str.replace('R$','').replace(/\./g,'').replace(',','.').trim()) || 0;
-}
-
-function formatMoeda(v) {
-  return 'R$ ' + v.toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');
-}
-
 function renderDashboard() {
   const agora   = new Date();
   const agoraMs = agora.getTime();
   const hojeStr = agora.toISOString().slice(0, 10);
   const mesStr  = hojeStr.slice(0, 7);
 
-  const avulsas  = sessoes.filter(s => s.tipo !== 'pacote' && s.data && s.hora);
+  const avulsas  = AppStorage.sessoes.filter(s => s.tipo !== 'pacote' && s.data && s.hora);
   const hoje     = avulsas.filter(s => s.data === hojeStr);
   const concHoje = hoje.filter(s => getStatus(s, agoraMs) === 'concluida');
   const restHoje = hoje.length - concHoje.length;
@@ -21,8 +12,8 @@ function renderDashboard() {
   const concMes  = doMes.filter(s => getStatus(s, agoraMs) === 'concluida');
 
   // Pacotes cadastrados hoje e no mês (valor total na data de cadastro)
-  const pacotesDoDia = sessoes.filter(s => s.tipo === 'pacote' && s.dataCadastro === hojeStr);
-  const pacotesDoMes = sessoes.filter(s => s.tipo === 'pacote' && s.dataCadastro?.startsWith(mesStr));
+  const pacotesDoDia = AppStorage.sessoes.filter(s => s.tipo === 'pacote' && s.dataCadastro === hojeStr);
+  const pacotesDoMes = AppStorage.sessoes.filter(s => s.tipo === 'pacote' && s.dataCadastro?.startsWith(mesStr));
 
   // Receita = sessões avulsas + valor total dos pacotes cadastrados no período
   const receitaDia = hoje.reduce((a, s) => a + parseMoeda(s.valor), 0)
@@ -48,7 +39,7 @@ function renderDashboard() {
     <div class="d-card">
       <div>
         <div class="d-label">Clientes</div>
-        <div class="d-valor">${clientes.length}</div>
+        <div class="d-valor">${AppStorage.clientes.length}</div>
         <div class="d-sub">cadastrados</div>
       </div>
       <div class="d-icon">👥</div>
@@ -98,8 +89,10 @@ function renderDashboard() {
     html += `<div class="d-vazio">Nenhuma agendada</div>`;
   }
 
-  document.getElementById('dash-root').innerHTML = html;
+  if (document.getElementById('dash-root')) {
+    document.getElementById('dash-root').innerHTML = html;
+  }
 }
 
-renderDashboard();
-setInterval(renderDashboard, 10000);
+window.renderDashboard = renderDashboard;
+

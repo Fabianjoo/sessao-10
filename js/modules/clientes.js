@@ -1,31 +1,19 @@
-/* BANCO DE CLIENTES */
-let clientes = [];
-let sessoes  = [];
 
-// ==================== PERSISTÊNCIA ====================
-function salvarDados() {
-  localStorage.setItem('clientes', JSON.stringify(clientes));
-  localStorage.setItem('sessoes',  JSON.stringify(sessoes));
-}
-
-function carregarDados() {
-  const c = localStorage.getItem('clientes');
-  const s = localStorage.getItem('sessoes');
-  if (c) clientes = JSON.parse(c);
-  if (s) sessoes  = JSON.parse(s);
-}
 
 // ==================== UTILITÁRIOS ====================
 function truncar(texto, limite) {
-  return texto.length > limite ? texto.slice(0, limite) + '...' : texto;
+  if (!texto) return '';
+  const str = String(texto);
+  return str.length > limite ? str.slice(0, limite) + '...' : str;
 }
 
 // ==================== CLIENTES ====================
 function renderizarClientes() {
   const conteiner = document.querySelector('.clientesConteiner');
+  if (!conteiner) return;
   conteiner.innerHTML = '';
 
-  clientes.forEach(cliente => {
+  AppStorage.clientes.forEach(cliente => {
     let enderecoCompleto = '';
     if (cliente.endereco) enderecoCompleto += cliente.endereco;
 
@@ -40,8 +28,8 @@ function renderizarClientes() {
 
     card.dataset.id = cliente.id;
     card.addEventListener('click', function() {
-      const c = clientes.find(c => c.id === Number(this.dataset.id));
-      abrirPopover(c);
+      const c = AppStorage.clientes.find(c => c.id === Number(this.dataset.id));
+      if (c) abrirPopover(c);
     });
 
     conteiner.appendChild(card);
@@ -56,10 +44,10 @@ function excluirCliente(id, event) {
   const idNum = Number(id);
 
   // Remove o cliente da lista
-  clientes = clientes.filter(c => Number(c.id) !== idNum);
+  AppStorage.clientes = AppStorage.clientes.filter(c => Number(c.id) !== idNum);
 
-  // Filtra as sessões: mantém sessões de outros clientes e o que for histórico/andamento deste
-  sessoes = sessoes.filter(s => {
+  // Filtra as sessões: mantém sessões de outros AppStorage.clientes e o que for histórico/andamento deste
+  AppStorage.sessoes = AppStorage.sessoes.filter(s => {
     if (Number(s.clienteId) !== idNum) return true;
     
     // Para o cliente que está sendo excluído, mantemos apenas o histórico ou o que está em andamento
@@ -70,14 +58,14 @@ function excluirCliente(id, event) {
     return ehHistoricoOuAndamento;
   });
 
-  salvarDados();
+  AppStorage.salvarDados();
   renderizarClientes();
   
   // Atualiza as visualizações
-  if (typeof renderDashboard === 'function') renderDashboard();
-  if (typeof atualizarSessoesHoje === 'function') atualizarSessoesHoje();
-  if (typeof renderCalendario === 'function') renderCalendario();
-  if (typeof renderHistorico === 'function') renderHistorico();
+  if (window.renderDashboard) renderDashboard();
+  if (window.atualizarSessoesHoje) atualizarSessoesHoje();
+  if (window.renderCalendario) renderCalendario();
+  if (window.renderHistorico) renderHistorico();
 }
 
 function cadastrarCliente() {
@@ -114,11 +102,30 @@ function cadastrarCliente() {
     sessoes: []
   };
 
-  clientes.push(novoCliente);
-  salvarDados();
+  AppStorage.clientes.push(novoCliente);
+  AppStorage.salvarDados();
   renderizarClientes();
+  if (window.renderDashboard) renderDashboard();
   document.getElementById('clienteForm').reset();
 }
+
+window.renderizarClientes = renderizarClientes;
+window.excluirCliente = excluirCliente;
+window.cadastrarCliente = cadastrarCliente;
+window.abrirPopoverSessao = abrirPopoverSessao;
+window.fecharPopoverSessao = fecharPopoverSessao;
+window.cadastrarSessao = cadastrarSessao;
+window.setTipoSessao = setTipoSessao;
+window.filtrarClientes = filtrarClientes;
+window.filtrarClientesLista = filtrarClientesLista;
+window.abrirPopover = abrirPopover;
+window.fecharPopover = fecharPopover;
+window.trocarAbaCliente = trocarAbaCliente;
+window.modoEditar = modoEditar;
+window.modoVisualizar = modoVisualizar;
+window.salvarEdicaoCliente = salvarEdicaoCliente;
+window.marcarSessaoPacote = marcarSessaoPacote;
+window.selecionarCliente = selecionarCliente;
 
 // ==================== POPOVER CLIENTE ====================
 function fecharPopover() {
@@ -277,7 +284,7 @@ function modoVisualizar() {
 }
 
 function salvarEdicaoCliente(id) {
-  const index = clientes.findIndex(c => c.id === id);
+  const index = AppStorage.clientes.findIndex(c => c.id === id);
   if (index === -1) return;
 
   const nome     = document.getElementById('editNome').value.trim();
@@ -305,8 +312,8 @@ function salvarEdicaoCliente(id) {
     return;
   }
 
-  clientes[index] = {
-    ...clientes[index],
+  AppStorage.clientes[index] = {
+    ...AppStorage.clientes[index],
     nome,
     telefone,
     cpf,
@@ -315,9 +322,8 @@ function salvarEdicaoCliente(id) {
     cep:      document.getElementById('editCep').value,
   };
 
-  salvarDados();
-  renderizarClientes();
-  abrirPopover(clientes[index]);
+  AppStorage.salvarDados();
+  abrirPopover(AppStorage.clientes[index]);
   document.querySelector('#abaCliente-info').style.display   = 'flex';
 }
 
@@ -381,7 +387,7 @@ function mostrarClientes(filtro = '') {
   if (!dropdown) return;
   dropdown.innerHTML = '';
 
-  const lista = clientes.filter(c =>
+  const lista = AppStorage.clientes.filter(c =>
     c.nome.toLowerCase().includes(filtro.toLowerCase())
   );
 
@@ -409,14 +415,9 @@ function selecionarCliente(id, nome) {
   document.getElementById('clientesDropdown').innerHTML = '';
 }
 
-function mascaraValor(input) {
-  let v = input.value.replace(/\D/g, '');
-  v = (Number(v) / 100).toFixed(2);
-  input.value = 'R$ ' + v.replace('.', ',');
-}
 
 function marcarSessaoPacote(clienteId, pacoteId) {
-  const cliente = clientes.find(c => c.id === clienteId);
+  const cliente = AppStorage.clientes.find(c => c.id === clienteId);
   if (!cliente) return;
 
   const pacote = cliente.sessoes.find(s => s.id === pacoteId);
@@ -453,7 +454,7 @@ function cadastrarSessao() {
   const servico = document.getElementById('servicoSessao').value.trim();
   if (!servico) { alert('⚠️ Preencha o serviço.'); return; }
 
-  const cliente = clientes.find(c => c.id === clienteSelecionadoId);
+  const cliente = AppStorage.clientes.find(c => c.id === clienteSelecionadoId);
   let novoRegistro;
 
   if (tipoSessaoAtual === 'avulsa') {
@@ -504,11 +505,15 @@ function cadastrarSessao() {
     };
   }
 
-  sessoes.push(novoRegistro);
+  AppStorage.sessoes.push(novoRegistro);
   cliente.sessoes.push(novoRegistro);
 
-  salvarDados();
+  AppStorage.salvarDados();
   renderDashboard();
+  if (typeof atualizarSessoesHoje === 'function') atualizarSessoesHoje();
+  if (typeof renderCalendario === 'function') renderCalendario();
+  if (typeof renderHistorico === 'function') renderHistorico();
+  
   alert(`✅ ${tipoSessaoAtual === 'avulsa' ? 'Sessão cadastrada' : 'Pacote cadastrado'} para ${cliente.nome}!`);
   fecharPopoverSessao();
 }
@@ -523,8 +528,6 @@ document.querySelector('.popoverSessao').addEventListener('click', function(e) {
 });
 
 // ==================== INICIALIZAÇÃO ====================
-carregarDados();
-renderizarClientes();
 
 
 // FILTRAR CLIENTE
@@ -534,7 +537,7 @@ function filtrarClientesLista() {
   const conteiner = document.querySelector('.clientesConteiner');
   conteiner.innerHTML = '';
 
-const filtrados = clientes.filter(c => {
+const filtrados = AppStorage.clientes.filter(c => {
   return (
     c.nome?.toLowerCase().includes(termo)     ||
     c.telefone?.toLowerCase().includes(termo) ||
@@ -563,7 +566,7 @@ const filtrados = clientes.filter(c => {
 
     card.dataset.id = cliente.id;
     card.addEventListener('click', function () {
-      const c = clientes.find(c => c.id === Number(this.dataset.id));
+      const c = AppStorage.clientes.find(c => c.id === Number(this.dataset.id));
       abrirPopover(c);
     });
 
