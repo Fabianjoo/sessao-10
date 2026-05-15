@@ -51,10 +51,33 @@ function renderizarClientes() {
 function excluirCliente(id, event) {
   event.stopPropagation(); // evita abrir o popover ao clicar na lixeira
   if (!confirm('Excluir este cliente?')) return;
-  clientes = clientes.filter(c => c.id !== id);
-  sessoes  = sessoes.filter(s => s.clienteId !== id);
+
+  const agoraMs = new Date().getTime();
+  const idNum = Number(id);
+
+  // Remove o cliente da lista
+  clientes = clientes.filter(c => Number(c.id) !== idNum);
+
+  // Filtra as sessões: mantém sessões de outros clientes e o que for histórico/andamento deste
+  sessoes = sessoes.filter(s => {
+    if (Number(s.clienteId) !== idNum) return true;
+    
+    // Para o cliente que está sendo excluído, mantemos apenas o histórico ou o que está em andamento
+    const status = getStatus(s, agoraMs);
+    const ehHistoricoOuAndamento = s.finalizada || s.status === 'cancelada' || status === 'concluida' || status === 'andamento';
+    
+    // Mantém apenas se for histórico ou em andamento
+    return ehHistoricoOuAndamento;
+  });
+
   salvarDados();
   renderizarClientes();
+  
+  // Atualiza as visualizações
+  if (typeof renderDashboard === 'function') renderDashboard();
+  if (typeof atualizarSessoesHoje === 'function') atualizarSessoesHoje();
+  if (typeof renderCalendario === 'function') renderCalendario();
+  if (typeof renderHistorico === 'function') renderHistorico();
 }
 
 function cadastrarCliente() {
@@ -70,8 +93,13 @@ function cadastrarCliente() {
     return;
   }
 
-  if (!telefone) {
-    alert('⚠️ Por favor, preencha o telefone do cliente.');
+  if (telefone.length < 14) {
+    alert('⚠️ Por favor, preencha o telefone do cliente corretamente.');
+    return;
+  }
+
+  if (cpf && cpf.length < 14) {
+    alert('⚠️ O CPF informado está incompleto.');
     return;
   }
 
@@ -203,6 +231,7 @@ function modoEditar(id) {
 
   // máscaras aplicadas após os inputs existirem no DOM
   document.getElementById('editTelefone').addEventListener('input', function(e) {
+    if (e.inputType === 'deleteContentBackward') return;
     let v = e.target.value.replace(/\D/g, '').slice(0, 11);
     let r = '';
     if (v.length > 0) r += '(' + v.slice(0, 2);
@@ -212,6 +241,7 @@ function modoEditar(id) {
   });
 
   document.getElementById('editCpf').addEventListener('input', function(e) {
+    if (e.inputType === 'deleteContentBackward') return;
     let v = e.target.value.replace(/\D/g, '').slice(0, 11);
     let r = '';
     if (v.length > 0) r += v.slice(0, 3);
@@ -222,6 +252,7 @@ function modoEditar(id) {
   });
 
   document.getElementById('editCep').addEventListener('input', function(e) {
+    if (e.inputType === 'deleteContentBackward') return;
     let v = e.target.value.replace(/\D/g, '').slice(0, 8);
     let r = '';
     if (v.length > 0) r += v.slice(0, 5);
@@ -234,7 +265,7 @@ function modoEditar(id) {
   });
 
   document.getElementById('editNome').addEventListener('input', function(e) {
-    e.target.value = e.target.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '');
+    e.target.value = e.target.value.replace(/[^a-zA-ZÀ-ÿ\s\-\']/g, '');
   });
 }
 
@@ -249,11 +280,36 @@ function salvarEdicaoCliente(id) {
   const index = clientes.findIndex(c => c.id === id);
   if (index === -1) return;
 
+  const nome     = document.getElementById('editNome').value.trim();
+  const telefone = document.getElementById('editTelefone').value.trim();
+  const cpf      = document.getElementById('editCpf').value.trim();
+  const cep      = document.getElementById('editCep').value.trim();
+
+  if (!nome) {
+    alert('⚠️ O nome do cliente é obrigatório.');
+    return;
+  }
+
+  if (telefone.length < 14) {
+    alert('⚠️ Por favor, preencha o telefone do cliente corretamente.');
+    return;
+  }
+
+  if (cpf && cpf.length < 14) {
+    alert('⚠️ O CPF informado está incompleto.');
+    return;
+  }
+
+  if (cep && cep.length < 9) {
+    alert('⚠️ O CEP informado está incompleto.');
+    return;
+  }
+
   clientes[index] = {
     ...clientes[index],
-    nome:     document.getElementById('editNome').value,
-    telefone: document.getElementById('editTelefone').value,
-    cpf:      document.getElementById('editCpf').value,
+    nome,
+    telefone,
+    cpf,
     endereco: document.getElementById('editEndereco').value,
     numero:   document.getElementById('editNumero').value,
     cep:      document.getElementById('editCep').value,
