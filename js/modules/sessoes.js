@@ -62,7 +62,7 @@ function atualizarSessoesHoje() {
   const hojeStr = agora.toISOString().slice(0, 10);
   const hojeMs  = agora.getTime();
 
-  const sessoesHoje = sessoes.filter(s =>
+  const sessoesHoje = AppStorage.sessoes.filter(s =>
     s.tipo !== 'pacote' && s.data === hojeStr
   );
 
@@ -120,7 +120,7 @@ function renderCalendario() {
 
   const mesStr = calAno + '-' + String(calMes + 1).padStart(2, '0');
 
-  const doMes = sessoes.filter(s =>
+  const doMes = AppStorage.sessoes.filter(s =>
     s.tipo !== 'pacote' && s.data && s.data.startsWith(mesStr) && !s.finalizada && s.status !== 'cancelada'
   );
 
@@ -161,7 +161,7 @@ function renderHistorico() {
   const lista = document.getElementById('lista-historico');
   if (!lista) return;
 
-  const finalizadas = sessoes.filter(s =>
+  const finalizadas = AppStorage.sessoes.filter(s =>
     s.tipo !== 'pacote' && s.data && s.hora &&
     (s.finalizada || s.status === 'cancelada' || getStatus(s, agora) === 'concluida')
   );
@@ -201,24 +201,17 @@ function renderHistorico() {
 function finalizarSessao(id) {
   if (!confirm('Marcar esta sessão como finalizada?')) return;
 
-  const sessao = sessoes.find(s => s.id === id);
+  const sessao = AppStorage.sessoes.find(s => s.id === id);
   if (!sessao) return;
 
   sessao.finalizada = true;
 
-  const cliente = clientes.find(c => c.id === sessao.clienteId);
-  if (cliente && cliente.sessoes) {
-    const s = cliente.sessoes.find(s => s.id === id);
-    if (s) s.finalizada = true;
-  }
-
-  salvarDados();
+  AppStorage.salvarDados();
   atualizarSessoesHoje();
   renderCalendario();
   renderHistorico();
   renderDashboard();
 }
-
 
 function limparHistorico() {
   if (!confirm('Apagar todas as sessões finalizadas do histórico? Esta ação não pode ser desfeita.')) return;
@@ -226,22 +219,24 @@ function limparHistorico() {
   const agora = new Date().getTime();
 
   const idsConcluidas = new Set(
-    sessoes
+    AppStorage.sessoes
       .filter(s => s.finalizada || s.status === 'cancelada' || getStatus(s, agora) === 'concluida')
       .map(s => s.id)
   );
 
-  sessoes = sessoes.filter(s => !idsConcluidas.has(s.id));
+  AppStorage.sessoes = AppStorage.sessoes.filter(s => !idsConcluidas.has(s.id));
 
-  clientes.forEach(c => {
-    if (c.sessoes) c.sessoes = c.sessoes.filter(s => !idsConcluidas.has(s.id));
-  });
-
-  salvarDados();
+  AppStorage.salvarDados();
   renderHistorico();
   renderDashboard();
 }
 
 // ── Init ──
-iniciarRelogio();
-renderCalendario();
+window.atualizarSessoesHoje = atualizarSessoesHoje;
+window.renderCalendario = renderCalendario;
+window.renderHistorico = renderHistorico;
+window.getStatus = getStatus;
+window.finalizarSessao = finalizarSessao;
+window.iniciarRelogio = iniciarRelogio;
+window.mudarMes = mudarMes;
+window.trocarAba = trocarAba;

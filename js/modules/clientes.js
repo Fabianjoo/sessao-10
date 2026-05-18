@@ -1,31 +1,19 @@
-/* BANCO DE CLIENTES */
-let clientes = [];
-let sessoes  = [];
 
-// ==================== PERSISTÊNCIA ====================
-function salvarDados() {
-  localStorage.setItem('clientes', JSON.stringify(clientes));
-  localStorage.setItem('sessoes',  JSON.stringify(sessoes));
-}
-
-function carregarDados() {
-  const c = localStorage.getItem('clientes');
-  const s = localStorage.getItem('sessoes');
-  if (c) clientes = JSON.parse(c);
-  if (s) sessoes  = JSON.parse(s);
-}
 
 // ==================== UTILITÁRIOS ====================
 function truncar(texto, limite) {
-  return texto.length > limite ? texto.slice(0, limite) + '...' : texto;
+  if (!texto) return '';
+  const str = String(texto);
+  return str.length > limite ? str.slice(0, limite) + '...' : str;
 }
 
 // ==================== CLIENTES ====================
 function renderizarClientes() {
   const conteiner = document.querySelector('.clientesConteiner');
+  if (!conteiner) return;
   conteiner.innerHTML = '';
 
-  clientes.forEach(cliente => {
+  AppStorage.clientes.forEach(cliente => {
     let enderecoCompleto = '';
     if (cliente.endereco) enderecoCompleto += cliente.endereco;
 
@@ -40,8 +28,8 @@ function renderizarClientes() {
 
     card.dataset.id = cliente.id;
     card.addEventListener('click', function() {
-      const c = clientes.find(c => c.id === Number(this.dataset.id));
-      abrirPopover(c);
+      const c = AppStorage.clientes.find(c => c.id === Number(this.dataset.id));
+      if (c) abrirPopover(c);
     });
 
     conteiner.appendChild(card);
@@ -56,10 +44,10 @@ function excluirCliente(id, event) {
   const idNum = Number(id);
 
   // Remove o cliente da lista
-  clientes = clientes.filter(c => Number(c.id) !== idNum);
+  AppStorage.clientes = AppStorage.clientes.filter(c => Number(c.id) !== idNum);
 
-  // Filtra as sessões: mantém sessões de outros clientes e o que for histórico/andamento deste
-  sessoes = sessoes.filter(s => {
+  // Filtra as sessões: mantém sessões de outros AppStorage.clientes e o que for histórico/andamento deste
+  AppStorage.sessoes = AppStorage.sessoes.filter(s => {
     if (Number(s.clienteId) !== idNum) return true;
     
     // Para o cliente que está sendo excluído, mantemos apenas o histórico ou o que está em andamento
@@ -70,14 +58,14 @@ function excluirCliente(id, event) {
     return ehHistoricoOuAndamento;
   });
 
-  salvarDados();
+  AppStorage.salvarDados();
   renderizarClientes();
   
   // Atualiza as visualizações
-  if (typeof renderDashboard === 'function') renderDashboard();
-  if (typeof atualizarSessoesHoje === 'function') atualizarSessoesHoje();
-  if (typeof renderCalendario === 'function') renderCalendario();
-  if (typeof renderHistorico === 'function') renderHistorico();
+  if (window.renderDashboard) renderDashboard();
+  if (window.atualizarSessoesHoje) atualizarSessoesHoje();
+  if (window.renderCalendario) renderCalendario();
+  if (window.renderHistorico) renderHistorico();
 }
 
 function cadastrarCliente() {
@@ -110,117 +98,35 @@ function cadastrarCliente() {
     cpf,
     endereco,
     cep,
-    numero,
-    sessoes: []
+    numero
   };
 
-  clientes.push(novoCliente);
-  salvarDados();
+  AppStorage.clientes.push(novoCliente);
+  AppStorage.salvarDados();
   renderizarClientes();
+  if (window.renderDashboard) renderDashboard();
   document.getElementById('clienteForm').reset();
 }
+
+window.renderizarClientes = renderizarClientes;
+window.excluirCliente = excluirCliente;
+window.cadastrarCliente = cadastrarCliente;
+window.abrirPopoverSessao = abrirPopoverSessao;
+window.fecharPopoverSessao = fecharPopoverSessao;
+window.cadastrarSessao = cadastrarSessao;
+window.setTipoSessao = setTipoSessao;
+window.filtrarClientes = filtrarClientes;
+window.filtrarClientesLista = filtrarClientesLista;
+window.fecharPopover = fecharPopover;
+window.modoEditar = modoEditar;
+window.modoVisualizar = modoVisualizar;
+window.salvarEdicaoCliente = salvarEdicaoCliente;
+window.marcarSessaoPacote = marcarSessaoPacote;
+window.selecionarCliente = selecionarCliente;
 
 // ==================== POPOVER CLIENTE ====================
 function fecharPopover() {
   document.querySelector('.popoverCliente').style.display = 'none';
-}
-
-function abrirPopover(cliente) {
-  const popover = document.querySelector('.popoverCliente');
-  const info    = document.querySelector('.infoCliente');
-
-  let enderecoCompleto = '';
-  if (cliente.endereco) enderecoCompleto += cliente.endereco;
-  if (cliente.numero)   enderecoCompleto += `, ${cliente.numero}`;
-  if (cliente.cep)      enderecoCompleto += ` - CEP: ${cliente.cep}`;
-
-  const sessoesAvulsas = (cliente.sessoes || []).filter(s => s.tipo === 'avulsa' || !s.tipo);
-  const pacotes        = (cliente.sessoes || []).filter(s => s.tipo === 'pacote');
-
-  const pacotesHTML = pacotes.length > 0
-    ? pacotes.map(p => {
-        const realizadas = p.sessoesRealizadas || 0;
-        const total      = p.totalSessoes || 0;
-        const pct        = total > 0 ? Math.round((realizadas / total) * 100) : 0;
-        return `
-          <div class="sessao-card pacote-card">
-            <div class="sessao-card-top">
-              <strong>${p.servico}</strong>
-              <span class="badge badge-${p.status}">${p.status}</span>
-            </div>
-            <div class="progresso-bar">
-              <div class="progresso-fill" style="width:${pct}%"></div>
-            </div>
-            <p class="progresso-label">${realizadas} de ${total} sessões realizadas</p>
-            ${p.valor ? `<p>💰 ${p.valor}</p>` : ''}
-            ${p.obs   ? `<p>📝 ${p.obs}</p>`   : ''}
-            <div class="sessao-acoes">
-              <button type="button" onclick="marcarSessaoPacote(${cliente.id}, ${p.id})">
-                ✅ Marcar sessão do pacote
-              </button>
-            </div>
-          </div>
-        `;
-      }).join('')
-    : '<p class="vazio">Nenhum pacote contratado.</p>';
-
-  const iniciais = cliente.nome.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
-
-  info.innerHTML = `
-  <h3>📋 Informações do Cliente</h3>
-
-  <div class="abas-cliente">
-    <button class="aba-btn ativa" onclick="trocarAbaCliente('info', this)">Info</button>
-    <button class="aba-btn" onclick="trocarAbaCliente('sessoes', this)">Sessões (${sessoesAvulsas.length})</button>
-    <button class="aba-btn" onclick="trocarAbaCliente('pacotes', this)">Pacotes (${pacotes.length})</button>
-  </div>
-
-  <div id="abaCliente-info" class="aba-painel ativa">
-    <div id="modoVisualizar">
-          <h4>${cliente.nome}</h4>
-          ${cliente.telefone ? `<p>📞 ${cliente.telefone}</p>` : ''}
-        </div>
-      </div>
-    </div>
-
-    <div id="modoEditar" style="display:none">
-      <h4>✏️ Editar Cliente</h4>
-      <label>Nome</label>
-      <input id="editNome"     value="${cliente.nome     || ''}">
-      <label>Telefone</label>
-      <input id="editTelefone" value="${cliente.telefone || ''}">
-      <label>CPF</label>
-      <input id="editCpf"      value="${cliente.cpf      || ''}">
-      <label>Endereço</label>
-      <input id="editEndereco" value="${cliente.endereco || ''}">
-      <label>Número</label>
-      <input id="editNumero"   value="${cliente.numero   || ''}">
-      <label>CEP</label>
-      <input id="editCep"      value="${cliente.cep      || ''}">
-      <div class="sessao-acoes">
-        <button onclick="salvarEdicaoCliente(${cliente.id})">💾 Salvar</button>
-        <button onclick="modoVisualizar()">✖️ Cancelar</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="abaCliente-sessoes" class="aba-painel">
-    ${sessoesHTML}
-  </div>
-
-  <div id="abaCliente-pacotes" class="aba-painel">
-    ${pacotesHTML}
-  </div>
-`;
-  popover.style.display = 'flex';
-}
-
-function trocarAbaCliente(id, el) {
-  const info = document.querySelector('.infoCliente');
-  info.querySelectorAll('.aba-painel').forEach(p => p.classList.remove('ativa'));
-  info.querySelectorAll('.aba-btn').forEach(b => b.classList.remove('ativa'));
-  document.getElementById('abaCliente-' + id).classList.add('ativa');
-  el.classList.add('ativa');
 }
 
 function modoEditar(id) {
@@ -277,7 +183,7 @@ function modoVisualizar() {
 }
 
 function salvarEdicaoCliente(id) {
-  const index = clientes.findIndex(c => c.id === id);
+  const index = AppStorage.clientes.findIndex(c => c.id === id);
   if (index === -1) return;
 
   const nome     = document.getElementById('editNome').value.trim();
@@ -305,8 +211,8 @@ function salvarEdicaoCliente(id) {
     return;
   }
 
-  clientes[index] = {
-    ...clientes[index],
+  AppStorage.clientes[index] = {
+    ...AppStorage.clientes[index],
     nome,
     telefone,
     cpf,
@@ -315,9 +221,8 @@ function salvarEdicaoCliente(id) {
     cep:      document.getElementById('editCep').value,
   };
 
-  salvarDados();
-  renderizarClientes();
-  abrirPopover(clientes[index]);
+  AppStorage.salvarDados();
+  abrirPopover(AppStorage.clientes[index]);
   document.querySelector('#abaCliente-info').style.display   = 'flex';
 }
 
@@ -381,7 +286,7 @@ function mostrarClientes(filtro = '') {
   if (!dropdown) return;
   dropdown.innerHTML = '';
 
-  const lista = clientes.filter(c =>
+  const lista = AppStorage.clientes.filter(c =>
     c.nome.toLowerCase().includes(filtro.toLowerCase())
   );
 
@@ -409,17 +314,12 @@ function selecionarCliente(id, nome) {
   document.getElementById('clientesDropdown').innerHTML = '';
 }
 
-function mascaraValor(input) {
-  let v = input.value.replace(/\D/g, '');
-  v = (Number(v) / 100).toFixed(2);
-  input.value = 'R$ ' + v.replace('.', ',');
-}
 
 function marcarSessaoPacote(clienteId, pacoteId) {
-  const cliente = clientes.find(c => c.id === clienteId);
+  const cliente = AppStorage.clientes.find(c => c.id === clienteId);
   if (!cliente) return;
 
-  const pacote = cliente.sessoes.find(s => s.id === pacoteId);
+  const pacote = AppStorage.sessoes.find(s => s.clienteId === clienteId && s.id === pacoteId);
   if (!pacote) return;
 
   if ((pacote.sessoesRealizadas || 0) >= pacote.totalSessoes) {
@@ -453,7 +353,7 @@ function cadastrarSessao() {
   const servico = document.getElementById('servicoSessao').value.trim();
   if (!servico) { alert('⚠️ Preencha o serviço.'); return; }
 
-  const cliente = clientes.find(c => c.id === clienteSelecionadoId);
+  const cliente = AppStorage.clientes.find(c => c.id === clienteSelecionadoId);
   let novoRegistro;
 
   if (tipoSessaoAtual === 'avulsa') {
@@ -478,7 +378,7 @@ function cadastrarSessao() {
     };
 
     if (pacoteAtualId) {
-      const pacote = cliente.sessoes.find(s => s.id === pacoteAtualId);
+      const pacote = AppStorage.sessoes.find(s => s.clienteId === clienteSelecionadoId && s.id === pacoteAtualId);
       if (pacote) pacote.sessoesRealizadas = (pacote.sessoesRealizadas || 0) + 1;
     }
 
@@ -504,11 +404,14 @@ function cadastrarSessao() {
     };
   }
 
-  sessoes.push(novoRegistro);
-  cliente.sessoes.push(novoRegistro);
+  AppStorage.sessoes.push(novoRegistro);
 
-  salvarDados();
+  AppStorage.salvarDados();
   renderDashboard();
+  if (typeof atualizarSessoesHoje === 'function') atualizarSessoesHoje();
+  if (typeof renderCalendario === 'function') renderCalendario();
+  if (typeof renderHistorico === 'function') renderHistorico();
+  
   alert(`✅ ${tipoSessaoAtual === 'avulsa' ? 'Sessão cadastrada' : 'Pacote cadastrado'} para ${cliente.nome}!`);
   fecharPopoverSessao();
 }
@@ -523,8 +426,6 @@ document.querySelector('.popoverSessao').addEventListener('click', function(e) {
 });
 
 // ==================== INICIALIZAÇÃO ====================
-carregarDados();
-renderizarClientes();
 
 
 // FILTRAR CLIENTE
@@ -534,7 +435,7 @@ function filtrarClientesLista() {
   const conteiner = document.querySelector('.clientesConteiner');
   conteiner.innerHTML = '';
 
-const filtrados = clientes.filter(c => {
+const filtrados = AppStorage.clientes.filter(c => {
   return (
     c.nome?.toLowerCase().includes(termo)     ||
     c.telefone?.toLowerCase().includes(termo) ||
@@ -563,7 +464,7 @@ const filtrados = clientes.filter(c => {
 
     card.dataset.id = cliente.id;
     card.addEventListener('click', function () {
-      const c = clientes.find(c => c.id === Number(this.dataset.id));
+      const c = AppStorage.clientes.find(c => c.id === Number(this.dataset.id));
       abrirPopover(c);
     });
 

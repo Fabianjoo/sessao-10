@@ -7,9 +7,9 @@ function abrirPopover(cliente) {
   if (cliente.numero)   enderecoCompleto += `, ${cliente.numero}`;
   if (cliente.cep)      enderecoCompleto += ` - CEP: ${cliente.cep}`;
 
-  // Separa sessões avulsas e pacotes
-  const sessoesAvulsas = (cliente.sessoes || []).filter(s => s.tipo === 'avulsa' || !s.tipo);
-  const pacotes        = (cliente.sessoes || []).filter(s => s.tipo === 'pacote');
+  const sessoesDoCliente = AppStorage.getSessoesDoCliente(cliente.id);
+  const sessoesAvulsas = sessoesDoCliente.filter(s => s.tipo === 'avulsa' || !s.tipo);
+  const pacotes        = sessoesDoCliente.filter(s => s.tipo === 'pacote');
 
   // ---- HTML: aba sessões ----
   const sessoesHTML = sessoesAvulsas.length > 0
@@ -124,27 +124,21 @@ function abrirPopover(cliente) {
 function excluirSessao(clienteId, sessaoId) {
   if (!confirm('Excluir esta sessão?')) return;
 
-  // remove do array global
-  sessoes = sessoes.filter(s => s.id !== sessaoId);
+  AppStorage.sessoes = AppStorage.sessoes.filter(s => s.id !== sessaoId);
 
-  // remove do array dentro do cliente
-  const cliente = clientes.find(c => c.id === clienteId);
-  if (cliente) cliente.sessoes = cliente.sessoes.filter(s => s.id !== sessaoId);
-
-  salvarDados();
-  abrirPopover(cliente); // re-renderiza o popover
+  const cliente = AppStorage.clientes.find(c => c.id === clienteId);
+  AppStorage.salvarDados();
+  if (cliente) abrirPopover(cliente);
 }
 
 function excluirPacote(clienteId, pacoteId) {
   if (!confirm('Excluir este pacote?')) return;
 
-  sessoes = sessoes.filter(s => s.id !== pacoteId);
+  AppStorage.sessoes = AppStorage.sessoes.filter(s => s.id !== pacoteId);
 
-  const cliente = clientes.find(c => c.id === clienteId);
-  if (cliente) cliente.sessoes = cliente.sessoes.filter(s => s.id !== pacoteId);
-
-  salvarDados();
-  abrirPopover(cliente);
+  const cliente = AppStorage.clientes.find(c => c.id === clienteId);
+  AppStorage.salvarDados();
+  if (cliente) abrirPopover(cliente);
 }
 
 function trocarAbaCliente(id, el) {

@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel de Pedidos</title>
     <link rel="shortcut icon" href="imagens/documentos.png" type="image/x-icon">
-    <link rel="stylesheet" href="estilos/style.css">
-    <link rel="stylesheet" href="estilos/popovers.css">
-    <link rel="stylesheet" href="estilos/listaClientes.css">
-    <link rel="stylesheet" href="estilos/listaSessoes.css">
-    <link rel="stylesheet" href="estilos/dashboard.css">
-    <link rel="stylesheet" href="estilos/formCliente.css">
-    <link rel="stylesheet" href="estilos/infoCliente.css">
+    <link rel="stylesheet" href="css/base/style.css">
+    <link rel="stylesheet" href="css/components/popovers.css">
+    <link rel="stylesheet" href="css/modules/listaClientes.css">
+    <link rel="stylesheet" href="css/modules/listaSessoes.css">
+    <link rel="stylesheet" href="css/modules/dashboard.css">
+    <link rel="stylesheet" href="css/modules/formCliente.css">
+    <link rel="stylesheet" href="css/modules/infoCliente.css">
 </head>
       <div id="modal-cancelar" style="display:none; position:fixed; inset:0; background:#0006; z-index:9999; align-items:center; justify-content:center;" onclick="if(event.target===this) fecharModalCancelar()">
         <div style="background:#fff; border-radius:12px; padding:24px; width:90%; max-width:400px;">
@@ -237,13 +237,15 @@
 
 
 
-<script src="scripts/addCliente.js"></script>
-<script src="scripts/padronizacao.js"></script>
-<script src="scripts/infoCliente.js"></script>
-<script src="scripts/sessoes.js"></script>
-<script src="scripts/dashboard.js"></script>
-<script src="scripts/modal.js"></script>
-<script src="api/cep.js"></script>
+<script src="js/core/storage.js"></script>
+<script src="js/modules/clientes.js"></script>
+<script src="js/utils/masks.js"></script>
+<script src="js/utils/formatters.js"></script>
+<script src="js/modules/infoCliente.js"></script>
+<script src="js/modules/sessoes.js"></script>
+<script src="js/modules/dashboard.js"></script>
+<script src="js/modules/modal.js"></script>
+<script src="js/main.js"></script>
 
 
           

@@ -19,29 +19,24 @@ function confirmarCancelamento() {
     return;
   }
 
-  const sessao = sessoes.find(s => s.id === _idCancelando);
+  const sessao = AppStorage.sessoes.find(s => s.id === _idCancelando);
   if (!sessao) return;
 
   sessao.status = 'cancelada';
   sessao.observacaoCancelamento = motivo;
   sessao.dataCancelamento = new Date().toISOString();
 
-  const cliente = clientes.find(c => c.id === sessao.clienteId);
-  if (cliente && cliente.sessoes) {
-    const s = cliente.sessoes.find(s => s.id === _idCancelando);
-    if (s) {
-      s.status = 'cancelada';
-      s.observacaoCancelamento = motivo;
-    }
-  }
-
   fecharModalCancelar();
-  salvarDados();
+  AppStorage.salvarDados();
   atualizarSessoesHoje();
   renderCalendario();
   renderHistorico();
   renderDashboard();
 }
+
+window.cancelarSessao = cancelarSessao;
+window.fecharModalCancelar = fecharModalCancelar;
+window.confirmarCancelamento = confirmarCancelamento;
 
 document.getElementById('motivo-cancelamento').addEventListener('input', function() {
   document.getElementById('contador-motivo').textContent = this.value.length;
