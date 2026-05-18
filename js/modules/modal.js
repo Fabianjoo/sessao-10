@@ -26,15 +26,6 @@ function confirmarCancelamento() {
   sessao.observacaoCancelamento = motivo;
   sessao.dataCancelamento = new Date().toISOString();
 
-  const cliente = AppStorage.clientes.find(c => c.id === sessao.clienteId);
-  if (cliente && cliente.sessoes) {
-    const s = cliente.sessoes.find(s => s.id === _idCancelando);
-    if (s) {
-      s.status = 'cancelada';
-      s.observacaoCancelamento = motivo;
-    }
-  }
-
   fecharModalCancelar();
   AppStorage.salvarDados();
   atualizarSessoesHoje();

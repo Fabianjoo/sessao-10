@@ -206,53 +206,12 @@ function finalizarSessao(id) {
 
   sessao.finalizada = true;
 
-  const cliente = AppStorage.clientes.find(c => c.id === sessao.clienteId);
-  if (cliente && cliente.sessoes) {
-    const s = cliente.sessoes.find(s => s.id === id);
-    if (s) s.finalizada = true;
-  }
-
   AppStorage.salvarDados();
   atualizarSessoesHoje();
   renderCalendario();
   renderHistorico();
   renderDashboard();
 }
-
-/* function cancelarSessao(id) {
-  const sessao = AppStorage.sessoes.find(s => s.id === id);
-  if (!sessao) return;
-
-  const motivo = prompt('Motivo do cancelamento (obrigatório, máx. 200 caracteres):');
-  if (motivo === null) return;
-  if (!motivo.trim()) {
-    alert('Informe o motivo do cancelamento.');
-    return;
-  }
-  if (motivo.trim().length > 200) {
-    alert('O motivo deve ter no máximo 200 caracteres.');
-    return;
-  }
-
-  sessao.status = 'cancelada';
-  sessao.observacaoCancelamento = motivo.trim();
-  sessao.dataCancelamento = new Date().toISOString();
-
-  const cliente = AppStorage.clientes.find(c => c.id === sessao.clienteId);
-  if (cliente && cliente.sessoes) {
-    const s = cliente.sessoes.find(s => s.id === id);
-    if (s) {
-      s.status = 'cancelada';
-      s.observacaoCancelamento = motivo.trim();
-    }
-  }
-
-  AppStorage.salvarDados();
-  atualizarSessoesHoje();
-  renderCalendario();
-  renderHistorico();
-  renderDashboard();
-} */
 
 function limparHistorico() {
   if (!confirm('Apagar todas as sessões finalizadas do histórico? Esta ação não pode ser desfeita.')) return;
@@ -266,10 +225,6 @@ function limparHistorico() {
   );
 
   AppStorage.sessoes = AppStorage.sessoes.filter(s => !idsConcluidas.has(s.id));
-
-  AppStorage.clientes.forEach(c => {
-    if (c.sessoes) c.sessoes = c.sessoes.filter(s => !idsConcluidas.has(s.id));
-  });
 
   AppStorage.salvarDados();
   renderHistorico();

@@ -98,8 +98,7 @@ function cadastrarCliente() {
     cpf,
     endereco,
     cep,
-    numero,
-    sessoes: []
+    numero
   };
 
   AppStorage.clientes.push(novoCliente);
@@ -118,9 +117,7 @@ window.cadastrarSessao = cadastrarSessao;
 window.setTipoSessao = setTipoSessao;
 window.filtrarClientes = filtrarClientes;
 window.filtrarClientesLista = filtrarClientesLista;
-window.abrirPopover = abrirPopover;
 window.fecharPopover = fecharPopover;
-window.trocarAbaCliente = trocarAbaCliente;
 window.modoEditar = modoEditar;
 window.modoVisualizar = modoVisualizar;
 window.salvarEdicaoCliente = salvarEdicaoCliente;
@@ -130,104 +127,6 @@ window.selecionarCliente = selecionarCliente;
 // ==================== POPOVER CLIENTE ====================
 function fecharPopover() {
   document.querySelector('.popoverCliente').style.display = 'none';
-}
-
-function abrirPopover(cliente) {
-  const popover = document.querySelector('.popoverCliente');
-  const info    = document.querySelector('.infoCliente');
-
-  let enderecoCompleto = '';
-  if (cliente.endereco) enderecoCompleto += cliente.endereco;
-  if (cliente.numero)   enderecoCompleto += `, ${cliente.numero}`;
-  if (cliente.cep)      enderecoCompleto += ` - CEP: ${cliente.cep}`;
-
-  const sessoesAvulsas = (cliente.sessoes || []).filter(s => s.tipo === 'avulsa' || !s.tipo);
-  const pacotes        = (cliente.sessoes || []).filter(s => s.tipo === 'pacote');
-
-  const pacotesHTML = pacotes.length > 0
-    ? pacotes.map(p => {
-        const realizadas = p.sessoesRealizadas || 0;
-        const total      = p.totalSessoes || 0;
-        const pct        = total > 0 ? Math.round((realizadas / total) * 100) : 0;
-        return `
-          <div class="sessao-card pacote-card">
-            <div class="sessao-card-top">
-              <strong>${p.servico}</strong>
-              <span class="badge badge-${p.status}">${p.status}</span>
-            </div>
-            <div class="progresso-bar">
-              <div class="progresso-fill" style="width:${pct}%"></div>
-            </div>
-            <p class="progresso-label">${realizadas} de ${total} sessões realizadas</p>
-            ${p.valor ? `<p>💰 ${p.valor}</p>` : ''}
-            ${p.obs   ? `<p>📝 ${p.obs}</p>`   : ''}
-            <div class="sessao-acoes">
-              <button type="button" onclick="marcarSessaoPacote(${cliente.id}, ${p.id})">
-                ✅ Marcar sessão do pacote
-              </button>
-            </div>
-          </div>
-        `;
-      }).join('')
-    : '<p class="vazio">Nenhum pacote contratado.</p>';
-
-  const iniciais = cliente.nome.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
-
-  info.innerHTML = `
-  <h3>📋 Informações do Cliente</h3>
-
-  <div class="abas-cliente">
-    <button class="aba-btn ativa" onclick="trocarAbaCliente('info', this)">Info</button>
-    <button class="aba-btn" onclick="trocarAbaCliente('sessoes', this)">Sessões (${sessoesAvulsas.length})</button>
-    <button class="aba-btn" onclick="trocarAbaCliente('pacotes', this)">Pacotes (${pacotes.length})</button>
-  </div>
-
-  <div id="abaCliente-info" class="aba-painel ativa">
-    <div id="modoVisualizar">
-          <h4>${cliente.nome}</h4>
-          ${cliente.telefone ? `<p>📞 ${cliente.telefone}</p>` : ''}
-        </div>
-      </div>
-    </div>
-
-    <div id="modoEditar" style="display:none">
-      <h4>✏️ Editar Cliente</h4>
-      <label>Nome</label>
-      <input id="editNome"     value="${cliente.nome     || ''}">
-      <label>Telefone</label>
-      <input id="editTelefone" value="${cliente.telefone || ''}">
-      <label>CPF</label>
-      <input id="editCpf"      value="${cliente.cpf      || ''}">
-      <label>Endereço</label>
-      <input id="editEndereco" value="${cliente.endereco || ''}">
-      <label>Número</label>
-      <input id="editNumero"   value="${cliente.numero   || ''}">
-      <label>CEP</label>
-      <input id="editCep"      value="${cliente.cep      || ''}">
-      <div class="sessao-acoes">
-        <button onclick="salvarEdicaoCliente(${cliente.id})">💾 Salvar</button>
-        <button onclick="modoVisualizar()">✖️ Cancelar</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="abaCliente-sessoes" class="aba-painel">
-    ${sessoesHTML}
-  </div>
-
-  <div id="abaCliente-pacotes" class="aba-painel">
-    ${pacotesHTML}
-  </div>
-`;
-  popover.style.display = 'flex';
-}
-
-function trocarAbaCliente(id, el) {
-  const info = document.querySelector('.infoCliente');
-  info.querySelectorAll('.aba-painel').forEach(p => p.classList.remove('ativa'));
-  info.querySelectorAll('.aba-btn').forEach(b => b.classList.remove('ativa'));
-  document.getElementById('abaCliente-' + id).classList.add('ativa');
-  el.classList.add('ativa');
 }
 
 function modoEditar(id) {
@@ -420,7 +319,7 @@ function marcarSessaoPacote(clienteId, pacoteId) {
   const cliente = AppStorage.clientes.find(c => c.id === clienteId);
   if (!cliente) return;
 
-  const pacote = cliente.sessoes.find(s => s.id === pacoteId);
+  const pacote = AppStorage.sessoes.find(s => s.clienteId === clienteId && s.id === pacoteId);
   if (!pacote) return;
 
   if ((pacote.sessoesRealizadas || 0) >= pacote.totalSessoes) {
@@ -479,7 +378,7 @@ function cadastrarSessao() {
     };
 
     if (pacoteAtualId) {
-      const pacote = cliente.sessoes.find(s => s.id === pacoteAtualId);
+      const pacote = AppStorage.sessoes.find(s => s.clienteId === clienteSelecionadoId && s.id === pacoteAtualId);
       if (pacote) pacote.sessoesRealizadas = (pacote.sessoesRealizadas || 0) + 1;
     }
 
@@ -506,7 +405,6 @@ function cadastrarSessao() {
   }
 
   AppStorage.sessoes.push(novoRegistro);
-  cliente.sessoes.push(novoRegistro);
 
   AppStorage.salvarDados();
   renderDashboard();
