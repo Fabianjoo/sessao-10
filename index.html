@@ -12,7 +12,33 @@
     <link rel="stylesheet" href="css/modules/dashboard.css">
     <link rel="stylesheet" href="css/modules/formCliente.css">
     <link rel="stylesheet" href="css/modules/infoCliente.css">
+    <link rel="stylesheet" href="css/modules/login.css">
 </head>
+      <!-- LOGIN SCREEN -->
+      <div id="login-screen" class="visible">
+        <div class="login-card">
+          <div class="login-header">
+            <h1>Gerenciador de Sessões</h1>
+            <p>Faça login para continuar</p>
+          </div>
+          <form id="login-form" autocomplete="on">
+            <div class="login-field">
+              <label for="login-email">Email</label>
+              <input type="email" id="login-email" placeholder="seu@email.com" required autocomplete="email">
+            </div>
+            <div class="login-field">
+              <label for="login-password">Senha</label>
+              <input type="password" id="login-password" placeholder="Sua senha" required autocomplete="current-password">
+            </div>
+            <p id="login-error" class="login-error"></p>
+            <button type="submit" id="login-submit">Entrar</button>
+            <p class="login-toggle">
+              <a href="#" id="login-toggle-link">Criar uma nova conta</a>
+            </p>
+          </form>
+        </div>
+      </div>
+
       <div id="modal-cancelar" style="display:none; position:fixed; inset:0; background:#0006; z-index:9999; align-items:center; justify-content:center;" onclick="if(event.target===this) fecharModalCancelar()">
         <div style="background:#fff; border-radius:12px; padding:24px; width:90%; max-width:400px;">
           <h3 style="margin:0 0 12px">Cancelar sessão</h3>
@@ -30,9 +56,13 @@
       <!-- HEADER -->
       <header class="header">
         <h1>Gerenciador de Sessões</h1>
-        <div class="relogio-box">
-          <span id="relogio">00:00:00</span>
-          <span id="dataHoje"></span>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span id="user-email" style="font-size:12px; opacity:0.8;"></span>
+          <div class="relogio-box">
+            <span id="relogio">00:00:00</span>
+            <span id="dataHoje"></span>
+          </div>
+          <button id="logout-btn" style="display:none;">Sair</button>
         </div>
       </header>
 
@@ -240,6 +270,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.0.0/dist/umd/supabase.js"></script>
 <script src="js/core/supabase-config.js"></script>
 <script src="js/core/supabase.js"></script>
+<script src="js/core/auth.js"></script>
 <script src="js/core/storage.js"></script>
 <script src="js/modules/clientes.js"></script>
 <script src="js/utils/masks.js"></script>
