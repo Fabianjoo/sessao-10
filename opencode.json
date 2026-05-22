@@ -1,0 +1,9 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "command": {
+    "commit": {
+      "description": "Generate a commit message using caveman-commit skill",
+      "prompt": "Load caveman-commit skill. If anything is staged, use it to generate the message and apply the commit. If nothing is staged, ask the user what to include."
+    }
+  }
+}
