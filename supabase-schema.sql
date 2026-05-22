@@ -70,28 +70,29 @@ CREATE TRIGGER set_sessoes_updated_at
 
 -- =============================================================
 -- RLS (Row Level Security)
--- Como é uma aplicação single-tenant, permitimos acesso anônimo.
--- Futuramente você pode adicionar autenticação e restringir.
+-- Apenas usuários autenticados podem acessar os dados.
 -- =============================================================
 
 ALTER TABLE clientes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE sessoes ENABLE ROW LEVEL SECURITY;
 
--- Políticas para clientes
+-- Políticas para clientes (apenas autenticados)
 DROP POLICY IF EXISTS "Acesso total anônimo clientes" ON clientes;
-CREATE POLICY "Acesso total anônimo clientes" ON clientes
+DROP POLICY IF EXISTS "Acesso total autenticado clientes" ON clientes;
+CREATE POLICY "Acesso total autenticado clientes" ON clientes
   FOR ALL
-  TO anon
-  USING (true)
-  WITH CHECK (true);
+  TO authenticated
+  USING (auth.role() = 'authenticated')
+  WITH CHECK (auth.role() = 'authenticated');
 
--- Políticas para sessoes
+-- Políticas para sessoes (apenas autenticados)
 DROP POLICY IF EXISTS "Acesso total anônimo sessoes" ON sessoes;
-CREATE POLICY "Acesso total anônimo sessoes" ON sessoes
+DROP POLICY IF EXISTS "Acesso total autenticado sessoes" ON sessoes;
+CREATE POLICY "Acesso total autenticado sessoes" ON sessoes
   FOR ALL
-  TO anon
-  USING (true)
-  WITH CHECK (true);
+  TO authenticated
+  USING (auth.role() = 'authenticated')
+  WITH CHECK (auth.role() = 'authenticated');
 
 -- =============================================================
 -- (Opcional) Migrar dados existentes do localStorage

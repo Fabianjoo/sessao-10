@@ -1,0 +1,129 @@
+#login-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--cor-primaria-escura) 0%, var(--cor-primaria) 100%);
+}
+
+#login-screen.visible {
+  display: flex;
+}
+
+.login-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 40px 36px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.login-header h1 {
+  font-size: 22px;
+  color: var(--cor-primaria-escura);
+  margin: 0 0 6px;
+}
+
+.login-header p {
+  font-size: 14px;
+  color: #888;
+  margin: 0;
+}
+
+.login-field {
+  margin-bottom: 16px;
+}
+
+.login-field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 4px;
+}
+
+.login-field input {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.login-field input:focus {
+  border-color: var(--cor-primaria-media);
+  box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.15);
+}
+
+.login-error {
+  color: #e53935;
+  font-size: 13px;
+  min-height: 20px;
+  margin: 0 0 12px;
+  text-align: center;
+}
+
+#login-submit {
+  width: 100%;
+  padding: 12px;
+  background: var(--cor-primaria);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#login-submit:hover {
+  background: var(--cor-primaria-escura);
+}
+
+#login-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.login-toggle {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 13px;
+}
+
+.login-toggle a {
+  color: var(--cor-primaria-media);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.login-toggle a:hover {
+  text-decoration: underline;
+}
+
+#logout-btn {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+#logout-btn:hover {
+  background: rgba(255,255,255,0.25);
+}

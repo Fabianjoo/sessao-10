@@ -1,14 +1,11 @@
 /* MAIN - Inicialização da aplicação */
 
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. Carregar dados (já deve ter sido feito pelo storage.js, mas garantimos aqui se necessário)
+function initApp() {
     if (typeof AppStorage !== 'undefined' && typeof AppStorage.carregarDados === 'function') {
         AppStorage.carregarDados();
-        // 1a. Sincronizar com Supabase em background (se configurado)
         AppStorage.carregarDadosRemoto();
     }
 
-    // 2. Inicializar componentes de interface
     if (typeof iniciarRelogio === 'function') {
         iniciarRelogio();
     }
@@ -19,12 +16,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (typeof renderDashboard === 'function') {
         renderDashboard();
-        // Atualiza dashboard a cada 10 segundos
         setInterval(renderDashboard, 10000);
     }
 
-    // Inicializar calendários ou outras abas se necessário
     if (typeof renderCalendario === 'function') {
         renderCalendario();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof AppAuth !== 'undefined' && typeof AppAuth.init === 'function') {
+        AppAuth.init();
+    } else {
+        initApp();
     }
 });

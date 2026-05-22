@@ -15,10 +15,10 @@ Este arquivo serve para rastrear bugs, ideias de melhorias e tarefas pendentes p
 - [x] **Ao deletar atualizar a aba esquerda de próxima sessão**
 
 ## 🔴 Prioridade Máxima — Após finalizar configuração do Supabase
-- [ ] **Adicionar autenticação com Supabase Auth (email/senha)**
-- [ ] **Restringir RLS policies** — substituir `USING (true)` por `USING (auth.role() = 'authenticated')` nas tabelas `clientes` e `sessoes`
-- [ ] **Criar tela de login** protegendo o acesso ao app
-- [ ] **Testar segurança**: verificar se anon key pública não permite acesso sem login
+- [x] **Adicionar autenticação com Supabase Auth (email/senha)**
+- [x] **Restringir RLS policies** — substituir `USING (true)` por `USING (auth.role() = 'authenticated')` nas tabelas `clientes` e `sessoes`
+- [x] **Criar tela de login** protegendo o acesso ao app
+- [x] **Testar segurança**: verificar se anon key pública não permite acesso sem login
 
 ## 🟡 Melhorias (Próximos Passos)
 - [ ] **Permitir cadastrar prioridade do cliente**
