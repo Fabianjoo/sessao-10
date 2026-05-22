@@ -43,11 +43,12 @@ function mergeRecords(localRecords, remoteRecords) {
 
 async function supabaseSync() {
   if (!supabaseClient) return;
+  if (!AppStorage.currentUserId) return;
 
   try {
     const [{ data: clientes }, { data: sessoes }] = await Promise.all([
-      supabaseClient.from('clientes').select('*'),
-      supabaseClient.from('sessoes').select('*')
+      supabaseClient.from('clientes').select('*').eq('user_id', AppStorage.currentUserId),
+      supabaseClient.from('sessoes').select('*').eq('user_id', AppStorage.currentUserId)
     ]);
 
     let precisaRenderizar = false;
@@ -84,9 +85,13 @@ async function supabaseSync() {
 }
 
 async function syncTableSupabase(table, localRecords) {
-  const localIds = localRecords.map(r => r.id);
+  const userId = AppStorage.currentUserId;
+  if (!userId) return;
 
-  const { data: existing } = await supabaseClient.from(table).select('id');
+  const meusRegistros = localRecords.filter(r => r.user_id === userId);
+  const localIds = meusRegistros.map(r => r.id);
+
+  const { data: existing } = await supabaseClient.from(table).select('id').eq('user_id', userId);
   if (existing) {
     const idsToDelete = existing
       .filter(r => !localIds.includes(r.id))
@@ -97,9 +102,10 @@ async function syncTableSupabase(table, localRecords) {
     }
   }
 
-  if (localRecords.length > 0) {
-    const registros = localRecords.map(r => ({
+  if (meusRegistros.length > 0) {
+    const registros = meusRegistros.map(r => ({
       ...r,
+      user_id: userId,
       updated_at: new Date().toISOString()
     }));
     const { error } = await supabaseClient.from(table).upsert(registros, {
