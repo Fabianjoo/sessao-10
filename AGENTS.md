@@ -7,20 +7,26 @@ Abra `index.html` em qualquer navegador moderno.
 
 ## Script load order (index.html)
 Dependência importa porque módulos sobrescrevem funções globais:
-1. `js/core/storage.js` — AppStorage global
-2. `js/modules/clientes.js` — define `abrirPopover`, `cadastrarCliente`, etc.
-3. `js/utils/masks.js` — input masks via listeners
-4. `js/utils/formatters.js` — `parseMoeda`, `formatMoeda`
-5. `js/modules/infoCliente.js` — **sobrescreve** `abrirPopover()` de clientes.js (intencional)
-6. `js/modules/sessoes.js` — hoje/calendário/histórico
-7. `js/modules/dashboard.js` — financeiro
-8. `js/modules/modal.js` — modal de cancelamento
-9. `js/main.js` — inicialização (`DOMContentLoaded`)
+1. `@supabase/supabase-js` (CDN) — cria `window.supabase`
+2. `js/core/supabase-config.js` — `SUPABASE_CONFIG` (URL + anonKey)
+3. `js/core/supabase.js` — `supabaseClient`, `supabaseSync()`, `supabaseSalvar()`
+4. `js/core/storage.js` — AppStorage global
+5. `js/modules/clientes.js` — define `abrirPopover`, `cadastrarCliente`, etc.
+6. `js/utils/masks.js` — input masks via listeners
+7. `js/utils/formatters.js` — `parseMoeda`, `formatMoeda`
+8. `js/modules/infoCliente.js` — **sobrescreve** `abrirPopover()` de clientes.js (intencional)
+9. `js/modules/sessoes.js` — hoje/calendário/histórico
+10. `js/modules/dashboard.js` — financeiro
+11. `js/modules/modal.js` — modal de cancelamento
+12. `js/main.js` — inicialização (`DOMContentLoaded`)
 
 ## Regras de estado
 - **Nunca acesse `localStorage` diretamente.** Use sempre `AppStorage.salvarDados()` e `AppStorage.carregarDados()`.
+- `salvarDados()` persiste em localStorage + Supabase (assíncrono, fire-and-forget).
+- `carregarDados()` carrega de localStorage (síncrono). `carregarDadosRemoto()` carrega do Supabase em background.
 - Estado centralizado em `AppStorage.clientes` e `AppStorage.sessoes`.
 - Toda sessão existe tanto no array global `AppStorage.sessoes` quanto em `cliente.sessoes`. Ambos devem ser atualizados.
+- Para configurar Supabase: preencha `js/core/supabase-config.js` com URL e anonKey do projeto, e execute `supabase-schema.sql` no SQL Editor do Supabase.
 
 ## Convenções de dados
 - Telefone: mínimo 14 caracteres (com máscara) para ser válido.
