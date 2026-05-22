@@ -19,8 +19,10 @@ function renderizarClientes() {
 
     const card = document.createElement('div');
     card.classList.add('cliente-card');
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
     card.innerHTML = `
-      <button class="btn-excluir" onclick="excluirCliente(${cliente.id}, event)">🗑️</button>
+      <button class="btn-excluir" aria-label="Excluir cliente" onclick="excluirCliente(${cliente.id}, event)">🗑️</button>
       <h4>${truncar(cliente.nome, 25)}</h4>
       ${cliente.telefone ? `<p>📞 ${cliente.telefone}</p>` : ''}
       ${enderecoCompleto ? `<p>📍 ${truncar(enderecoCompleto, 23)}</p>` : ''}
@@ -30,6 +32,12 @@ function renderizarClientes() {
     card.addEventListener('click', function() {
       const c = AppStorage.clientes.find(c => c.id === Number(this.dataset.id));
       if (c) abrirPopover(c);
+    });
+    card.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        this.click();
+      }
     });
 
     conteiner.appendChild(card);
@@ -425,8 +433,10 @@ const filtrados = AppStorage.clientes.filter(c => {
 
     const card = document.createElement('div');
     card.classList.add('cliente-card');
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
     card.innerHTML = `
-      <button class="btn-excluir" onclick="excluirCliente(${cliente.id}, event)">🗑️</button>
+      <button class="btn-excluir" aria-label="Excluir cliente" onclick="excluirCliente(${cliente.id}, event)">🗑️</button>
       <h4>${truncar(cliente.nome, 25)}</h4>
       ${cliente.telefone ? `<p>📞 ${cliente.telefone}</p>` : ''}
       ${enderecoCompleto ? `<p>📍 ${truncar(enderecoCompleto, 23)}</p>` : ''}
@@ -436,6 +446,12 @@ const filtrados = AppStorage.clientes.filter(c => {
     card.addEventListener('click', function () {
       const c = AppStorage.clientes.find(c => c.id === Number(this.dataset.id));
       abrirPopover(c);
+    });
+    card.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        this.click();
+      }
     });
 
     conteiner.appendChild(card);

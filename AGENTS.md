@@ -1,4 +1,4 @@
-# AGENTS.md — Plano de Gestão (Clínica Daniandrade)
+# AGENTS.md — Sessão 10 (Clínica Daniandrade)
 
 Projeto estático (Vanilla JS, HTML5, CSS3). Sem build, sem dependências, sem package manager.
 

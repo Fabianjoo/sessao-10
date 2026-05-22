@@ -1,6 +1,6 @@
-# Plataforma de Gestão Interna - Clínica Estética Avançada Daniandrade
+# Sessão 10 — Gestão de Sessões para Clínica Estética
 
-Este projeto consiste no desenvolvimento de uma plataforma de gestão interna voltada para profissionais autônomos, especificamente para a **Clínica Estética Avançada Daniandrade**. O sistema visa centralizar o cadastro de clientes, registro de atendimentos, controle de agenda e gestão financeira, substituindo processos manuais por uma solução digital integrada.
+**Sessão 10** é uma plataforma de gestão interna voltada para profissionais autônomos, especificamente para a **Clínica Estética Avançada Daniandrade**. O sistema visa centralizar o cadastro de clientes, registro de atendimentos, controle de agenda e gestão financeira, substituindo processos manuais por uma solução digital integrada. O nome é uma referência às sessões que os clientes da clínica agendam.
 
 ## 📋 Sobre o Projeto
 

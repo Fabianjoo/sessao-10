@@ -53,8 +53,7 @@
 
     border-radius: 4px;
     border: 1px solid #ccc;
-    outline: none;
-    transition: 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 /* HOVER INPUT */
@@ -63,7 +62,7 @@
 }
 
 /* FOCUS INPUT */
-.informacoesCliente input:focus {
+.informacoesCliente input:focus-visible {
     border-color: var(--cor-primaria-media);
     box-shadow: 0 0 3px rgba(0,0,0,0.2);
 }
@@ -116,8 +115,11 @@
     cursor: pointer;
     font-size: 0.8rem;
     text-align: center;
+    border: none;
+    font-family: inherit;
+    width: 100%;
 
-    transition: 0.2s;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 }
 
 /* HOVER SESSÃO */

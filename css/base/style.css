@@ -4,6 +4,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -13,6 +14,8 @@ body {
   }
 
   :root {
+    color-scheme: light;
+
     /* ── Verdes principais ── */
     --cor-primaria: #2D6A4F; 
     --cor-primaria-escura: #1B4332; 
@@ -20,6 +23,14 @@ body {
     --cor-primaria-clara:  #D8F3DC; 
     --cor-primaria-fundo:  #F0FAF4; 
   
+    /* ── Accent (dourado natural) ── */
+    --cor-accent: #C4956A;
+    --cor-accent-escura: #A87D56;
+    --cor-accent-clara: #E8D5BE;
+
+    /* ── Fontes ── */
+    --fonte-display: 'Fraunces', serif;
+    --fonte-body: 'Sora', system-ui, sans-serif;
   }
   
 /* HEADER */
@@ -35,11 +46,40 @@ header{
     justify-content: space-between;
 }
   
-  .header h1 {
-    font-size: 18px;
-    font-weight: 500;
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--fonte-display);
+    user-select: none;
+  }
+
+  .header-brand .brand-word {
+    font-size: 16px;
+    font-weight: 400;
     color: #E6F1FB;
-    margin: 0;
+    font-variation-settings: 'SOFT' 100;
+    letter-spacing: 0.3px;
+  }
+
+  .header-brand .brand-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: var(--cor-accent);
+    color: #fff;
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1;
+    font-variation-settings: 'SOFT' 100;
+    transition: transform 0.2s ease;
+  }
+
+  .header-brand:hover .brand-badge {
+    transform: scale(1.08);
   }
   
   .relogio-box {
@@ -66,6 +106,18 @@ header{
     color: var(--cor-primaria-clara);
   }
 
+
+button, [role="button"], .cliente-card, .sessaoBtn {
+  touch-action: manipulation;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
 
 /* MAIN */
 

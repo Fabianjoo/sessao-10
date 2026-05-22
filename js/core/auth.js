@@ -71,7 +71,7 @@ const AppAuth = {
     }
 
     btn.disabled = true;
-    btn.textContent = 'Aguarde...';
+    btn.textContent = 'Aguarde…';
     errorEl.textContent = '';
 
     try {

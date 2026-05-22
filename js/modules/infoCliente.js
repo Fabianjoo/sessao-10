@@ -18,7 +18,7 @@ function abrirPopover(cliente) {
         <div class="sessao-card-top">
           <strong>${s.servico}</strong>
           <span class="badge badge-${s.status}">${s.status}</span>
-          <button class="btn-excluir-sessao" onclick="excluirSessao(${cliente.id}, ${s.id})">🗑️</button>
+          <button class="btn-excluir-sessao" aria-label="Excluir sessão" onclick="excluirSessao(${cliente.id}, ${s.id})">🗑️</button>
         </div>
         <p>📅 ${s.data} às ${s.hora}</p>
         ${s.valor ? `<p>💰 ${s.valor}</p>` : ''}
@@ -39,7 +39,7 @@ function abrirPopover(cliente) {
             <div class="sessao-card-top">
               <strong>${p.servico}</strong>
               <span class="badge badge-${p.status}">${p.status}</span>
-              <button class="btn-excluir-sessao" onclick="excluirPacote(${cliente.id}, ${p.id})">🗑️</button>
+              <button class="btn-excluir-sessao" aria-label="Excluir pacote" onclick="excluirPacote(${cliente.id}, ${p.id})">🗑️</button>
             </div>
             <div class="progresso-bar">
               <div class="progresso-fill" style="width:${pct}%"></div>

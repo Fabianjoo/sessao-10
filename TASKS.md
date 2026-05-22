@@ -1,6 +1,6 @@
 # 📝 Planejamento e Tarefas (Roadmap)
 
-Este arquivo serve para rastrear bugs, ideias de melhorias e tarefas pendentes para o Gerenciador de Pedidos.
+Este arquivo serve para rastrear bugs, ideias de melhorias e tarefas pendentes para o **Sessão 10**.
 
 
 ## ⚪ Reestruturação (Concluído)

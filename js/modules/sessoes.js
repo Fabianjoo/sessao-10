@@ -88,11 +88,11 @@ function atualizarSessoesHoje() {
     const isCancelada = status === 'cancelada';
 
     const btnFinalizar = (!isCancelada && status !== 'concluida')
-      ? `<button class="btn-finalizar-sessao" onclick="finalizarSessao(${s.id})" title="Finalizar sessão">✅</button>`
+      ? `<button class="btn-finalizar-sessao" aria-label="Finalizar sessão" onclick="finalizarSessao(${s.id})">✅</button>`
       : '';
 
     const btnCancelar = !isCancelada
-      ? `<button class="btn-cancelar-sessao" onclick="cancelarSessao(${s.id})" title="Cancelar sessão">🗑️</button>`
+      ? `<button class="btn-cancelar-sessao" aria-label="Cancelar sessão" onclick="cancelarSessao(${s.id})">🗑️</button>`
       : '';
 
     return `
@@ -145,8 +145,8 @@ function renderCalendario() {
         <div class="cal-item">
           <span class="cal-dot"></span>
           <span>${s.hora} — ${s.nomeCliente} · ${s.servico}</span>
-          <button class="btn-finalizar-sessao" onclick="finalizarSessao(${s.id})" title="Finalizar sessão">✅</button>
-          <button class="btn-cancelar-sessao" onclick="cancelarSessao(${s.id})" title="Cancelar sessão">🗑️</button>
+          <button class="btn-finalizar-sessao" aria-label="Finalizar sessão" onclick="finalizarSessao(${s.id})">✅</button>
+          <button class="btn-cancelar-sessao" aria-label="Cancelar sessão" onclick="cancelarSessao(${s.id})">🗑️</button>
         </div>
       `).join('');
     return `

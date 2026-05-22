@@ -3,8 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel de Pedidos</title>
+    <title>Sessão 10 — Gestão de Sessões</title>
     <link rel="shortcut icon" href="imagens/documentos.png" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,400,100;9..144,600,100;9..144,700,100&family=Sora:wght@300;400;500;600&family=DM+Sans:wght@400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#2D6A4F">
     <link rel="stylesheet" href="css/base/style.css">
     <link rel="stylesheet" href="css/components/popovers.css">
     <link rel="stylesheet" href="css/modules/listaClientes.css">
@@ -14,23 +18,28 @@
     <link rel="stylesheet" href="css/modules/infoCliente.css">
     <link rel="stylesheet" href="css/modules/login.css">
 </head>
+<body>
       <!-- LOGIN SCREEN -->
       <div id="login-screen" class="visible">
         <div class="login-card">
           <div class="login-header">
-            <h1>Gerenciador de Sessões</h1>
-            <p>Faça login para continuar</p>
+            <div class="login-brand">
+              <span class="brand-word">Sessão</span>
+              <span class="brand-badge">10</span>
+            </div>
+            <p class="brand-sub">Gestão de Sessões</p>
+            <p class="login-sub">Faça login para continuar</p>
           </div>
           <form id="login-form" autocomplete="on">
             <div class="login-field">
               <label for="login-email">Email</label>
-              <input type="email" id="login-email" placeholder="seu@email.com" required autocomplete="email">
+              <input type="email" id="login-email" name="email" placeholder="seu@email.com" required autocomplete="email" spellcheck="false">
             </div>
             <div class="login-field">
               <label for="login-password">Senha</label>
-              <input type="password" id="login-password" placeholder="Sua senha" required autocomplete="current-password">
+              <input type="password" id="login-password" name="password" placeholder="Sua senha" required autocomplete="current-password">
             </div>
-            <p id="login-error" class="login-error"></p>
+            <p id="login-error" class="login-error" aria-live="polite"></p>
             <button type="submit" id="login-submit">Entrar</button>
             <p class="login-toggle">
               <a href="#" id="login-toggle-link">Criar uma nova conta</a>
@@ -52,10 +61,13 @@
           </div>
         </div>
       </div>
-<body>
+
       <!-- HEADER -->
       <header class="header">
-        <h1>Gerenciador de Sessões</h1>
+        <div class="header-brand">
+          <span class="brand-word">Sessão</span>
+          <span class="brand-badge">10</span>
+        </div>
         <div style="display:flex; align-items:center; gap:12px;">
           <span id="user-email" style="font-size:12px; opacity:0.8;"></span>
           <div class="relogio-box">
@@ -88,38 +100,38 @@
           
               <!-- Cliente (comum aos dois) -->
               <label for="clienteSessao">Cliente</label>
-              <input type="text" id="clienteSessao" placeholder="Buscar cliente..." oninput="filtrarClientes()">
+              <input type="text" id="clienteSessao" name="cliente" placeholder="Buscar cliente…" autocomplete="off" oninput="filtrarClientes()">
               <div class="clientesDropdown" id="clientesDropdown"></div>
           
               <!-- Serviço (comum aos dois) -->
               <label for="servicoSessao">Serviço</label>
-              <input type="text" maxlength="50" id="servicoSessao" placeholder="Ex: Drenagem Linfática...">
+              <input type="text" maxlength="50" id="servicoSessao" name="servico" placeholder="Ex: Drenagem Linfática…" autocomplete="off">
           
               <!-- SESSÃO AVULSA -->
               <div id="campos-avulsa">
                 <label for="valorSessao">Valor da Sessão</label>
-                <input type="text" id="valorSessao" placeholder="R$ 0,00" oninput="mascaraValor(this)">
+                <input type="text" id="valorSessao" name="valor_sessao" placeholder="R$ 0,00" autocomplete="off" oninput="mascaraValor(this)">
           
                 <label for="dataSessao">Data</label>
-                <input type="date" id="dataSessao">
+                <input type="date" id="dataSessao" name="data_sessao" autocomplete="off">
           
                 <label for="horaSessao">Horário</label>
-                <input type="time" id="horaSessao">
+                <input type="time" id="horaSessao" name="hora_sessao" autocomplete="off">
           
                 <label for="obsSessao">Observações</label>
-                <textarea id="obsSessao" maxlength="100" placeholder="Observações..."></textarea>
+                <textarea id="obsSessao" name="obs_sessao" maxlength="100" placeholder="Observações…" autocomplete="off"></textarea>
               </div>
           
               <!-- PACOTE DE SESSÕES -->
               <div id="campos-pacote" style="display:none">
                 <label for="qtdSessoesPacote">Qtd. de sessões contratadas</label>
-                <input type="number" id="qtdSessoesPacote" placeholder="Ex: 10" min="1">
+                <input type="number" id="qtdSessoesPacote" name="qtd_pacote" placeholder="Ex: 10" min="1" autocomplete="off">
           
                 <label for="valorPacote">Valor do Pacote</label>
-                <input type="text" id="valorPacote" placeholder="R$ 0,00" oninput="mascaraValor(this)">
+                <input type="text" id="valorPacote" name="valor_pacote" placeholder="R$ 0,00" autocomplete="off" oninput="mascaraValor(this)">
           
                 <label for="obsPacote">Observações</label>
-                <textarea id="obsPacote" maxlength="100" placeholder="Observações..."></textarea>
+                <textarea id="obsPacote" name="obs_pacote" maxlength="100" placeholder="Observações…" autocomplete="off"></textarea>
               </div>
           
               <div class="sessao-acoes">
@@ -134,29 +146,29 @@
               <!--FORMULÁRIO -->
               <section class="form">
                  <!-- 👤 CLIENTE -->
-                <form id="clienteForm">
-                 
-                  <div class="informacoesCliente">
-                    <h3>👤 Informações do Cliente</h3>
-                
-                    <label for="nomeCliente">Nome</label>
-                    <input type="text" id="nomeCliente">
-                
-                    <label for="telefone">Telefone</label>
-                    <input type="text" id="telefone" placeholder="(00) 00000-0000">
-                
-                    <label for="cpf">CPF</label>
-                    <input type="text" id="cpf"  placeholder="000.000.000-00">
+                  <form id="clienteForm">
+                  
+                    <div class="informacoesCliente">
+                      <h3>👤 Informações do Cliente</h3>
+                  
+                      <label for="nomeCliente">Nome</label>
+                      <input type="text" id="nomeCliente" name="nome" autocomplete="name">
+                  
+                      <label for="telefone">Telefone</label>
+                      <input type="tel" id="telefone" name="telefone" placeholder="(00) 00000-0000" autocomplete="tel" inputmode="numeric">
+                  
+                      <label for="cpf">CPF</label>
+                      <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" autocomplete="off">
 
-                    <label for="cep">CEP</label>
-                    <input type="text" id="cep" placeholder="00000-000">
-                
-                    <label for="endereco">Endereço</label>
-                    <input maxlength="100" type="text" id="endereco">
+                      <label for="cep">CEP</label>
+                      <input type="text" id="cep" name="cep" placeholder="00000-000" autocomplete="postal-code">
+                  
+                      <label for="endereco">Endereço</label>
+                      <input maxlength="100" type="text" id="endereco" name="endereco" autocomplete="street-address">
 
-                    <label for="numero">Número</label>
-                    <input type="text" id="numero" maxlength="10">
-                  </div>
+                      <label for="numero">Número</label>
+                      <input type="text" id="numero" name="numero" maxlength="10" autocomplete="address-line2">
+                    </div>
                 
                   <div class="cadastrar">
                     <button type="button" class="addCliente" onclick="cadastrarCliente()">Cadastrar Cliente</button>
@@ -164,9 +176,9 @@
 
                   </form>
 
-                  <div class="sessaoBtn" onclick="abrirPopoverSessao()">
+                  <button type="button" class="sessaoBtn" onclick="abrirPopoverSessao()">
                     <h2>➕ Nova Sessão</h2>
-                  </div>
+                  </button>
                 </section>
                 
               
@@ -186,7 +198,7 @@
               <!-- LISTA DE CLIENTES -->
               <section class="listaClientes">
                 <h2>Clientes Cadastrados</h2>
-                <input type="text" id="BuscarCliente" placeholder="Buscar Cliente..." oninput="filtrarClientesLista()">
+                <input type="text" id="BuscarCliente" placeholder="Buscar Cliente…" aria-label="Buscar cliente" oninput="filtrarClientesLista()">
                 <div class="clientesConteiner">
 
                 </div>

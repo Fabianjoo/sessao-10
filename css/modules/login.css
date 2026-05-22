@@ -5,11 +5,20 @@
   display: none;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--cor-primaria-escura) 0%, var(--cor-primaria) 100%);
+  background:
+    radial-gradient(ellipse at 25% 40%, rgba(196, 149, 106, 0.12) 0%, transparent 55%),
+    radial-gradient(ellipse at 75% 60%, rgba(82, 183, 136, 0.08) 0%, transparent 50%),
+    linear-gradient(135deg, var(--cor-primaria-escura) 0%, var(--cor-primaria) 100%);
 }
 
 #login-screen.visible {
   display: flex;
+  animation: loginFadeIn 0.5s ease;
+}
+
+@keyframes loginFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .login-card {
@@ -26,16 +35,71 @@
   margin-bottom: 28px;
 }
 
-.login-header h1 {
-  font-size: 22px;
-  color: var(--cor-primaria-escura);
-  margin: 0 0 6px;
-}
-
 .login-header p {
   font-size: 14px;
   color: #888;
   margin: 0;
+}
+
+.login-sub {
+  margin-top: 8px !important;
+}
+
+/* ── Brand logotype ── */
+.login-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.login-brand .brand-word {
+  font-family: var(--fonte-display);
+  font-size: 30px;
+  font-weight: 400;
+  color: var(--cor-primaria-escura);
+  font-variation-settings: 'SOFT' 100;
+  letter-spacing: 0.5px;
+}
+
+.login-brand .brand-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: var(--cor-accent);
+  color: #fff;
+  border-radius: 50%;
+  font-family: var(--fonte-display);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+  font-variation-settings: 'SOFT' 100;
+  box-shadow: 0 4px 12px rgba(196, 149, 106, 0.35);
+  animation: badgePop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s both;
+}
+
+.brand-sub {
+  font-family: var(--fonte-body);
+  font-size: 13px !important;
+  font-weight: 500;
+  color: var(--cor-primaria-media) !important;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  margin-top: 4px !important;
+}
+
+@keyframes badgePop {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .login-field {
@@ -56,12 +120,11 @@
   font-size: 15px;
   border: 1px solid #ddd;
   border-radius: 8px;
-  outline: none;
   transition: border-color 0.2s;
   box-sizing: border-box;
 }
 
-.login-field input:focus {
+.login-field input:focus-visible {
   border-color: var(--cor-primaria-media);
   box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.15);
 }
@@ -88,7 +151,11 @@
 }
 
 #login-submit:hover {
-  background: var(--cor-primaria-escura);
+  background: var(--cor-accent-escura);
+}
+
+#login-submit:active {
+  transform: scale(0.98);
 }
 
 #login-submit:disabled {

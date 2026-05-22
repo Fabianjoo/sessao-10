@@ -44,7 +44,7 @@
   color: var(--azul-700);
   font-size: 13px;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
 .tab.ativo {

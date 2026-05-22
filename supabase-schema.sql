@@ -1,5 +1,5 @@
 -- =============================================================
--- Schema para o Gerenciador de Sessões (Supabase)
+-- Schema para o Sessão 10 (Supabase)
 -- Execute este SQL no SQL Editor do seu projeto Supabase
 -- =============================================================
 
