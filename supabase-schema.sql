@@ -10,7 +10,7 @@ ALTER TABLE sessoes ADD COLUMN IF NOT EXISTS user_id UUID DEFAULT auth.uid();
 -- Criar tabela de clientes
 CREATE TABLE IF NOT EXISTS clientes (
   id BIGINT PRIMARY KEY,
-  user_id UUID DEFAULT auth.uid(),
+  user_id UUID REFERENCES auth.users(id) NOT NULL DEFAULT auth.uid(),
   nome TEXT NOT NULL,
   telefone TEXT DEFAULT '',
   cpf TEXT DEFAULT '',
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS clientes (
 -- Criar tabela de sessões
 CREATE TABLE IF NOT EXISTS sessoes (
   id BIGINT PRIMARY KEY,
-  user_id UUID DEFAULT auth.uid(),
+  user_id UUID REFERENCES auth.users(id) NOT NULL DEFAULT auth.uid(),
   clienteId BIGINT NOT NULL,
   nomeCliente TEXT DEFAULT '',
   tipo TEXT DEFAULT 'avulsa',
@@ -82,25 +82,25 @@ CREATE TRIGGER set_sessoes_updated_at
 ALTER TABLE clientes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE sessoes ENABLE ROW LEVEL SECURITY;
 
--- Políticas para clientes (isolamento por usuário)
+-- Políticas para clientes (apenas próprios registros)
 DROP POLICY IF EXISTS "Acesso total anônimo clientes" ON clientes;
 DROP POLICY IF EXISTS "Acesso total autenticado clientes" ON clientes;
-DROP POLICY IF EXISTS "Acesso isolado por usuário clientes" ON clientes;
-CREATE POLICY "Acesso isolado por usuário clientes" ON clientes
+DROP POLICY IF EXISTS "Usuários podem ver apenas seus próprios clientes" ON clientes;
+CREATE POLICY "Usuários podem ver apenas seus próprios clientes" ON clientes
   FOR ALL
   TO authenticated
-  USING (auth.uid() = user_id)
-  WITH CHECK (auth.uid() = user_id);
+  USING (user_id = auth.uid())
+  WITH CHECK (user_id = auth.uid());
 
--- Políticas para sessoes (isolamento por usuário)
+-- Políticas para sessoes (apenas próprios registros)
 DROP POLICY IF EXISTS "Acesso total anônimo sessoes" ON sessoes;
 DROP POLICY IF EXISTS "Acesso total autenticado sessoes" ON sessoes;
-DROP POLICY IF EXISTS "Acesso isolado por usuário sessoes" ON sessoes;
-CREATE POLICY "Acesso isolado por usuário sessoes" ON sessoes
+DROP POLICY IF EXISTS "Usuários podem ver apenas suas próprias sessões" ON sessoes;
+CREATE POLICY "Usuários podem ver apenas suas próprias sessões" ON sessoes
   FOR ALL
   TO authenticated
-  USING (auth.uid() = user_id)
-  WITH CHECK (auth.uid() = user_id);
+  USING (user_id = auth.uid())
+  WITH CHECK (user_id = auth.uid());
 
 -- =============================================================
 -- (Opcional) Migrar dados existentes do localStorage

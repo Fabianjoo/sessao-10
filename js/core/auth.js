@@ -111,6 +111,7 @@ const AppAuth = {
     document.getElementById('login-screen').classList.remove('visible');
     document.getElementById('user-email').textContent = session.user.email;
     document.getElementById('logout-btn').style.display = '';
+    AppStorage.currentUserId = session.user.id;
     initApp();
   },
 
@@ -125,6 +126,7 @@ const AppAuth = {
   },
 
   async logout() {
+    AppStorage.currentUserId = null;
     await supabaseClient.auth.signOut();
   }
 };
