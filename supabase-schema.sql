@@ -3,9 +3,14 @@
 -- Execute este SQL no SQL Editor do seu projeto Supabase
 -- =============================================================
 
+-- Adicionar coluna user_id em tabelas existentes (seguro se já existir)
+ALTER TABLE clientes ADD COLUMN IF NOT EXISTS user_id UUID DEFAULT auth.uid();
+ALTER TABLE sessoes ADD COLUMN IF NOT EXISTS user_id UUID DEFAULT auth.uid();
+
 -- Criar tabela de clientes
 CREATE TABLE IF NOT EXISTS clientes (
   id BIGINT PRIMARY KEY,
+  user_id UUID DEFAULT auth.uid(),
   nome TEXT NOT NULL,
   telefone TEXT DEFAULT '',
   cpf TEXT DEFAULT '',
@@ -22,6 +27,7 @@ CREATE TABLE IF NOT EXISTS clientes (
 -- Criar tabela de sessões
 CREATE TABLE IF NOT EXISTS sessoes (
   id BIGINT PRIMARY KEY,
+  user_id UUID DEFAULT auth.uid(),
   clienteId BIGINT NOT NULL,
   nomeCliente TEXT DEFAULT '',
   tipo TEXT DEFAULT 'avulsa',
@@ -76,23 +82,25 @@ CREATE TRIGGER set_sessoes_updated_at
 ALTER TABLE clientes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE sessoes ENABLE ROW LEVEL SECURITY;
 
--- Políticas para clientes (apenas autenticados)
+-- Políticas para clientes (isolamento por usuário)
 DROP POLICY IF EXISTS "Acesso total anônimo clientes" ON clientes;
 DROP POLICY IF EXISTS "Acesso total autenticado clientes" ON clientes;
-CREATE POLICY "Acesso total autenticado clientes" ON clientes
+DROP POLICY IF EXISTS "Acesso isolado por usuário clientes" ON clientes;
+CREATE POLICY "Acesso isolado por usuário clientes" ON clientes
   FOR ALL
   TO authenticated
-  USING (auth.role() = 'authenticated')
-  WITH CHECK (auth.role() = 'authenticated');
+  USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
 
--- Políticas para sessoes (apenas autenticados)
+-- Políticas para sessoes (isolamento por usuário)
 DROP POLICY IF EXISTS "Acesso total anônimo sessoes" ON sessoes;
 DROP POLICY IF EXISTS "Acesso total autenticado sessoes" ON sessoes;
-CREATE POLICY "Acesso total autenticado sessoes" ON sessoes
+DROP POLICY IF EXISTS "Acesso isolado por usuário sessoes" ON sessoes;
+CREATE POLICY "Acesso isolado por usuário sessoes" ON sessoes
   FOR ALL
   TO authenticated
-  USING (auth.role() = 'authenticated')
-  WITH CHECK (auth.role() = 'authenticated');
+  USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
 
 -- =============================================================
 -- (Opcional) Migrar dados existentes do localStorage

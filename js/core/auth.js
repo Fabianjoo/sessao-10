@@ -118,6 +118,10 @@ const AppAuth = {
     document.getElementById('login-screen').classList.add('visible');
     document.getElementById('logout-btn').style.display = 'none';
     document.getElementById('user-email').textContent = '';
+
+    AppStorage.clientes = [];
+    AppStorage.sessoes = [];
+    AppStorage.salvarDadosLocal();
   },
 
   async logout() {

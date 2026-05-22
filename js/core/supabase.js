@@ -41,13 +41,25 @@ function mergeRecords(localRecords, remoteRecords) {
   return { records: merged, changed };
 }
 
+async function getCurrentUserId() {
+  try {
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    return user?.id;
+  } catch {
+    return null;
+  }
+}
+
 async function supabaseSync() {
   if (!supabaseClient) return;
 
+  const userId = await getCurrentUserId();
+  if (!userId) return;
+
   try {
     const [{ data: clientes }, { data: sessoes }] = await Promise.all([
-      supabaseClient.from('clientes').select('*'),
-      supabaseClient.from('sessoes').select('*')
+      supabaseClient.from('clientes').select('*').eq('user_id', userId),
+      supabaseClient.from('sessoes').select('*').eq('user_id', userId)
     ]);
 
     let precisaRenderizar = false;
@@ -85,6 +97,7 @@ async function supabaseSync() {
 
 async function syncTableSupabase(table, localRecords) {
   const localIds = localRecords.map(r => r.id);
+  const userId = await getCurrentUserId();
 
   const { data: existing } = await supabaseClient.from(table).select('id');
   if (existing) {
@@ -100,6 +113,7 @@ async function syncTableSupabase(table, localRecords) {
   if (localRecords.length > 0) {
     const registros = localRecords.map(r => ({
       ...r,
+      user_id: userId,
       updated_at: new Date().toISOString()
     }));
     const { error } = await supabaseClient.from(table).upsert(registros, {
