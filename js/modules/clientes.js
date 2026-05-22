@@ -93,6 +93,7 @@ function cadastrarCliente() {
 
   const novoCliente = {
     id: Date.now(),
+    user_id: AppStorage.currentUserId,
     nome,
     telefone,
     cpf,
@@ -369,6 +370,7 @@ function cadastrarSessao() {
 
     novoRegistro = {
       id: Date.now(),
+      user_id: AppStorage.currentUserId,
       tipo: 'avulsa',
       pacoteId: pacoteAtualId || null,
       clienteId: clienteSelecionadoId,
@@ -392,6 +394,7 @@ function cadastrarSessao() {
 
     novoRegistro = {
       id: Date.now(),
+      user_id: AppStorage.currentUserId,
       tipo: 'pacote',
       clienteId: clienteSelecionadoId,
       nomeCliente: cliente.nome,

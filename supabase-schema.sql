@@ -6,6 +6,7 @@
 -- Criar tabela de clientes
 CREATE TABLE IF NOT EXISTS clientes (
   id BIGINT PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) NOT NULL DEFAULT auth.uid(),
   nome TEXT NOT NULL,
   telefone TEXT DEFAULT '',
   cpf TEXT DEFAULT '',
@@ -22,6 +23,7 @@ CREATE TABLE IF NOT EXISTS clientes (
 -- Criar tabela de sessões
 CREATE TABLE IF NOT EXISTS sessoes (
   id BIGINT PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) NOT NULL DEFAULT auth.uid(),
   clienteId BIGINT NOT NULL,
   nomeCliente TEXT DEFAULT '',
   tipo TEXT DEFAULT 'avulsa',
@@ -76,23 +78,25 @@ CREATE TRIGGER set_sessoes_updated_at
 ALTER TABLE clientes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE sessoes ENABLE ROW LEVEL SECURITY;
 
--- Políticas para clientes (apenas autenticados)
+-- Políticas para clientes (apenas próprios registros)
 DROP POLICY IF EXISTS "Acesso total anônimo clientes" ON clientes;
 DROP POLICY IF EXISTS "Acesso total autenticado clientes" ON clientes;
-CREATE POLICY "Acesso total autenticado clientes" ON clientes
+DROP POLICY IF EXISTS "Usuários podem ver apenas seus próprios clientes" ON clientes;
+CREATE POLICY "Usuários podem ver apenas seus próprios clientes" ON clientes
   FOR ALL
   TO authenticated
-  USING (auth.role() = 'authenticated')
-  WITH CHECK (auth.role() = 'authenticated');
+  USING (user_id = auth.uid())
+  WITH CHECK (user_id = auth.uid());
 
--- Políticas para sessoes (apenas autenticados)
+-- Políticas para sessoes (apenas próprios registros)
 DROP POLICY IF EXISTS "Acesso total anônimo sessoes" ON sessoes;
 DROP POLICY IF EXISTS "Acesso total autenticado sessoes" ON sessoes;
-CREATE POLICY "Acesso total autenticado sessoes" ON sessoes
+DROP POLICY IF EXISTS "Usuários podem ver apenas suas próprias sessões" ON sessoes;
+CREATE POLICY "Usuários podem ver apenas suas próprias sessões" ON sessoes
   FOR ALL
   TO authenticated
-  USING (auth.role() = 'authenticated')
-  WITH CHECK (auth.role() = 'authenticated');
+  USING (user_id = auth.uid())
+  WITH CHECK (user_id = auth.uid());
 
 -- =============================================================
 -- (Opcional) Migrar dados existentes do localStorage
