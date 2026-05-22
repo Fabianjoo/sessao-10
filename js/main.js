@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Carregar dados (já deve ter sido feito pelo storage.js, mas garantimos aqui se necessário)
     if (typeof AppStorage !== 'undefined' && typeof AppStorage.carregarDados === 'function') {
         AppStorage.carregarDados();
+        // 1a. Sincronizar com Supabase em background (se configurado)
+        AppStorage.carregarDadosRemoto();
     }
 
     // 2. Inicializar componentes de interface

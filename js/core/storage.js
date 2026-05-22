@@ -4,6 +4,13 @@ const AppStorage = {
     sessoes: [],
 
     salvarDados() {
+        this.salvarDadosLocal();
+        if (typeof supabaseSalvar === 'function') {
+            supabaseSalvar();
+        }
+    },
+
+    salvarDadosLocal() {
         localStorage.setItem('clientes', JSON.stringify(this.clientes));
         localStorage.setItem('sessoes', JSON.stringify(this.sessoes));
     },
@@ -25,6 +32,12 @@ const AppStorage = {
             }
             delete cliente.sessoes;
         });
+    },
+
+    carregarDadosRemoto() {
+        if (typeof supabaseSync === 'function') {
+            supabaseSync();
+        }
     }
 };
 
