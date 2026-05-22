@@ -3,10 +3,6 @@
 -- Execute este SQL no SQL Editor do seu projeto Supabase
 -- =============================================================
 
--- Adicionar coluna user_id em tabelas existentes (seguro se já existir)
-ALTER TABLE clientes ADD COLUMN IF NOT EXISTS user_id UUID DEFAULT auth.uid();
-ALTER TABLE sessoes ADD COLUMN IF NOT EXISTS user_id UUID DEFAULT auth.uid();
-
 -- Criar tabela de clientes
 CREATE TABLE IF NOT EXISTS clientes (
   id BIGINT PRIMARY KEY,
