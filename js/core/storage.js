@@ -24,14 +24,6 @@ const AppStorage = {
         const s = localStorage.getItem('sessoes');
         try { if (c) this.clientes = JSON.parse(c); } catch (e) { this.clientes = []; }
         try { if (s) this.sessoes = JSON.parse(s); } catch (e) { this.sessoes = []; }
-
-        // Reparo de dados corrompidos por refatoração anterior
-        this.clientes.forEach(cliente => {
-            if (cliente['AppStorage.sessoes']) {
-                delete cliente['AppStorage.sessoes'];
-            }
-            delete cliente.sessoes;
-        });
     },
 
     carregarDadosRemoto() {

@@ -52,7 +52,7 @@ function excluirCliente(id, event) {
     
     // Para o cliente que está sendo excluído, mantemos apenas o histórico ou o que está em andamento
     const status = getStatus(s, agoraMs);
-    const ehHistoricoOuAndamento = s.finalizada || s.status === 'cancelada' || status === 'concluida' || status === 'andamento';
+    const ehHistoricoOuAndamento = s.status === 'cancelada' || status === 'concluida' || status === 'andamento';
     
     // Mantém apenas se for histórico ou em andamento
     return ehHistoricoOuAndamento;
@@ -136,44 +136,11 @@ function modoEditar(id) {
   document.querySelector('.abas-cliente').style.display   = 'none';
   document.querySelector('#abaCliente-info').style.display   = 'none';
 
-  // máscaras aplicadas após os inputs existirem no DOM
-  document.getElementById('editTelefone').addEventListener('input', function(e) {
-    if (e.inputType === 'deleteContentBackward') return;
-    let v = e.target.value.replace(/\D/g, '').slice(0, 11);
-    let r = '';
-    if (v.length > 0) r += '(' + v.slice(0, 2);
-    if (v.length >= 2) r += ') ' + v.slice(2, 7);
-    if (v.length >= 7) r += '-' + v.slice(7, 11);
-    e.target.value = r;
-  });
-
-  document.getElementById('editCpf').addEventListener('input', function(e) {
-    if (e.inputType === 'deleteContentBackward') return;
-    let v = e.target.value.replace(/\D/g, '').slice(0, 11);
-    let r = '';
-    if (v.length > 0) r += v.slice(0, 3);
-    if (v.length >= 3) r += '.' + v.slice(3, 6);
-    if (v.length >= 6) r += '.' + v.slice(6, 9);
-    if (v.length >= 9) r += '-' + v.slice(9, 11);
-    e.target.value = r;
-  });
-
-  document.getElementById('editCep').addEventListener('input', function(e) {
-    if (e.inputType === 'deleteContentBackward') return;
-    let v = e.target.value.replace(/\D/g, '').slice(0, 8);
-    let r = '';
-    if (v.length > 0) r += v.slice(0, 5);
-    if (v.length >= 5) r += '-' + v.slice(5, 8);
-    e.target.value = r;
-  });
-
-  document.getElementById('editNumero').addEventListener('input', function(e) {
-    e.target.value = e.target.value.replace(/\D/g, '');
-  });
-
-  document.getElementById('editNome').addEventListener('input', function(e) {
-    e.target.value = e.target.value.replace(/[^a-zA-ZÀ-ÿ\s\-\']/g, '');
-  });
+  Masks.aplicarNo(document.getElementById('editTelefone'), 'telefone');
+  Masks.aplicarNo(document.getElementById('editCpf'), 'cpf');
+  Masks.aplicarNo(document.getElementById('editCep'), 'cep');
+  Masks.aplicarNo(document.getElementById('editNumero'), 'numero');
+  Masks.aplicarNo(document.getElementById('editNome'), 'nome');
 }
 
 function modoVisualizar() {
@@ -366,7 +333,7 @@ function cadastrarSessao() {
     if (!data || !hora) { alert('⚠️ Preencha data e horário.'); return; }
 
     const inputValor = document.getElementById('valorSessao');
-    if (!valor && inputValor.style.display !== 'none') { alert('⚠️ Preencha o valor da sessão.'); return; } // ← corrigido
+    if (!valor && inputValor.style.display !== 'none') { alert('⚠️ Preencha o valor da sessão.'); return; }
 
     novoRegistro = {
       id: Date.now(),

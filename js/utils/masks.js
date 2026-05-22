@@ -26,48 +26,41 @@ const Masks = {
         return r;
     },
     apenasNumeros: (v) => v.replace(/\D/g, ''),
-    apenasLetrasENomes: (v) => v.replace(/[^a-zA-ZÀ-ÿ\s\-\']/g, '')
+    apenasLetrasENomes: (v) => v.replace(/[^a-zA-ZÀ-ÿ\s\-\']/g, ''),
+
+    aplicarNo(el, tipo) {
+        const handler = Masks._handlers[tipo];
+        if (handler) el.addEventListener('input', handler);
+    },
+
+    _handlers: {
+        telefone: (e) => {
+            if (e.inputType === 'deleteContentBackward') return;
+            e.target.value = Masks.telefone(e.target.value);
+        },
+        cpf: (e) => {
+            if (e.inputType === 'deleteContentBackward') return;
+            e.target.value = Masks.cpf(e.target.value);
+        },
+        cep: (e) => {
+            if (e.inputType === 'deleteContentBackward') return;
+            e.target.value = Masks.cep(e.target.value);
+        },
+        numero: (e) => {
+            e.target.value = Masks.apenasNumeros(e.target.value);
+        },
+        nome: (e) => {
+            e.target.value = Masks.apenasLetrasENomes(e.target.value);
+        }
+    }
 };
 
 // Listeners para os campos de cadastro de cliente
 document.addEventListener('DOMContentLoaded', () => {
-    const elTelefone = document.getElementById('telefone');
-    const elCpf = document.getElementById('cpf');
-    const elCep = document.getElementById('cep');
-    const elNumero = document.getElementById('numero');
-    const elNome = document.getElementById('nomeCliente');
-
-    if (elTelefone) {
-        elTelefone.addEventListener('input', (e) => {
-            if (e.inputType === 'deleteContentBackward') return;
-            e.target.value = Masks.telefone(e.target.value);
-        });
-    }
-
-    if (elCpf) {
-        elCpf.addEventListener('input', (e) => {
-            if (e.inputType === 'deleteContentBackward') return;
-            e.target.value = Masks.cpf(e.target.value);
-        });
-    }
-
-    if (elCep) {
-        elCep.addEventListener('input', (e) => {
-            if (e.inputType === 'deleteContentBackward') return;
-            e.target.value = Masks.cep(e.target.value);
-        });
-    }
-
-    if (elNumero) {
-        elNumero.addEventListener('input', (e) => {
-            e.target.value = Masks.apenasNumeros(e.target.value);
-        });
-    }
-
-    if (elNome) {
-        elNome.addEventListener('input', (e) => {
-            e.target.value = Masks.apenasLetrasENomes(e.target.value);
-        });
+    const map = { telefone: 'telefone', cpf: 'cpf', cep: 'cep', numero: 'numero', nomeCliente: 'nome' };
+    for (const [id, tipo] of Object.entries(map)) {
+        const el = document.getElementById(id);
+        if (el) Masks.aplicarNo(el, tipo);
     }
 });
 

@@ -34,7 +34,6 @@ Dependência importa porque módulos sobrescrevem funções globais:
 - `salvarDados()` persiste em localStorage + Supabase (assíncrono, fire-and-forget).
 - `carregarDados()` carrega de localStorage (síncrono). `carregarDadosRemoto()` carrega do Supabase em background.
 - Estado centralizado em `AppStorage.clientes` e `AppStorage.sessoes`.
-- Toda sessão existe tanto no array global `AppStorage.sessoes` quanto em `cliente.sessoes`. Ambos devem ser atualizados.
 - Para configurar Supabase: preencha `js/core/supabase-config.js` com URL e anonKey do projeto, e execute `supabase-schema.sql` no SQL Editor do Supabase.
 
 ## Convenções de dados
@@ -44,7 +43,7 @@ Dependência importa porque módulos sobrescrevem funções globais:
 - Status possíveis de sessão: `pendente`, `andamento`, `concluida`, `cancelada`, `agendada`, `ativo`.
 - Sessão de pacote (`tipo: 'pacote'`) rastreia `sessoesRealizadas` e `totalSessoes`.
 - Ao **excluir cliente**, sessões passadas/em andamento são preservadas; apenas futuras são removidas.
-- `storage.js` contém reparo de dados corrompidos por refatoração anterior (`AppStorage.sessoes` → `sessoes`). Não remover.
+- A sessão possui apenas um campo `status` (valores: `pendente`, `andamento`, `concluida`, `cancelada`, `agendada`, `ativo`). O campo `finalizada` foi removido.
 
 ## Dashboard e UI
 - Dashboard re-renderiza a cada 10 segundos (via `setInterval` em `main.js`).

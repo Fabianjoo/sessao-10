@@ -44,7 +44,7 @@ function iniciarRelogio() {
 
 // ── Status da sessão ──
 function getStatus(sessao, agoraMs) {
-  if (sessao.finalizada) return 'concluida';
+  if (sessao.status === 'concluida' || sessao.status === 'cancelada') return sessao.status;
 
   if (!sessao.data || !sessao.hora) return 'pendente';
 
@@ -84,8 +84,8 @@ function atualizarSessoesHoje() {
   const classeMap = { pendente: 's-pendente', andamento: 's-andamento', concluida: 's-concluida', cancelada: 's-cancelada' };
 
   lista.innerHTML = sessoesHoje.map(s => {
-    const isCancelada = s.status === 'cancelada';
-    const status = isCancelada ? 'cancelada' : (s.finalizada ? 'concluida' : getStatus(s, hojeMs));
+    const status = getStatus(s, hojeMs);
+    const isCancelada = status === 'cancelada';
 
     const btnFinalizar = (!isCancelada && status !== 'concluida')
       ? `<button class="btn-finalizar-sessao" onclick="finalizarSessao(${s.id})" title="Finalizar sessão">✅</button>`
@@ -120,8 +120,10 @@ function renderCalendario() {
 
   const mesStr = calAno + '-' + String(calMes + 1).padStart(2, '0');
 
+  const agoraCal = new Date().getTime();
   const doMes = AppStorage.sessoes.filter(s =>
-    s.tipo !== 'pacote' && s.data && s.data.startsWith(mesStr) && !s.finalizada && s.status !== 'cancelada'
+    s.tipo !== 'pacote' && s.data && s.data.startsWith(mesStr) &&
+    s.status !== 'cancelada' && getStatus(s, agoraCal) !== 'concluida'
   );
 
   if (doMes.length === 0) {
@@ -163,7 +165,7 @@ function renderHistorico() {
 
   const finalizadas = AppStorage.sessoes.filter(s =>
     s.tipo !== 'pacote' && s.data && s.hora &&
-    (s.finalizada || s.status === 'cancelada' || getStatus(s, agora) === 'concluida')
+    (s.status === 'cancelada' || getStatus(s, agora) === 'concluida')
   );
 
   if (finalizadas.length === 0) {
@@ -199,12 +201,12 @@ function renderHistorico() {
 }
 
 function finalizarSessao(id) {
-  if (!confirm('Marcar esta sessão como finalizada?')) return;
+  if (!confirm('Concluir esta sessão?')) return;
 
   const sessao = AppStorage.sessoes.find(s => s.id === id);
   if (!sessao) return;
 
-  sessao.finalizada = true;
+  sessao.status = 'concluida';
 
   AppStorage.salvarDados();
   atualizarSessoesHoje();
@@ -214,13 +216,13 @@ function finalizarSessao(id) {
 }
 
 function limparHistorico() {
-  if (!confirm('Apagar todas as sessões finalizadas do histórico? Esta ação não pode ser desfeita.')) return;
+  if (!confirm('Apagar todas as sessões concluídas ou canceladas do histórico? Esta ação não pode ser desfeita.')) return;
 
   const agora = new Date().getTime();
 
   const idsConcluidas = new Set(
     AppStorage.sessoes
-      .filter(s => s.finalizada || s.status === 'cancelada' || getStatus(s, agora) === 'concluida')
+      .filter(s => s.status === 'cancelada' || getStatus(s, agora) === 'concluida')
       .map(s => s.id)
   );
 
