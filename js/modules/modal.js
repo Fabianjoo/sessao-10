@@ -26,6 +26,14 @@ function confirmarCancelamento() {
   sessao.observacaoCancelamento = motivo;
   sessao.dataCancelamento = new Date().toISOString();
 
+  // ← ADICIONADO: se veio de um pacote, devolve a sessão
+  if (sessao.pacoteId) {
+    const pacote = AppStorage.sessoes.find(s => s.id === sessao.pacoteId);
+    if (pacote && pacote.sessoesRealizadas > 0) {
+      pacote.sessoesRealizadas -= 1;
+    }
+  }
+
   fecharModalCancelar();
   AppStorage.salvarDados();
   atualizarSessoesHoje();

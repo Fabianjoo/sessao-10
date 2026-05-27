@@ -84,8 +84,9 @@ function atualizarSessoesHoje() {
   const classeMap = { pendente: 's-pendente', andamento: 's-andamento', concluida: 's-concluida', cancelada: 's-cancelada' };
 
   lista.innerHTML = sessoesHoje.map(s => {
-    const status = getStatus(s, hojeMs);
+    const status     = getStatus(s, hojeMs);
     const isCancelada = status === 'cancelada';
+    const isConcluida = status === 'concluida'; // ← ADICIONADO
 
     const btnFinalizar = (!isCancelada && status !== 'concluida')
       ? `<button class="btn-finalizar-sessao" aria-label="Finalizar sessão" onclick="finalizarSessao(${s.id})">✅</button>`
@@ -96,7 +97,7 @@ function atualizarSessoesHoje() {
       : '';
 
     return `
-      <div class="sessao-card-lista ${isCancelada ? 'sessao-cancelada' : ''}">
+      <div class="sessao-card-lista ${isCancelada ? 'sessao-cancelada' : ''} ${isConcluida ? 'sessao-concluida' : ''}">
         <div class="sessao-hora">${s.hora}</div>
         <div class="sessao-info">
           <div class="sessao-nome">${s.nomeCliente}</div>
@@ -145,7 +146,6 @@ function renderCalendario() {
         <div class="cal-item">
           <span class="cal-dot"></span>
           <span>${s.hora} — ${s.nomeCliente} · ${s.servico}</span>
-          <button class="btn-finalizar-sessao" aria-label="Finalizar sessão" onclick="finalizarSessao(${s.id})">✅</button>
           <button class="btn-cancelar-sessao" aria-label="Cancelar sessão" onclick="cancelarSessao(${s.id})">🗑️</button>
         </div>
       `).join('');
@@ -184,9 +184,10 @@ function renderHistorico() {
   lista.innerHTML = btnLimpar + finalizadas.map(s => {
     const [ano, mes, dia] = s.data.split('-');
     const isCancelada = s.status === 'cancelada';
+    const isConcluida = !isCancelada; // ← ADICIONADO (se não é cancelada, é concluída)
 
     return `
-      <div class="hist-item ${isCancelada ? 'sessao-cancelada' : ''}">
+      <div class="hist-item ${isCancelada ? 'sessao-cancelada' : ''} ${isConcluida ? 'sessao-concluida' : ''}">
         <div>
           <div class="hist-data">${dia}/${mes}/${ano}</div>
           <div class="hist-nome">${s.nomeCliente}</div>

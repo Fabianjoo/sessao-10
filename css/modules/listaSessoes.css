@@ -348,3 +348,13 @@
   background-color: #fde8e8;
   color: #c62828;
 }
+
+.sessao-concluida {
+  background-color: #e6f4ea;
+  border-left: 4px solid #34a853;
+}
+
+.sessao-concluida .sessao-nome,
+.sessao-concluida .sessao-detalhe {
+  color: #1e7e34;
+}
