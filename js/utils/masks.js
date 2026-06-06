@@ -26,7 +26,7 @@ const Masks = {
         return r;
     },
     apenasNumeros: (v) => v.replace(/\D/g, ''),
-    apenasLetrasENomes: (v) => v.replace(/[^a-zA-ZÀ-ÿ0-9\s\-\']/g, ''),
+    apenasLetrasENomes: (v) => v.replace(/[^a-zA-ZÀ-ÿ0-9\s\-\'\/]/g, ''),
 
     aplicarNo(el, tipo) {
         const handler = Masks._handlers[tipo];
