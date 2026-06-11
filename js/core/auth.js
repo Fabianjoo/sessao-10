@@ -13,9 +13,8 @@ const AppAuth = {
     supabaseClient.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session) {
         this.onAuth(session);
-      } else if (event === 'SIGNED_OUT') {
-        this.showLogin();
       }
+      // SIGNED_OUT ignorado — logout já chama showLogin diretamente
     });
 
     const { data: { session } } = await supabaseClient.auth.getSession();
@@ -126,7 +125,18 @@ const AppAuth = {
   },
 
   async logout() {
-    AppStorage.currentUserId = null;
-    await supabaseClient.auth.signOut();
+    try {
+      // Remove a sessão direto do localStorage sem chamar a API do Supabase
+      const storageKey = Object.keys(localStorage).find(k => k.includes('supabase') && k.includes('auth'));
+      if (storageKey) localStorage.removeItem(storageKey);
+    } catch (e) {
+      // ignora
+    } finally {
+      AppStorage.currentUserId = null;
+      AppStorage.clientes = [];
+      AppStorage.sessoes = [];
+      AppStorage.salvarDadosLocal();
+      this.showLogin();
+    }
   }
 };
