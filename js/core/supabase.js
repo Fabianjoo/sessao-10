@@ -108,11 +108,26 @@ async function syncTableSupabase(table, localRecords) {
       user_id: userId,
       updated_at: new Date().toISOString()
     }));
-    const { error } = await supabaseClient.from(table).upsert(registros, {
+
+    // Coleta todas as chaves únicas e normaliza os objetos
+    const todasChaves = [...new Set(registros.flatMap(r => Object.keys(r)))];
+    const normalizados = registros.map(r => {
+      const obj = {};
+      for (const chave of todasChaves) {
+        obj[chave] = r[chave] !== undefined ? r[chave] : null;
+      }
+      return obj;
+    });
+
+    const { error } = await supabaseClient.from(table).upsert(normalizados, {
       onConflict: 'id',
       ignoreDuplicates: false
     });
-    if (error) throw error;
+
+    if (error) {
+      console.error('[Supabase] Detalhes do erro:', error.message, error.details, error.hint);
+      throw error;
+    }
   }
 }
 
