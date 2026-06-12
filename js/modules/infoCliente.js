@@ -52,7 +52,7 @@ function abrirPopover(cliente) {
               <div class="progresso-fill" style="width:${pct}%"></div>
             </div>
             <p class="progresso-label">${realizadas} de ${total} sessões realizadas</p>
-            <p>💰 Total: ${p.valor} | 💳 Pago: ${formatMoeda(totalPagoPacote)} | ⏳ Saldo: ${formatMoeda(saldoPacote)}</p>
+            <p>💰 Total: ${p.valor || '—'} | 💳 Pago: ${formatMoeda(totalPagoPacote)} | ⏳ Saldo: ${formatMoeda(saldoPacote)}</p>
             <div class="sessao-acoes" style="display:flex;gap:4px;flex-wrap:wrap">
               <button type="button" onclick="mostrarFormPagamento(${cliente.id}, ${p.id})">💳 Registrar Pagamento</button>
               <button type="button" onclick="toggleExtrato(${p.id})">📋 Extrato (${pagamentosDoPacote.length})</button>
@@ -195,7 +195,7 @@ function salvarPagamento(clienteId, pacoteId) {
   const valorInput = document.getElementById('pag-valor-' + pacoteId);
   const dataInput = document.getElementById('pag-data-' + pacoteId);
   const obsInput = document.getElementById('pag-obs-' + pacoteId);
-  if (!valorInput || !dataInput) return;
+  if (!valorInput || !dataInput) { console.warn('[Pagamento] Formulário não encontrado'); return; }
 
   const valorNumerico = parseMoeda(valorInput.value);
   if (!valorInput.value || valorNumerico <= 0) {
