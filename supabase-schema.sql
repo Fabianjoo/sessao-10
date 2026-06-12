@@ -121,6 +121,8 @@ CREATE POLICY "Usuários podem ver apenas suas próprias sessões" ON sessoes
   WITH CHECK (user_id = auth.uid());
 
 -- Políticas para pagamentos (apenas próprios registros)
+DROP POLICY IF EXISTS "Acesso total anônimo pagamentos" ON pagamentos;
+DROP POLICY IF EXISTS "Acesso total autenticado pagamentos" ON pagamentos;
 DROP POLICY IF EXISTS "Usuários podem ver apenas seus próprios pagamentos" ON pagamentos;
 CREATE POLICY "Usuários podem ver apenas seus próprios pagamentos" ON pagamentos
   FOR ALL

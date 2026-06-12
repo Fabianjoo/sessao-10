@@ -12,12 +12,12 @@ function renderDashboard() {
   const concMes  = doMes.filter(s => getStatus(s, agoraMs) === 'concluida');
 
   const pagamentosHoje = AppStorage.pagamentos.filter(p => p.data === hojeStr);
-  const pagamentosMes = AppStorage.pagamentos.filter(p => p.data.startsWith(mesStr));
+  const pagamentosMes = AppStorage.pagamentos.filter(p => p.data?.startsWith(mesStr));
 
   const receitaDia = hoje.reduce((a, s) => a + parseMoeda(s.valor), 0)
-                   + pagamentosHoje.reduce((a, p) => a + p.valor, 0);
+                   + pagamentosHoje.reduce((a, p) => a + (+p.valor || 0), 0);
   const receitaMes = doMes.reduce((a, s) => a + parseMoeda(s.valor), 0)
-                   + pagamentosMes.reduce((a, p) => a + p.valor, 0);
+                   + pagamentosMes.reduce((a, p) => a + (+p.valor || 0), 0);
 
   const proxima = avulsas
     .filter(s => getStatus(s, agoraMs) === 'pendente')

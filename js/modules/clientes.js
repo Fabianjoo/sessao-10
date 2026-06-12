@@ -131,6 +131,7 @@ window.modoEditar = modoEditar;
 window.modoVisualizar = modoVisualizar;
 window.salvarEdicaoCliente = salvarEdicaoCliente;
 window.marcarSessaoPacote = marcarSessaoPacote;
+window.editarPacote = editarPacote;
 window.selecionarCliente = selecionarCliente;
 
 // ==================== POPOVER CLIENTE ====================
@@ -205,12 +206,15 @@ function salvarEdicaoCliente(id) {
 // ==================== POPOVER SESSÃO ====================
 let clienteSelecionadoId = null;
 let pacoteAtualId        = null;
+let editandoPacoteId     = null;
 let tipoSessaoAtual      = 'avulsa';
 
 function abrirPopoverSessao() {
   document.getElementById('servicoSessao').removeAttribute('readonly');
   clienteSelecionadoId = null;
   pacoteAtualId        = null;
+  editandoPacoteId     = null;
+  document.getElementById('cadastrar-sessao').textContent = '✅ Cadastrar';
   document.getElementById('clienteSessao').value        = '';
   document.getElementById('servicoSessao').value        = '';
   document.getElementById('valorSessao').value          = '';
@@ -229,6 +233,8 @@ function abrirPopoverSessao() {
 function fecharPopoverSessao() {
   clienteSelecionadoId = null;
   pacoteAtualId        = null;
+  editandoPacoteId     = null;
+  document.getElementById('cadastrar-sessao').textContent = '✅ Cadastrar';
   document.getElementById('clienteSessao').value        = '';
   document.getElementById('servicoSessao').value        = '';
   document.getElementById('valorSessao').value          = '';
@@ -323,6 +329,31 @@ function marcarSessaoPacote(clienteId, pacoteId) {
   if (inputValor) inputValor.style.display = 'none';
 }
 
+function editarPacote(clienteId, pacoteId) {
+  const cliente = AppStorage.clientes.find(c => c.id === clienteId);
+  if (!cliente) return;
+
+  const pacote = AppStorage.sessoes.find(s => s.id === pacoteId);
+  if (!pacote || pacote.tipo !== 'pacote') return;
+
+  fecharPopover();
+  abrirPopoverSessao();
+
+  clienteSelecionadoId = clienteId;
+  document.getElementById('clienteSessao').value        = cliente.nome;
+  document.getElementById('clientesDropdown').innerHTML = '';
+
+  setTipoSessao('pacote');
+
+  document.getElementById('servicoSessao').value    = pacote.servico || '';
+  document.getElementById('qtdSessoesPacote').value = pacote.totalSessoes || '';
+  document.getElementById('valorPacote').value      = pacote.valor || '';
+  document.getElementById('obsPacote').value        = pacote.obs || '';
+
+  editandoPacoteId = pacoteId;
+  document.getElementById('cadastrar-sessao').textContent = '💾 Salvar alterações';
+}
+
 function cadastrarSessao() {
   if (!clienteSelecionadoId) { alert('⚠️ Selecione um cliente.'); return; }
 
@@ -367,6 +398,29 @@ function cadastrarSessao() {
     if (!qtd || qtd < 1) { alert('⚠️ Informe a quantidade de sessões.'); return; }
     if (!valor) { alert('⚠️ Preencha o valor do pacote.'); return; }
 
+    if (editandoPacoteId) {
+      const index = AppStorage.sessoes.findIndex(s => s.id === editandoPacoteId);
+      if (index === -1) { alert('⚠️ Pacote não encontrado.'); return; }
+
+      const pacote = AppStorage.sessoes[index];
+      if (qtd < (pacote.sessoesRealizadas || 0)) {
+        alert(`⚠️ Não é possível reduzir para ${qtd} sessões. Já foram realizadas ${pacote.sessoesRealizadas || 0}.`);
+        return;
+      }
+
+      AppStorage.sessoes[index] = { ...pacote, servico, totalSessoes: qtd, valor, obs };
+      AppStorage.salvarDados();
+      renderDashboard();
+      if (typeof atualizarSessoesHoje === 'function') atualizarSessoesHoje();
+      if (typeof renderCalendario === 'function') renderCalendario();
+      if (typeof renderHistorico === 'function') renderHistorico();
+      const c = AppStorage.clientes.find(c => c.id === clienteSelecionadoId);
+      if (c) abrirPopover(c);
+      alert('✅ Pacote atualizado!');
+      fecharPopoverSessao();
+      return;
+    }
+
     novoRegistro = {
       id: Date.now(),
       user_id: AppStorage.currentUserId,
@@ -382,6 +436,7 @@ function cadastrarSessao() {
     };
   }
 
+  if (!novoRegistro) return;
   AppStorage.sessoes.push(novoRegistro);
 
   AppStorage.salvarDados();

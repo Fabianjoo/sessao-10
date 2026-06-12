@@ -39,7 +39,10 @@ function abrirPopover(cliente) {
             <div class="sessao-card-top">
               <strong>${p.servico}</strong>
               <span class="badge badge-${p.status}">${p.status}</span>
-              <button class="btn-excluir-sessao" aria-label="Excluir pacote" onclick="excluirPacote(${cliente.id}, ${p.id})">🗑️</button>
+              <div style="display:flex;gap:2px">
+                <button class="btn-editar-sessao" aria-label="Editar pacote" onclick="editarPacote(${cliente.id}, ${p.id})">✏️</button>
+                <button class="btn-excluir-sessao" aria-label="Excluir pacote" onclick="excluirPacote(${cliente.id}, ${p.id})">🗑️</button>
+              </div>
             </div>
             <div class="progresso-bar">
               <div class="progresso-fill" style="width:${pct}%"></div>
