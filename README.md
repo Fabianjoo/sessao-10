@@ -17,16 +17,17 @@ O desenvolvimento desta plataforma é parte de um projeto de extensão acadêmic
 A aplicação foi reestruturada para seguir padrões de modularidade e separação de preocupações:
 
 - **css/**: Estilos segmentados (base, componentes e módulos).
-- **js/core/**: Gestão de estado e persistência (`AppStorage`).
-- **js/utils/**: Utilitários de formatação e máscaras.
-- **js/modules/**: Lógica de interface e funcionalidades específicas.
+- **js/core/**: Gestão de estado e persistência (`AppStorage`), configuração Supabase, autenticação (`AppAuth`).
+- **js/utils/**: Utilitários de formatação, máscaras e busca automática de CEP (ViaCEP).
+- **js/modules/**: Lógica de interface e funcionalidades específicas (clientes, sessões, pacotes, pagamentos, dashboard).
 - **index.html**: Ponto de entrada da aplicação.
 
 ### Tecnologias Utilizadas
 
 - **HTML5** e **CSS3** (Modularizado).
 - **JavaScript (ES6+)** com arquitetura baseada em módulos.
-- **LocalStorage** para persistência de dados.
+- **Supabase** (PostgreSQL + Auth) para autenticação, persistência remota e RLS.
+- **LocalStorage** como cache local síncrono (fallback e performance).
 
 ## ⚙️ Como Executar
 

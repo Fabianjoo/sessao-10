@@ -13,6 +13,13 @@ Este arquivo serve para rastrear bugs, ideias de melhorias e tarefas pendentes p
 - [x] **Não permitir salvar com dados incompletos:** Não deve ser possível salvar cliente com telefone "(1" ou com CPF "123." por exemplo.
 - [x] **Deletar cliente não deve deletar histórico**: Deletar apenas as seções futuras do cliente.
 - [x] **Ao deletar atualizar a aba esquerda de próxima sessão**
+- [x] **Buscar cliente por nome, telefone, CEP e CPF simultaneamente**
+- [x] **Aceitar caracteres especiais no nome** ("/" e números)
+- [x] **Auto-preenchimento de endereço via CEP (ViaCEP)**
+- [x] **Pagamentos de pacote** — registrar pagamentos parciais com extrato e saldo
+- [x] **Editar pacote** — alterar qtd de sessões, valor e observações
+- [x] **Fluxo "Esqueci minha senha"** — redefinição de senha via email (Supabase Auth)
+- [x] **Visual verde ao finalizar sessão** — classe `sessao-concluida` nas listas de hoje e histórico
 
 ## 🔴 Prioridade Máxima — Após finalizar configuração do Supabase
 - [x] **Adicionar autenticação com Supabase Auth (email/senha)**
