@@ -46,9 +46,10 @@ async function supabaseSync() {
   if (!AppStorage.currentUserId) return;
 
   try {
-    const [{ data: clientes }, { data: sessoes }] = await Promise.all([
+    const [{ data: clientes }, { data: sessoes }, { data: pagamentos }] = await Promise.all([
       supabaseClient.from('clientes').select('*').eq('user_id', AppStorage.currentUserId),
-      supabaseClient.from('sessoes').select('*').eq('user_id', AppStorage.currentUserId)
+      supabaseClient.from('sessoes').select('*').eq('user_id', AppStorage.currentUserId),
+      supabaseClient.from('pagamentos').select('*').eq('user_id', AppStorage.currentUserId)
     ]);
 
     let precisaRenderizar = false;
@@ -65,6 +66,14 @@ async function supabaseSync() {
       const { records, changed } = mergeRecords(AppStorage.sessoes, sessoes);
       if (changed) {
         AppStorage.sessoes = records;
+        precisaRenderizar = true;
+      }
+    }
+
+    if (pagamentos) {
+      const { records, changed } = mergeRecords(AppStorage.pagamentos, pagamentos);
+      if (changed) {
+        AppStorage.pagamentos = records;
         precisaRenderizar = true;
       }
     }
@@ -137,7 +146,8 @@ async function supabaseSalvar() {
   try {
     await Promise.all([
       syncTableSupabase('clientes', AppStorage.clientes),
-      syncTableSupabase('sessoes', AppStorage.sessoes)
+      syncTableSupabase('sessoes', AppStorage.sessoes),
+      syncTableSupabase('pagamentos', AppStorage.pagamentos)
     ]);
   } catch (e) {
     console.warn('[Supabase] Erro ao salvar dados:', e.message);

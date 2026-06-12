@@ -45,6 +45,22 @@ CREATE TABLE IF NOT EXISTS sessoes (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Criar tabela de pagamentos
+CREATE TABLE IF NOT EXISTS pagamentos (
+  id BIGINT PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) NOT NULL DEFAULT auth.uid(),
+  pacote_id BIGINT NOT NULL,
+  cliente_id BIGINT NOT NULL,
+  valor NUMERIC(10,2) NOT NULL,
+  data TEXT NOT NULL,
+  obs TEXT DEFAULT '',
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_pagamentos_pacote_id ON pagamentos(pacote_id);
+CREATE INDEX IF NOT EXISTS idx_pagamentos_data ON pagamentos(data);
+
 -- Índices para performance
 CREATE INDEX IF NOT EXISTS idx_sessoes_clienteId ON sessoes(clienteId);
 CREATE INDEX IF NOT EXISTS idx_sessoes_data ON sessoes(data);
@@ -70,6 +86,11 @@ CREATE TRIGGER set_sessoes_updated_at
   BEFORE UPDATE ON sessoes
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS set_pagamentos_updated_at ON pagamentos;
+CREATE TRIGGER set_pagamentos_updated_at
+  BEFORE UPDATE ON pagamentos
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
 -- =============================================================
 -- RLS (Row Level Security)
 -- Apenas usuários autenticados podem acessar os dados.
@@ -77,6 +98,7 @@ CREATE TRIGGER set_sessoes_updated_at
 
 ALTER TABLE clientes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE sessoes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE pagamentos ENABLE ROW LEVEL SECURITY;
 
 -- Políticas para clientes (apenas próprios registros)
 DROP POLICY IF EXISTS "Acesso total anônimo clientes" ON clientes;
@@ -93,6 +115,14 @@ DROP POLICY IF EXISTS "Acesso total anônimo sessoes" ON sessoes;
 DROP POLICY IF EXISTS "Acesso total autenticado sessoes" ON sessoes;
 DROP POLICY IF EXISTS "Usuários podem ver apenas suas próprias sessões" ON sessoes;
 CREATE POLICY "Usuários podem ver apenas suas próprias sessões" ON sessoes
+  FOR ALL
+  TO authenticated
+  USING (user_id = auth.uid())
+  WITH CHECK (user_id = auth.uid());
+
+-- Políticas para pagamentos (apenas próprios registros)
+DROP POLICY IF EXISTS "Usuários podem ver apenas seus próprios pagamentos" ON pagamentos;
+CREATE POLICY "Usuários podem ver apenas seus próprios pagamentos" ON pagamentos
   FOR ALL
   TO authenticated
   USING (user_id = auth.uid())
