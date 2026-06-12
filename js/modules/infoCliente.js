@@ -204,6 +204,17 @@ function salvarPagamento(clienteId, pacoteId) {
     return;
   }
 
+  const pacote = AppStorage.sessoes.find(s => s.id === pacoteId);
+  if (pacote) {
+    const pagoAteAgora = AppStorage.pagamentos
+      .filter(pg => pg.pacoteId === pacoteId)
+      .reduce((a, pg) => a + pg.valor, 0);
+    const totalPacote = parseMoeda(pacote.valor);
+    if (pagoAteAgora + valorNumerico > totalPacote) {
+      if (!confirm(`O total pago (${formatMoeda(pagoAteAgora + valorNumerico)}) excederá o valor do pacote (${pacote.valor}). Continuar?`)) return;
+    }
+  }
+
   AppStorage.pagamentos.push({
     id: Date.now(),
     pacoteId: pacoteId,
@@ -211,7 +222,8 @@ function salvarPagamento(clienteId, pacoteId) {
     valor: valorNumerico,
     data: dataInput.value,
     obs: obsInput ? obsInput.value.trim() : '',
-    user_id: AppStorage.currentUserId || ''
+    user_id: AppStorage.currentUserId || '',
+    updated_at: new Date().toISOString()
   });
 
   AppStorage.salvarDados();

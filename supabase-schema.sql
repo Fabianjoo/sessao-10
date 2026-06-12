@@ -49,8 +49,8 @@ CREATE TABLE IF NOT EXISTS sessoes (
 CREATE TABLE IF NOT EXISTS pagamentos (
   id BIGINT PRIMARY KEY,
   user_id UUID REFERENCES auth.users(id) NOT NULL DEFAULT auth.uid(),
-  pacote_id BIGINT NOT NULL,
-  cliente_id BIGINT NOT NULL,
+  pacoteId BIGINT NOT NULL,
+  clienteId BIGINT NOT NULL,
   valor NUMERIC(10,2) NOT NULL,
   data TEXT NOT NULL,
   obs TEXT DEFAULT '',
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS pagamentos (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_pagamentos_pacote_id ON pagamentos(pacote_id);
+CREATE INDEX IF NOT EXISTS idx_pagamentos_pacoteId ON pagamentos(pacoteId);
 CREATE INDEX IF NOT EXISTS idx_pagamentos_data ON pagamentos(data);
 
 -- Índices para performance
