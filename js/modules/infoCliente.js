@@ -34,6 +34,10 @@ function abrirPopover(cliente) {
         const realizadas = p.sessoesRealizadas || 0;
         const total      = p.totalSessoes || 0;
         const pct        = total > 0 ? Math.round((realizadas / total) * 100) : 0;
+        const pagamentosDoPacote = AppStorage.pagamentos.filter(pg => pg.pacoteId === p.id);
+        const totalPagoPacote = pagamentosDoPacote.reduce((a, pg) => a + pg.valor, 0);
+        const saldoPacote = parseMoeda(p.valor) - totalPagoPacote;
+        const hojeStrLoc = new Date().toISOString().slice(0, 10);
         return `
           <div class="sessao-card pacote-card">
             <div class="sessao-card-top">
@@ -48,7 +52,33 @@ function abrirPopover(cliente) {
               <div class="progresso-fill" style="width:${pct}%"></div>
             </div>
             <p class="progresso-label">${realizadas} de ${total} sessões realizadas</p>
-            ${p.valor ? `<p>💰 ${p.valor}</p>` : ''}
+            <p>💰 Total: ${p.valor} | 💳 Pago: ${formatMoeda(totalPagoPacote)} | ⏳ Saldo: ${formatMoeda(saldoPacote)}</p>
+            <div class="sessao-acoes" style="display:flex;gap:4px;flex-wrap:wrap">
+              <button type="button" onclick="mostrarFormPagamento(${cliente.id}, ${p.id})">💳 Registrar Pagamento</button>
+              <button type="button" onclick="toggleExtrato(${p.id})">📋 Extrato (${pagamentosDoPacote.length})</button>
+            </div>
+            <div id="form-pagamento-${p.id}" style="display:none;margin-top:8px">
+              <label style="font-size:13px">Valor</label>
+              <input id="pag-valor-${p.id}" oninput="mascaraValor(this)" style="width:100%">
+              <label style="font-size:13px;margin-top:6px">Data</label>
+              <input id="pag-data-${p.id}" type="date" value="${hojeStrLoc}" style="width:100%">
+              <label style="font-size:13px;margin-top:6px">Observação</label>
+              <textarea id="pag-obs-${p.id}" style="width:100%" rows="2"></textarea>
+              <div style="display:flex;gap:4px;margin-top:6px">
+                <button type="button" onclick="salvarPagamento(${cliente.id}, ${p.id})">💾 Salvar</button>
+                <button type="button" onclick="cancelarFormPagamento(${p.id})">✖ Cancelar</button>
+              </div>
+            </div>
+            <div id="extrato-${p.id}" style="display:none;margin-top:8px;font-size:13px;background:#f9f7f4;padding:8px;border-radius:6px">
+              <strong>📋 Extrato — ${p.servico}</strong>
+              ${pagamentosDoPacote.length > 0
+                ? pagamentosDoPacote
+                    .sort((a, b) => a.data.localeCompare(b.data))
+                    .map(pg => `<p style="margin:4px 0">${pg.data} — ${formatMoeda(pg.valor)}${pg.obs ? ' — ' + pg.obs : ''}</p>`)
+                    .join('')
+                    + `<hr style="margin:6px 0"><p><strong>Total pago:</strong> ${formatMoeda(totalPagoPacote)} | <strong>Saldo:</strong> ${formatMoeda(saldoPacote)}</p>`
+                : '<p style="margin:4px 0">Nenhum pagamento registrado.</p>'}
+            </div>
             ${p.obs   ? `<p>📝 ${p.obs}</p>`   : ''}
             <div class="sessao-acoes">
               <button type="button" onclick="marcarSessaoPacote(${cliente.id}, ${p.id})">
@@ -150,5 +180,54 @@ function trocarAbaCliente(id, el) {
   document.getElementById('abaCliente-' + id).style.display = 'flex';
   el.classList.add('ativa');
 }
+
+function mostrarFormPagamento(clienteId, pacoteId) {
+  const form = document.getElementById('form-pagamento-' + pacoteId);
+  if (form) form.style.display = 'block';
+}
+
+function cancelarFormPagamento(pacoteId) {
+  const form = document.getElementById('form-pagamento-' + pacoteId);
+  if (form) form.style.display = 'none';
+}
+
+function salvarPagamento(clienteId, pacoteId) {
+  const valorInput = document.getElementById('pag-valor-' + pacoteId);
+  const dataInput = document.getElementById('pag-data-' + pacoteId);
+  const obsInput = document.getElementById('pag-obs-' + pacoteId);
+  if (!valorInput || !dataInput) return;
+
+  const valorNumerico = parseMoeda(valorInput.value);
+  if (!valorInput.value || valorNumerico <= 0) {
+    alert('Informe um valor válido.');
+    valorInput.focus();
+    return;
+  }
+
+  AppStorage.pagamentos.push({
+    id: Date.now(),
+    pacoteId: pacoteId,
+    clienteId: clienteId,
+    valor: valorNumerico,
+    data: dataInput.value,
+    obs: obsInput ? obsInput.value.trim() : '',
+    user_id: AppStorage.currentUserId || ''
+  });
+
+  AppStorage.salvarDados();
+
+  const cliente = AppStorage.clientes.find(c => c.id === clienteId);
+  if (cliente) abrirPopover(cliente);
+}
+
+function toggleExtrato(pacoteId) {
+  const el = document.getElementById('extrato-' + pacoteId);
+  if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+window.mostrarFormPagamento = mostrarFormPagamento;
+window.cancelarFormPagamento = cancelarFormPagamento;
+window.salvarPagamento = salvarPagamento;
+window.toggleExtrato = toggleExtrato;
 
 
