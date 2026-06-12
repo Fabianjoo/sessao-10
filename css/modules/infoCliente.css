@@ -105,6 +105,19 @@
   transform: translate(2px, -2px);
 }
 
+.btn-editar-sessao {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 2px 4px;
+  line-height: 1;
+}
+
+.btn-editar-sessao:hover {
+  transform: translateY(-1px);
+}
+
 /* ==================== PACOTE CARD ==================== */
 .pacote-card {
   border-left-color: #2e7d32;

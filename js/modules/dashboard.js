@@ -11,15 +11,13 @@ function renderDashboard() {
   const doMes    = avulsas.filter(s => s.data.startsWith(mesStr));
   const concMes  = doMes.filter(s => getStatus(s, agoraMs) === 'concluida');
 
-  // Pacotes cadastrados hoje e no mês (valor total na data de cadastro)
-  const pacotesDoDia = AppStorage.sessoes.filter(s => s.tipo === 'pacote' && s.dataCadastro === hojeStr);
-  const pacotesDoMes = AppStorage.sessoes.filter(s => s.tipo === 'pacote' && s.dataCadastro?.startsWith(mesStr));
+  const pagamentosHoje = AppStorage.pagamentos.filter(p => p.data === hojeStr);
+  const pagamentosMes = AppStorage.pagamentos.filter(p => p.data?.startsWith(mesStr));
 
-  // Receita = sessões avulsas + valor total dos pacotes cadastrados no período
   const receitaDia = hoje.reduce((a, s) => a + parseMoeda(s.valor), 0)
-                   + pacotesDoDia.reduce((a, s) => a + parseMoeda(s.valor), 0);
+                   + pagamentosHoje.reduce((a, p) => a + (+p.valor || 0), 0);
   const receitaMes = doMes.reduce((a, s) => a + parseMoeda(s.valor), 0)
-                   + pacotesDoMes.reduce((a, s) => a + parseMoeda(s.valor), 0);
+                   + pagamentosMes.reduce((a, p) => a + (+p.valor || 0), 0);
 
   const proxima = avulsas
     .filter(s => getStatus(s, agoraMs) === 'pendente')

@@ -121,6 +121,7 @@ const AppAuth = {
 
     AppStorage.clientes = [];
     AppStorage.sessoes = [];
+    AppStorage.pagamentos = [];
     AppStorage.salvarDadosLocal();
   },
 
@@ -135,6 +136,7 @@ const AppAuth = {
       AppStorage.currentUserId = null;
       AppStorage.clientes = [];
       AppStorage.sessoes = [];
+      AppStorage.pagamentos = [];
       AppStorage.salvarDadosLocal();
       this.showLogin();
     }
