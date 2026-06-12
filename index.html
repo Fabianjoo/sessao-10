@@ -39,12 +39,61 @@
               <label for="login-password">Senha</label>
               <input type="password" id="login-password" name="password" placeholder="Sua senha" required autocomplete="current-password">
             </div>
+            <p class="login-forgot">
+              <a href="#" id="login-forgot-link">Esqueci minha senha</a>
+            </p>
             <p id="login-error" class="login-error" aria-live="polite"></p>
             <button type="submit" id="login-submit">Entrar</button>
             <p class="login-toggle">
               <a href="#" id="login-toggle-link">Criar uma nova conta</a>
             </p>
           </form>
+        </div>
+      </div>
+
+      <!-- RESET PASSWORD SCREEN -->
+      <div id="reset-screen">
+        <div class="login-card">
+          <div class="login-header">
+            <div class="login-brand">
+              <span class="brand-word">Sessão</span>
+              <span class="brand-badge">10</span>
+            </div>
+            <p class="brand-sub">Gestão de Sessões</p>
+            <p class="login-sub" id="reset-subtitle">Digite seu email para receber o link de redefinição</p>
+          </div>
+
+          <!-- Step 1: Send email -->
+          <div id="reset-step-email">
+            <form id="reset-form">
+              <div class="login-field">
+                <label for="reset-email">Email</label>
+                <input type="email" id="reset-email" name="email" placeholder="seu@email.com" required autocomplete="email" spellcheck="false">
+              </div>
+              <p id="reset-error" class="login-error" aria-live="polite"></p>
+              <p id="reset-success" class="login-success" aria-live="polite" style="display:none;"></p>
+              <button type="submit" id="reset-submit">Enviar link</button>
+              <p class="login-toggle">
+                <a href="#" id="reset-back-link">Voltar para o login</a>
+              </p>
+            </form>
+          </div>
+
+          <!-- Step 2: Set new password (shown after PASSWORD_RECOVERY event) -->
+          <div id="reset-step-password" style="display:none;">
+            <form id="new-password-form">
+              <div class="login-field">
+                <label for="new-password">Nova senha</label>
+                <input type="password" id="new-password" name="password" placeholder="Mínimo 6 caracteres" required autocomplete="new-password" minlength="6">
+              </div>
+              <div class="login-field">
+                <label for="confirm-password">Confirmar senha</label>
+                <input type="password" id="confirm-password" name="confirm_password" placeholder="Repita a nova senha" required autocomplete="new-password" minlength="6">
+              </div>
+              <p id="new-password-error" class="login-error" aria-live="polite"></p>
+              <button type="submit" id="new-password-submit">Redefinir senha</button>
+            </form>
+          </div>
         </div>
       </div>
 
