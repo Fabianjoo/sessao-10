@@ -259,8 +259,9 @@ const AppAuth = {
 
   async logout() {
     try {
-      const storageKey = Object.keys(localStorage).find(k => k.includes('supabase') && k.includes('auth'));
-      if (storageKey) localStorage.removeItem(storageKey);
+      if (supabaseClient) {
+        await supabaseClient.auth.signOut();
+      }
     } catch (e) {
       // ignora
     } finally {
