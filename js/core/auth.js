@@ -11,6 +11,12 @@ const AppAuth = {
 
     this.bindEvents();
 
+    const hash = window.location.hash.replace('#', '?');
+    const hashParams = new URLSearchParams(hash);
+    if (hashParams.get('type') === 'recovery' || hashParams.get('access_token')) {
+      this.isPasswordRecovery = true;
+    }
+
     supabaseClient.auth.onAuthStateChange((event, session) => {
       if (event === 'PASSWORD_RECOVERY') {
         this.isPasswordRecovery = true;
@@ -24,9 +30,7 @@ const AppAuth = {
 
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (session) {
-      const query = new URLSearchParams(window.location.hash.replace('#', '?'));
-      if (query.get('type') === 'recovery') {
-        this.isPasswordRecovery = true;
+      if (this.isPasswordRecovery) {
         this.showNewPasswordForm();
         return;
       }
