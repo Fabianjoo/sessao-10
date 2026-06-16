@@ -1,5 +1,6 @@
 const AppAuth = {
   isSignUp: false,
+  isPasswordRecovery: false,
 
   async init() {
     if (!supabaseClient) {
@@ -12,9 +13,12 @@ const AppAuth = {
 
     supabaseClient.auth.onAuthStateChange((event, session) => {
       if (event === 'PASSWORD_RECOVERY') {
+        this.isPasswordRecovery = true;
         this.showNewPasswordForm();
       } else if (event === 'SIGNED_IN' && session) {
-        this.onAuth(session);
+        if (!this.isPasswordRecovery) {
+          this.onAuth(session);
+        }
       }
     });
 
@@ -22,6 +26,7 @@ const AppAuth = {
     if (session) {
       const query = new URLSearchParams(window.location.hash.replace('#', '?'));
       if (query.get('type') === 'recovery') {
+        this.isPasswordRecovery = true;
         this.showNewPasswordForm();
         return;
       }
@@ -224,6 +229,7 @@ const AppAuth = {
       const { error } = await supabaseClient.auth.updateUser({ password });
       if (error) throw error;
 
+      this.isPasswordRecovery = false;
       document.getElementById('reset-screen').classList.remove('visible');
       document.getElementById('reset-subtitle').textContent = 'Digite seu email para receber o link de redefinição';
       document.getElementById('reset-step-email').style.display = '';
