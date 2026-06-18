@@ -142,13 +142,21 @@ function renderCalendario() {
     const [ano, mes, dia] = data.split('-');
     const itens = porDia[data]
       .sort((a, b) => a.hora.localeCompare(b.hora))
-      .map(s => `
+      .map(s => {
+        const isCancelada = s.status === 'cancelada';
+        const isConcluida = s.status === 'concluida';
+        const btnFinalizar = (!isCancelada && !isConcluida)
+          ? `<button class="btn-finalizar-sessao" aria-label="Finalizar sessão" onclick="finalizarSessao(${s.id})">✅</button>`
+          : '';
+        return `
         <div class="cal-item">
           <span class="cal-dot"></span>
           <span>${s.hora} — ${s.nomeCliente} · ${s.servico}</span>
+          ${btnFinalizar}
           <button class="btn-cancelar-sessao" aria-label="Cancelar sessão" onclick="cancelarSessao(${s.id})">🗑️</button>
         </div>
-      `).join('');
+      `;
+      }).join('');
     return `
       <div class="cal-grupo">
         <div class="cal-dia-label">${dia}/${mes}/${ano}</div>
