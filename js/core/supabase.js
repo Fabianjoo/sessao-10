@@ -97,7 +97,10 @@ async function syncTableSupabase(table, localRecords) {
   const userId = AppStorage.currentUserId;
   if (!userId) return;
 
-  const meusRegistros = localRecords.filter(r => r.user_id === userId);
+  const meusRegistros = localRecords.filter(r => !r.user_id || r.user_id === userId).map(r => ({
+    ...r,
+    user_id: userId
+  }));
   const localIds = meusRegistros.map(r => r.id);
 
   const { data: existing } = await supabaseClient.from(table).select('id').eq('user_id', userId);
@@ -114,7 +117,6 @@ async function syncTableSupabase(table, localRecords) {
   if (meusRegistros.length > 0) {
     const registros = meusRegistros.map(r => ({
       ...r,
-      user_id: userId,
       updated_at: new Date().toISOString()
     }));
 
@@ -143,13 +145,15 @@ async function syncTableSupabase(table, localRecords) {
 async function supabaseSalvar() {
   if (!supabaseClient) return;
 
-  try {
-    await Promise.all([
-      syncTableSupabase('clientes', AppStorage.clientes),
-      syncTableSupabase('sessoes', AppStorage.sessoes),
-      syncTableSupabase('pagamentos', AppStorage.pagamentos)
-    ]);
-  } catch (e) {
-    console.warn('[Supabase] Erro ao salvar dados:', e.message);
+  const results = await Promise.allSettled([
+    syncTableSupabase('clientes', AppStorage.clientes),
+    syncTableSupabase('sessoes', AppStorage.sessoes),
+    syncTableSupabase('pagamentos', AppStorage.pagamentos)
+  ]);
+
+  for (const r of results) {
+    if (r.status === 'rejected') {
+      console.warn('[Supabase] Erro ao salvar:', r.reason?.message);
+    }
   }
 }

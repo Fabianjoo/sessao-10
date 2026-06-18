@@ -222,7 +222,7 @@ function salvarPagamento(clienteId, pacoteId) {
     valor: valorNumerico,
     data: dataInput.value,
     obs: obsInput ? obsInput.value.trim() : '',
-    user_id: AppStorage.currentUserId || '',
+    user_id: AppStorage.currentUserId,
     updated_at: new Date().toISOString()
   });
 
