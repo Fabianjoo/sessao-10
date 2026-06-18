@@ -4,13 +4,12 @@
 .form {
     background-color: var(--cor-primaria-clara);
     width: 100%;
-    min-height: 480px;
     padding: 10px;
     border-radius: 10px;
-
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
+    grid-area: form;
 }
 
 /* FORM */

@@ -125,8 +125,12 @@ button, [role="button"], .cliente-card, .sessaoBtn {
     display: grid;
     grid-template-columns: 1fr 4fr;
     grid-template-rows: auto 1fr;
+    grid-template-areas:
+        "form       clientes"
+        "dashboard  sessoes";
+    gap: 8px;
     height: calc(100vh - 55px);
-
+    padding: 8px;
 }
 
 
