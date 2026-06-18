@@ -215,6 +215,11 @@
   margin: 5px;
 }
 
+.observacao-texto {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 #modoVisualizar button {
   align-self: flex-start;
   margin-top: 6px;
@@ -258,6 +263,25 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
   margin-top: 4px;
+}
+
+#modoEditar textarea {
+  padding: 8px 10px;
+  border: 1.5px solid #c8dfc8;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #2a2a2a;
+  background: #f4faf4;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+  margin: 5px;
+  resize: vertical;
+}
+
+#modoEditar textarea:focus {
+  border-color: #4caf50;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15);
+  background: #fff;
 }
 
 #modoEditar input {

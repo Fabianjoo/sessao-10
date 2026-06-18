@@ -36,14 +36,6 @@ function renderDashboard() {
     </div>
     <div class="d-card">
       <div>
-        <div class="d-label">Clientes</div>
-        <div class="d-valor">${AppStorage.clientes.length}</div>
-        <div class="d-sub">cadastrados</div>
-      </div>
-      <div class="d-icon">👥</div>
-    </div>
-    <div class="d-card">
-      <div>
         <div class="d-label">Mês</div>
         <div class="d-valor">${concMes.length}<span style="font-size:13px;color:#9b7a4a"> / ${doMes.length}</span></div>
         <div class="d-sub">sessões realizadas</div>
