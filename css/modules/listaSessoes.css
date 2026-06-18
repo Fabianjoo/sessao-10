@@ -316,6 +316,13 @@
   gap: 8px;
 }
 
+.cal-item.sessao-concluida span:last-of-type {
+  color: #1e7e34;
+}
+.cal-item.sessao-cancelada span:last-of-type {
+  color: #c62828;
+}
+
 .btn-finalizar-sessao {
   background: none;
   border: none;
