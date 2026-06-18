@@ -234,6 +234,13 @@ const AppAuth = {
       if (error) throw error;
 
       this.isPasswordRecovery = false;
+
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (session) {
+        this.onAuth(session);
+        return;
+      }
+
       document.getElementById('reset-screen').classList.remove('visible');
       document.getElementById('reset-subtitle').textContent = 'Digite seu email para receber o link de redefinição';
       document.getElementById('reset-step-email').style.display = '';
