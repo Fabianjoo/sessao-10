@@ -20,6 +20,10 @@ Este arquivo serve para rastrear bugs, ideias de melhorias e tarefas pendentes p
 - [x] **Editar pacote** — alterar qtd de sessões, valor e observações
 - [x] **Fluxo "Esqueci minha senha"** — redefinição de senha via email (Supabase Auth)
 - [x] **Visual verde ao finalizar sessão** — classe `sessao-concluida` nas listas de hoje e histórico
+- [x] **Campo observação no cadastro/edição/info do cliente**
+- [x] **Calendário exibe todas as sessões (inclusive concluídas/canceladas) com distinção visual**
+- [x] **Botão "Confirmar sessão" nos itens do calendário**
+- [x] **Grid layout refatorado para `grid-template-areas` explícito**
 
 ## 🔴 Prioridade Máxima — Após finalizar configuração do Supabase
 - [x] **Adicionar autenticação com Supabase Auth (email/senha)**
