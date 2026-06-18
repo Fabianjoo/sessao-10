@@ -111,8 +111,9 @@ function abrirPopover(cliente) {
       <div id="modoVisualizar">
             <h4>${cliente.nome}</h4>
             ${cliente.telefone ? `<p>📞 ${cliente.telefone}</p>` : ''}
-            ${cliente.cpf      ? `<p>🪪 ${cliente.cpf}</p>`            : ''}
-            ${enderecoCompleto ? `<p>📍 ${enderecoCompleto}</p>`        : ''}
+            ${cliente.cpf        ? `<p>🪪 ${cliente.cpf}</p>`              : ''}
+            ${enderecoCompleto   ? `<p>📍 ${enderecoCompleto}</p>`          : ''}
+            ${cliente.observacoes ? `<p><strong>📝 Observação:</strong></p><p class="observacao-texto">${cliente.observacoes}</p>` : ''}
              <button onclick="modoEditar(${cliente.id})">✏️ Editar</button>
           </div>
         </div>
@@ -133,6 +134,8 @@ function abrirPopover(cliente) {
         <input id="editNumero" maxlength="10"  value="${cliente.numero   || ''}">
         <label>CEP</label>
         <input id="editCep"      value="${cliente.cep      || ''}">
+        <label>Observação</label>
+        <textarea id="editObservacoes" rows="3" maxlength="500">${cliente.observacoes || ''}</textarea>
         <div class="sessao-acoes">
           <button onclick="salvarEdicaoCliente(${cliente.id})">💾 Salvar</button>
           <button onclick="modoVisualizar()">✖️ Cancelar</button>

@@ -80,9 +80,10 @@ function cadastrarCliente() {
   const nome     = document.getElementById('nomeCliente').value.trim();
   const telefone = document.getElementById('telefone').value.trim();
   const cpf      = document.getElementById('cpf').value.trim();
-  const endereco = document.getElementById('endereco').value.trim();
-  const cep      = document.getElementById('cep').value.trim();
-  const numero   = document.getElementById('numero').value.trim();
+  const endereco   = document.getElementById('endereco').value.trim();
+  const cep        = document.getElementById('cep').value.trim();
+  const numero     = document.getElementById('numero').value.trim();
+  const observacoes = document.getElementById('observacoes').value.trim();
 
   if (!nome) {
     alert('⚠️ Por favor, preencha o nome do cliente.');
@@ -107,7 +108,8 @@ function cadastrarCliente() {
     cpf,
     endereco,
     cep,
-    numero
+    numero,
+    observacoes
   };
 
   AppStorage.clientes.push(novoCliente);
@@ -193,9 +195,10 @@ function salvarEdicaoCliente(id) {
     nome,
     telefone,
     cpf,
-    endereco: document.getElementById('editEndereco').value,
-    numero:   document.getElementById('editNumero').value,
-    cep:      document.getElementById('editCep').value,
+    endereco:   document.getElementById('editEndereco').value,
+    numero:     document.getElementById('editNumero').value,
+    cep:        document.getElementById('editCep').value,
+    observacoes: document.getElementById('editObservacoes').value.trim(),
   };
 
   AppStorage.salvarDados();

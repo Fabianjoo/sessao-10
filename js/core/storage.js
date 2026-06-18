@@ -28,6 +28,7 @@ const AppStorage = {
         try { if (c) this.clientes = JSON.parse(c); } catch (e) { this.clientes = []; }
         try { if (s) this.sessoes = JSON.parse(s); } catch (e) { this.sessoes = []; }
         try { if (p) this.pagamentos = JSON.parse(p); } catch (e) { this.pagamentos = []; }
+        this.clientes.forEach(c => { if ('observacao' in c && !('observacoes' in c)) { c.observacoes = c.observacao; delete c.observacao; } });
     },
 
     carregarDadosRemoto() {
