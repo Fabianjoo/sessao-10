@@ -121,10 +121,8 @@ function renderCalendario() {
 
   const mesStr = calAno + '-' + String(calMes + 1).padStart(2, '0');
 
-  const agoraCal = new Date().getTime();
   const doMes = AppStorage.sessoes.filter(s =>
-    s.tipo !== 'pacote' && s.data && s.data.startsWith(mesStr) &&
-    s.status !== 'cancelada' && getStatus(s, agoraCal) !== 'concluida'
+    s.tipo !== 'pacote' && s.data && s.data.startsWith(mesStr)
   );
 
   if (doMes.length === 0) {
@@ -148,12 +146,15 @@ function renderCalendario() {
         const btnFinalizar = (!isCancelada && !isConcluida)
           ? `<button class="btn-finalizar-sessao" aria-label="Finalizar sessão" onclick="finalizarSessao(${s.id})">✅</button>`
           : '';
+        const btnCancelar = (!isCancelada && !isConcluida)
+          ? `<button class="btn-cancelar-sessao" aria-label="Cancelar sessão" onclick="cancelarSessao(${s.id})">🗑️</button>`
+          : '';
         return `
-        <div class="cal-item">
+        <div class="cal-item ${isCancelada ? 'sessao-cancelada' : ''} ${isConcluida ? 'sessao-concluida' : ''}">
           <span class="cal-dot"></span>
           <span>${s.hora} — ${s.nomeCliente} · ${s.servico}</span>
           ${btnFinalizar}
-          <button class="btn-cancelar-sessao" aria-label="Cancelar sessão" onclick="cancelarSessao(${s.id})">🗑️</button>
+          ${btnCancelar}
         </div>
       `;
       }).join('');
