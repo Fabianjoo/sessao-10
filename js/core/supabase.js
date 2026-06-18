@@ -11,6 +11,26 @@ const supabaseClient = (() => {
   }
 })();
 
+// Mapeamento de colunas lowercase do PostgreSQL → camelCase usado no JS
+const CASE_MAP = {
+  clienteid: 'clienteId',
+  nomecliente: 'nomeCliente',
+  pacoteid: 'pacoteId',
+  totalsessoes: 'totalSessoes',
+  sessoesrealizadas: 'sessoesRealizadas',
+  datacadastro: 'dataCadastro',
+  observacaocancelamento: 'observacaoCancelamento',
+  datacancelamento: 'dataCancelamento',
+};
+
+function fixKeys(obj) {
+  const out = {};
+  for (const [k, v] of Object.entries(obj)) {
+    out[CASE_MAP[k] || k] = v;
+  }
+  return out;
+}
+
 function mergeRecords(localRecords, remoteRecords) {
   const remoteMap = new Map(remoteRecords.map(r => [r.id, r]));
   const merged = [];
@@ -63,7 +83,7 @@ async function supabaseSync() {
     }
 
     if (sessoes) {
-      const { records, changed } = mergeRecords(AppStorage.sessoes, sessoes);
+      const { records, changed } = mergeRecords(AppStorage.sessoes, sessoes.map(fixKeys));
       if (changed) {
         AppStorage.sessoes = records;
         precisaRenderizar = true;
@@ -71,7 +91,7 @@ async function supabaseSync() {
     }
 
     if (pagamentos) {
-      const { records, changed } = mergeRecords(AppStorage.pagamentos, pagamentos);
+      const { records, changed } = mergeRecords(AppStorage.pagamentos, pagamentos.map(fixKeys));
       if (changed) {
         AppStorage.pagamentos = records;
         precisaRenderizar = true;
@@ -114,31 +134,31 @@ async function syncTableSupabase(table, localRecords) {
     }
   }
 
-  if (meusRegistros.length > 0) {
-    const registros = meusRegistros.map(r => ({
-      ...r,
-      updated_at: new Date().toISOString()
-    }));
+  if (meusRegistros.length === 0) return;
 
-    // Coleta todas as chaves únicas e normaliza os objetos
-    const todasChaves = [...new Set(registros.flatMap(r => Object.keys(r)))];
-    const normalizados = registros.map(r => {
-      const obj = {};
-      for (const chave of todasChaves) {
-        obj[chave] = r[chave] !== undefined ? r[chave] : null;
-      }
-      return obj;
-    });
+  const registros = meusRegistros.map(r => ({
+    ...r,
+    updated_at: new Date().toISOString()
+  }));
 
-    const { error } = await supabaseClient.from(table).upsert(normalizados, {
-      onConflict: 'id',
-      ignoreDuplicates: false
-    });
-
-    if (error) {
-      console.error('[Supabase] Detalhes do erro:', error.message, error.details, error.hint);
-      throw error;
+  // Normaliza chaves para lowercase (PostgreSQL não-quotado é case-folded)
+  const todasChaves = [...new Set(registros.flatMap(r => Object.keys(r)))];
+  const normalizados = registros.map(r => {
+    const obj = {};
+    for (const chave of todasChaves) {
+      obj[chave.toLowerCase()] = r[chave] !== undefined ? r[chave] : null;
     }
+    return obj;
+  });
+
+  const { error } = await supabaseClient.from(table).upsert(normalizados, {
+    onConflict: 'id',
+    ignoreDuplicates: false
+  });
+
+  if (error) {
+    console.error('[Supabase] Erro no upsert:', error.message, error.details, error.hint, error.code);
+    throw error;
   }
 }
 
@@ -153,7 +173,7 @@ async function supabaseSalvar() {
 
   for (const r of results) {
     if (r.status === 'rejected') {
-      console.warn('[Supabase] Erro ao salvar:', r.reason?.message);
+      console.warn('[Supabase] Erro ao salvar:', r.reason?.message, r.reason?.details, r.reason?.hint);
     }
   }
 }
