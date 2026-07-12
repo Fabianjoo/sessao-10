@@ -51,7 +51,7 @@ function abrirPopover(cliente) {
             <div class="progresso-bar">
               <div class="progresso-fill" style="width:${pct}%"></div>
             </div>
-            <p class="progresso-label">${realizadas} de ${total} sessões realizadas</p>
+            <p class="progresso-label"><span class="sess-realizadas-btn" onclick="editarSessoesRealizadas(event,${cliente.id},${p.id})" title="Clique para editar">${realizadas}</span> de ${total} sessões realizadas</p>
             <p>💰 Total: ${p.valor || '—'} | 💳 Pago: ${formatMoeda(totalPagoPacote)} | ⏳ Saldo: ${formatMoeda(saldoPacote)}</p>
             <div class="sessao-acoes" style="display:flex;gap:4px;flex-wrap:wrap">
               <button type="button" onclick="mostrarFormPagamento(${cliente.id}, ${p.id})">💳 Registrar Pagamento</button>
@@ -240,9 +240,59 @@ function toggleExtrato(pacoteId) {
   if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
 }
 
+function editarSessoesRealizadas(event, clienteId, pacoteId) {
+  const span = event.currentTarget;
+  const pacote = AppStorage.sessoes.find(s => s.id === pacoteId);
+  if (!pacote) return;
+  const total = pacote.totalSessoes || 0;
+
+  const input = document.createElement('input');
+  input.type = 'number';
+  input.value = pacote.sessoesRealizadas || 0;
+  input.min = 0;
+  input.max = total;
+  input.style.width = '50px';
+  input.style.padding = '2px 4px';
+  input.style.fontSize = 'inherit';
+  input.style.textAlign = 'center';
+
+  span.replaceWith(input);
+  input.focus();
+  input.select();
+
+  let guard = false;
+  function finalizar(confirmar) {
+    if (guard) return;
+    guard = true;
+
+    if (confirmar) {
+      const novoValor = parseInt(input.value, 10);
+      if (isNaN(novoValor) || novoValor < 0 || novoValor > total) {
+        alert(`Valor inválido. Deve ser entre 0 e ${total}.`);
+        guard = false;
+        input.focus();
+        input.select();
+        return;
+      }
+      pacote.sessoesRealizadas = novoValor;
+      AppStorage.salvarDados();
+    }
+
+    const cliente = AppStorage.clientes.find(c => c.id === clienteId);
+    if (cliente) abrirPopover(cliente);
+  }
+
+  input.addEventListener('blur', () => finalizar(true));
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+    if (e.key === 'Escape') { finalizar(false); }
+  });
+}
+
 window.mostrarFormPagamento = mostrarFormPagamento;
 window.cancelarFormPagamento = cancelarFormPagamento;
 window.salvarPagamento = salvarPagamento;
 window.toggleExtrato = toggleExtrato;
+window.editarSessoesRealizadas = editarSessoesRealizadas;
 
 
