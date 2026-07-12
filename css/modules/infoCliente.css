@@ -146,6 +146,21 @@
   margin: 0 0 6px;
 }
 
+.sess-realizadas-btn {
+  cursor: pointer;
+  padding: 1px 6px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+
+.sess-realizadas-btn:hover {
+  background: #c8e6c9;
+}
+
+.sess-realizadas-btn:active {
+  background: #a5d6a7;
+}
+
 /* ==================== BADGES ==================== */
 .badge {
   font-size: 0.72rem;
