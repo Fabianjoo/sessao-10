@@ -260,11 +260,33 @@ function finalizarSessao(id) {
 
   sessao.status = 'concluida';
 
+  atualizarStatusPacote(sessao.pacoteId);
+
   AppStorage.salvarDados();
   atualizarSessoesHoje();
   renderCalendario();
   renderHistorico();
   renderDashboard();
+}
+
+function atualizarStatusPacote(pacoteId) {
+  if (!pacoteId) return;
+
+  const pacote = AppStorage.sessoes.find(s => s.id === pacoteId && s.tipo === 'pacote');
+  if (!pacote) return;
+
+  const sessoesPacote = AppStorage.sessoes.filter(s =>
+    s.pacoteId === pacoteId && s.tipo !== 'pacote'
+  );
+
+  const total = pacote.totalSessoes || 0;
+  const concluidas = sessoesPacote.filter(s => s.status === 'concluida').length;
+
+  if (total > 0 && concluidas >= total) {
+    pacote.status = 'concluido';
+  } else if (pacote.status === 'concluido') {
+    pacote.status = 'ativo';
+  }
 }
 
 function limparHistorico() {
@@ -291,6 +313,7 @@ window.renderCalendario = renderCalendario;
 window.renderHistorico = renderHistorico;
 window.getStatus = getStatus;
 window.finalizarSessao = finalizarSessao;
+window.atualizarStatusPacote = atualizarStatusPacote;
 window.iniciarRelogio = iniciarRelogio;
 window.mudarMes = mudarMes;
 window.trocarAba = trocarAba;

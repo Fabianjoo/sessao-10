@@ -46,15 +46,19 @@ function abrirPopover(cliente) {
         const saldoPacote = parseMoeda(p.valor) - totalPagoPacote;
         const hojeStrLoc = new Date().toISOString().slice(0, 10);
         return `
-          <div class="sessao-card pacote-card">
-            <div class="sessao-card-top">
-              <strong>${p.servico}</strong>
-              <span class="badge badge-${p.status}">${p.status}</span>
-              <div style="display:flex;gap:2px">
-                <button class="btn-editar-sessao" aria-label="Editar pacote" onclick="editarPacote(${cliente.id}, ${p.id})">✏️</button>
-                <button class="btn-excluir-sessao" aria-label="Excluir pacote" onclick="excluirPacote(${cliente.id}, ${p.id})">🗑️</button>
-              </div>
-            </div>
+           <div class="sessao-card pacote-card">
+             <div class="sessao-card-top">
+               <strong>${p.servico}</strong>
+               <select class="pacote-status-select" onchange="salvarStatusPacote(${cliente.id}, ${p.id}, this.value)" title="Status do pacote">
+                 <option value="ativo" ${p.status === 'ativo' ? 'selected' : ''}>Ativo</option>
+                 <option value="concluido" ${p.status === 'concluido' ? 'selected' : ''}>Concluído</option>
+                 <option value="cancelado" ${p.status === 'cancelado' ? 'selected' : ''}>Cancelado</option>
+               </select>
+               <div style="display:flex;gap:2px">
+                 <button class="btn-editar-sessao" aria-label="Editar pacote" onclick="editarPacote(${cliente.id}, ${p.id})">✏️</button>
+                 <button class="btn-excluir-sessao" aria-label="Excluir pacote" onclick="excluirPacote(${cliente.id}, ${p.id})">🗑️</button>
+               </div>
+             </div>
             <div class="progresso-bar">
               <div class="progresso-fill" style="width:${pct}%"></div>
             </div>
@@ -296,10 +300,23 @@ function editarSessoesRealizadas(event, clienteId, pacoteId) {
   });
 }
 
+function salvarStatusPacote(clienteId, pacoteId, novoStatus) {
+  const pacote = AppStorage.sessoes.find(s => s.id === pacoteId);
+  if (!pacote || pacote.tipo !== 'pacote') return;
+
+  pacote.status = novoStatus;
+  AppStorage.salvarDados();
+  renderDashboard();
+
+  const cliente = AppStorage.clientes.find(c => c.id === clienteId);
+  if (cliente) abrirPopover(cliente);
+}
+
 window.mostrarFormPagamento = mostrarFormPagamento;
 window.cancelarFormPagamento = cancelarFormPagamento;
 window.salvarPagamento = salvarPagamento;
 window.toggleExtrato = toggleExtrato;
 window.editarSessoesRealizadas = editarSessoesRealizadas;
+window.salvarStatusPacote = salvarStatusPacote;
 
 

@@ -34,6 +34,8 @@ function confirmarCancelamento() {
     }
   }
 
+  atualizarStatusPacote(sessao.pacoteId);
+
   fecharModalCancelar();
   AppStorage.salvarDados();
   atualizarSessoesHoje();
