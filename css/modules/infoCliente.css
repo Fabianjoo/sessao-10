@@ -193,7 +193,9 @@
 
 /* ── Badges pacote/avulsa (popover) ── */
 .sessao-pacote-badge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 11px;
   font-weight: 500;
   padding: 2px 8px;
@@ -202,6 +204,18 @@
   color: #2e6b2e;
   white-space: nowrap;
 }
+
+.pacote-status-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.pacote-status-ativo { background: #4caf50; }
+.pacote-status-concluido { background: #1976d2; }
+.pacote-status-cancelado { background: #e53935; }
 
 .sessao-avulsa-badge {
   display: inline-block;

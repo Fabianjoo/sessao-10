@@ -62,7 +62,8 @@ function getInfoPacote(sessao) {
   return {
     nome: pacote.servico,
     numero: numero,
-    total: pacote.totalSessoes
+    total: pacote.totalSessoes,
+    status: pacote.status
   };
 }
 
@@ -122,7 +123,7 @@ function atualizarSessoesHoje() {
 
     const infoPacote = getInfoPacote(s);
     const badgePacote = infoPacote
-      ? `<span class="sessao-pacote-badge">📦 ${infoPacote.nome} (${infoPacote.numero}/${infoPacote.total})</span>`
+      ? `<span class="sessao-pacote-badge">📦 ${infoPacote.nome} (${infoPacote.numero}/${infoPacote.total}) <span class="pacote-status-dot pacote-status-${infoPacote.status}"></span> ${infoPacote.status}</span>`
       : (s.pacoteId ? '' : `<span class="sessao-avulsa-badge">Avulsa</span>`);
 
     return `
@@ -181,7 +182,7 @@ function renderCalendario() {
           : '';
         const infoPacote = getInfoPacote(s);
         const badgePacote = infoPacote
-          ? `<span class="sessao-pacote-badge">📦 ${infoPacote.nome} (${infoPacote.numero}/${infoPacote.total})</span>`
+          ? `<span class="sessao-pacote-badge">📦 ${infoPacote.nome} (${infoPacote.numero}/${infoPacote.total}) <span class="pacote-status-dot pacote-status-${infoPacote.status}"></span> ${infoPacote.status}</span>`
           : (s.pacoteId ? '' : `<span class="sessao-avulsa-badge">Avulsa</span>`);
 
         return `
@@ -233,7 +234,7 @@ function renderHistorico() {
 
     const infoPacote = getInfoPacote(s);
     const badgePacote = infoPacote
-      ? `<span class="sessao-pacote-badge">📦 ${infoPacote.nome} (${infoPacote.numero}/${infoPacote.total})</span>`
+      ? `<span class="sessao-pacote-badge">📦 ${infoPacote.nome} (${infoPacote.numero}/${infoPacote.total}) <span class="pacote-status-dot pacote-status-${infoPacote.status}"></span> ${infoPacote.status}</span>`
       : (s.pacoteId ? '' : `<span class="sessao-avulsa-badge">Avulsa</span>`);
 
     return `

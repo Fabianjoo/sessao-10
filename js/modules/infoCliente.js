@@ -16,7 +16,7 @@ function abrirPopover(cliente) {
   ? sessoesAvulsas.map(s => {
       const infoPacote = getInfoPacote(s);
       const badgePacote = infoPacote
-        ? `<span class="sessao-pacote-badge">📦 ${infoPacote.nome} (${infoPacote.numero}/${infoPacote.total})</span>`
+        ? `<span class="sessao-pacote-badge">📦 ${infoPacote.nome} (${infoPacote.numero}/${infoPacote.total}) <span class="pacote-status-dot pacote-status-${infoPacote.status}"></span> ${infoPacote.status}</span>`
         : (s.pacoteId ? '' : `<span class="sessao-avulsa-badge">Avulsa</span>`);
 
       return `
