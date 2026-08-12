@@ -42,6 +42,30 @@ function iniciarRelogio() {
   setInterval(tick, 1000);
 }
 
+// ── Info do pacote para sessão ──
+function getInfoPacote(sessao) {
+  if (!sessao.pacoteId) return null;
+
+  const pacote = AppStorage.sessoes.find(s =>
+    s.id === sessao.pacoteId && s.tipo === 'pacote'
+  );
+  if (!pacote) return null;
+
+  const sessoesPacote = AppStorage.sessoes.filter(s =>
+    s.pacoteId === sessao.pacoteId && s.tipo !== 'pacote'
+  );
+  sessoesPacote.sort((a, b) => (a.data + a.hora).localeCompare(b.data + b.hora));
+
+  const index = sessoesPacote.findIndex(s => s.id === sessao.id);
+  const numero = index >= 0 ? index + 1 : sessoesPacote.length;
+
+  return {
+    nome: pacote.servico,
+    numero: numero,
+    total: pacote.totalSessoes
+  };
+}
+
 // ── Status da sessão ──
 function getStatus(sessao, agoraMs) {
   if (sessao.status === 'concluida' || sessao.status === 'cancelada') return sessao.status;
@@ -96,12 +120,18 @@ function atualizarSessoesHoje() {
       ? `<button class="btn-cancelar-sessao" aria-label="Cancelar sessão" onclick="cancelarSessao(${s.id})">🗑️</button>`
       : '';
 
+    const infoPacote = getInfoPacote(s);
+    const badgePacote = infoPacote
+      ? `<span class="sessao-pacote-badge">📦 ${infoPacote.nome} (${infoPacote.numero}/${infoPacote.total})</span>`
+      : (s.pacoteId ? '' : `<span class="sessao-avulsa-badge">Avulsa</span>`);
+
     return `
       <div class="sessao-card-lista ${isCancelada ? 'sessao-cancelada' : ''} ${isConcluida ? 'sessao-concluida' : ''}">
         <div class="sessao-hora">${s.hora}</div>
         <div class="sessao-info">
           <div class="sessao-nome">${s.nomeCliente}</div>
           <div class="sessao-detalhe">${s.servico}</div>
+          ${badgePacote ? `<div class="sessao-pacote-linha">${badgePacote}</div>` : ''}
           ${isCancelada ? `<span class="motivo-cancelamento">❌ ${s.observacaoCancelamento}</span>` : ''}
         </div>
         <span class="sessao-status ${classeMap[status]}">${labelMap[status]}</span>
@@ -149,10 +179,16 @@ function renderCalendario() {
         const btnCancelar = (!isCancelada && !isConcluida)
           ? `<button class="btn-cancelar-sessao" aria-label="Cancelar sessão" onclick="cancelarSessao(${s.id})">🗑️</button>`
           : '';
+        const infoPacote = getInfoPacote(s);
+        const badgePacote = infoPacote
+          ? `<span class="sessao-pacote-badge">📦 ${infoPacote.nome} (${infoPacote.numero}/${infoPacote.total})</span>`
+          : (s.pacoteId ? '' : `<span class="sessao-avulsa-badge">Avulsa</span>`);
+
         return `
         <div class="cal-item ${isCancelada ? 'sessao-cancelada' : ''} ${isConcluida ? 'sessao-concluida' : ''}">
           <span class="cal-dot"></span>
           <span>${s.hora} — ${s.nomeCliente} · ${s.servico}</span>
+          ${badgePacote ? `<span class="sessao-pacote-linha-cal">${badgePacote}</span>` : ''}
           ${btnFinalizar}
           ${btnCancelar}
         </div>
@@ -195,12 +231,18 @@ function renderHistorico() {
     const isCancelada = s.status === 'cancelada';
     const isConcluida = !isCancelada; // ← ADICIONADO (se não é cancelada, é concluída)
 
+    const infoPacote = getInfoPacote(s);
+    const badgePacote = infoPacote
+      ? `<span class="sessao-pacote-badge">📦 ${infoPacote.nome} (${infoPacote.numero}/${infoPacote.total})</span>`
+      : (s.pacoteId ? '' : `<span class="sessao-avulsa-badge">Avulsa</span>`);
+
     return `
       <div class="hist-item ${isCancelada ? 'sessao-cancelada' : ''} ${isConcluida ? 'sessao-concluida' : ''}">
         <div>
           <div class="hist-data">${dia}/${mes}/${ano}</div>
           <div class="hist-nome">${s.nomeCliente}</div>
           <div class="hist-detalhe">${s.servico} · ${s.hora}</div>
+          ${badgePacote ? `<div class="sessao-pacote-linha-hist">${badgePacote}</div>` : ''}
           ${isCancelada ? `
             <span class="motivo-cancelamento">❌ Cancelada: ${s.observacaoCancelamento}</span>
           ` : ''}

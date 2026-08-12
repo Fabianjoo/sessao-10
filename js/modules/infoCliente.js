@@ -13,7 +13,13 @@ function abrirPopover(cliente) {
 
   // ---- HTML: aba sessões ----
   const sessoesHTML = sessoesAvulsas.length > 0
-  ? sessoesAvulsas.map(s => `
+  ? sessoesAvulsas.map(s => {
+      const infoPacote = getInfoPacote(s);
+      const badgePacote = infoPacote
+        ? `<span class="sessao-pacote-badge">📦 ${infoPacote.nome} (${infoPacote.numero}/${infoPacote.total})</span>`
+        : (s.pacoteId ? '' : `<span class="sessao-avulsa-badge">Avulsa</span>`);
+
+      return `
       <div class="sessao-card">
         <div class="sessao-card-top">
           <strong>${s.servico}</strong>
@@ -21,10 +27,11 @@ function abrirPopover(cliente) {
           <button class="btn-excluir-sessao" aria-label="Excluir sessão" onclick="excluirSessao(${cliente.id}, ${s.id})">🗑️</button>
         </div>
         <p>📅 ${s.data} às ${s.hora}</p>
+        ${badgePacote ? `<div class="sessao-pacote-linha-pop">${badgePacote}</div>` : ''}
         ${s.valor ? `<p>💰 ${s.valor}</p>` : ''}
         ${s.obs   ? `<p>📝 ${s.obs}</p>`   : ''}
       </div>
-    `).join('')
+    `}).join('')
   : '<p class="vazio">Nenhuma sessão avulsa marcada.</p>';
 
 

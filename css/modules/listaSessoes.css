@@ -128,6 +128,42 @@
   margin-top: 2px;
 }
 
+/* ── Badges pacote/avulsa ── */
+.sessao-pacote-linha {
+  margin-top: 4px;
+}
+
+.sessao-pacote-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--azul-100);
+  color: var(--azul-700);
+  white-space: nowrap;
+}
+
+.sessao-avulsa-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--cinza-300);
+  color: var(--cinza-700);
+  white-space: nowrap;
+}
+
+.sessao-pacote-linha-cal {
+  margin-left: auto;
+  margin-right: 8px;
+}
+
+.sessao-pacote-linha-hist {
+  margin-top: 4px;
+}
+
 /* ── Status badges ── */
 .sessao-status {
   font-size: 11px;
