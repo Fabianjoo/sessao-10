@@ -1,6 +1,11 @@
+let abaClienteAtiva = 'info';
+let clienteIdNoPopover = null;
+
 function abrirPopover(cliente) {
   const popover = document.querySelector('.popoverCliente');
   const info = document.querySelector('.infoCliente');
+
+  clienteIdNoPopover = cliente.id;
 
   let enderecoCompleto = '';
   if (cliente.endereco) enderecoCompleto += cliente.endereco;
@@ -18,15 +23,41 @@ function abrirPopover(cliente) {
       const badgePacote = infoPacote
         ? `<span class="sessao-pacote-badge">📦 ${infoPacote.nome} (${infoPacote.numero}/${infoPacote.total}) <span class="pacote-status-dot pacote-status-${infoPacote.status}"></span> ${infoPacote.status}</span>`
         : (s.pacoteId ? '' : `<span class="sessao-avulsa-badge">Avulsa</span>`);
+      const podeEditarData = s.status !== 'concluida' && s.status !== 'cancelada';
+      const opcoesPacote = pacotes.map(p =>
+        `<option value="${p.id}" ${s.pacoteId === p.id ? 'selected' : ''}>📦 ${p.servico}</option>`
+      ).join('');
 
       return `
       <div class="sessao-card">
         <div class="sessao-card-top">
           <strong>${s.servico}</strong>
           <span class="badge badge-${s.status}">${s.status}</span>
-          <button class="btn-excluir-sessao" aria-label="Excluir sessão" onclick="excluirSessao(${cliente.id}, ${s.id})">🗑️</button>
+          <div style="display:flex;gap:2px">
+            ${podeEditarData ? `<button class="btn-editar-sessao" aria-label="Editar data da sessão" onclick="editarDataSessao(${cliente.id}, ${s.id})">✏️</button>` : ''}
+            <button class="btn-excluir-sessao" aria-label="Excluir sessão" onclick="excluirSessao(${cliente.id}, ${s.id})">🗑️</button>
+          </div>
         </div>
-        <p>📅 ${s.data} às ${s.hora}</p>
+        <p id="sessao-data-${s.id}">📅 ${s.data} às ${s.hora}</p>
+        ${podeEditarData ? `
+        <div id="sessao-edit-${s.id}" style="display:none;margin-top:6px">
+          <label style="font-size:13px">Nova data</label>
+          <input type="date" id="edit-data-${s.id}" value="${s.data || ''}" style="width:100%">
+          <label style="font-size:13px;margin-top:6px">Novo horário</label>
+          <input type="time" id="edit-hora-${s.id}" value="${s.hora || ''}" style="width:100%">
+          <div style="display:flex;gap:4px;margin-top:6px">
+            <button type="button" onclick="salvarDataSessao(${cliente.id}, ${s.id})">💾 Salvar</button>
+            <button type="button" onclick="cancelarEdicaoDataSessao(${s.id})">✖ Cancelar</button>
+          </div>
+        </div>` : ''}
+        ${podeEditarData ? `
+        <div style="margin-top:6px">
+          <label style="font-size:13px">Pacote</label>
+          <select onchange="alterarPacoteSessao(${cliente.id}, ${s.id}, this.value)" style="width:100%">
+            <option value="">Avulsa (sem pacote)</option>
+            ${opcoesPacote}
+          </select>
+        </div>` : ''}
         ${badgePacote ? `<div class="sessao-pacote-linha-pop">${badgePacote}</div>` : ''}
         ${s.valor ? `<p>💰 ${s.valor}</p>` : ''}
         ${s.obs   ? `<p>📝 ${s.obs}</p>`   : ''}
@@ -104,15 +135,18 @@ function abrirPopover(cliente) {
   const iniciais = cliente.nome.split(' ').map(n => n[0]).slice(0,2).join('').toUpperCase();
 
   info.innerHTML = `
-    <h3>📋 Informações do Cliente</h3>
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h3>📋 Informações do Cliente</h3>
+      <button type="button" class="nova-sessao-btn" onclick="abrirPopoverSessaoCliente(${cliente.id})">➕ Nova Sessão</button>
+    </div>
 
     <!-- ABAS -->
     <div class="abas-cliente">
-      <button class="aba-btn ativa" onclick="trocarAbaCliente('info', this)">Info</button>
-      <button class="aba-btn" onclick="trocarAbaCliente('sessoes', this)">
+      <button class="aba-btn ativa" data-aba="info" onclick="trocarAbaCliente('info', this)">Info</button>
+      <button class="aba-btn" data-aba="sessoes" onclick="trocarAbaCliente('sessoes', this)">
         Sessões (${sessoesAvulsas.length})
       </button>
-      <button class="aba-btn" onclick="trocarAbaCliente('pacotes', this)">
+      <button class="aba-btn" data-aba="pacotes" onclick="trocarAbaCliente('pacotes', this)">
         Pacotes (${pacotes.length})
       </button>
     </div>
@@ -166,6 +200,11 @@ function abrirPopover(cliente) {
   `;
 
   popover.style.display = 'flex';
+
+  if (abaClienteAtiva !== 'info') {
+    const btn = document.querySelector(`.aba-btn[data-aba="${abaClienteAtiva}"]`);
+    if (btn) trocarAbaCliente(abaClienteAtiva, btn);
+  }
 }
 
 function excluirSessao(clienteId, sessaoId) {
@@ -176,6 +215,100 @@ function excluirSessao(clienteId, sessaoId) {
   const cliente = AppStorage.clientes.find(c => c.id === clienteId);
   AppStorage.salvarDados();
   if (cliente) abrirPopover(cliente);
+}
+
+function abrirPopoverSessaoCliente(clienteId) {
+  const cliente = AppStorage.clientes.find(c => c.id === clienteId);
+  if (!cliente) return;
+
+  abrirPopoverSessao();
+
+  clienteSelecionadoId = clienteId;
+  const inputCliente = document.getElementById('clienteSessao');
+  inputCliente.value = cliente.nome;
+  inputCliente.setAttribute('readonly', true);
+  document.getElementById('clientesDropdown').innerHTML = '';
+}
+
+function editarDataSessao(clienteId, sessaoId) {
+  const linha = document.getElementById('sessao-data-' + sessaoId);
+  const form = document.getElementById('sessao-edit-' + sessaoId);
+  if (linha) linha.style.display = 'none';
+  if (form) form.style.display = 'block';
+}
+
+function cancelarEdicaoDataSessao(sessaoId) {
+  const linha = document.getElementById('sessao-data-' + sessaoId);
+  const form = document.getElementById('sessao-edit-' + sessaoId);
+  if (linha) linha.style.display = '';
+  if (form) form.style.display = 'none';
+}
+
+function salvarDataSessao(clienteId, sessaoId) {
+  const sessao = AppStorage.sessoes.find(s => s.id === sessaoId);
+  if (!sessao) return;
+
+  const dataInput = document.getElementById('edit-data-' + sessaoId);
+  const horaInput = document.getElementById('edit-hora-' + sessaoId);
+  if (!dataInput || !horaInput) return;
+
+  if (!dataInput.value) {
+    alert('Informe uma data válida.');
+    dataInput.focus();
+    return;
+  }
+
+  sessao.data = dataInput.value;
+  sessao.hora = horaInput.value;
+
+  AppStorage.salvarDados();
+
+  const cliente = AppStorage.clientes.find(c => c.id === clienteId);
+  if (cliente) abrirPopover(cliente);
+
+  atualizarSessoesHoje();
+  renderCalendario();
+  renderDashboard();
+}
+
+function alterarPacoteSessao(clienteId, sessaoId, novoPacoteId) {
+  const sessao = AppStorage.sessoes.find(s => s.id === sessaoId);
+  if (!sessao) return;
+
+  const novoId = novoPacoteId ? Number(novoPacoteId) : null;
+  if (novoId === sessao.pacoteId) return;
+
+  const cliente = AppStorage.clientes.find(c => c.id === clienteId);
+  if (!cliente) return;
+
+  if (novoId) {
+    const novoPacote = AppStorage.sessoes.find(s => s.id === novoId && s.tipo === 'pacote');
+    if (!novoPacote) return;
+    if ((novoPacote.sessoesRealizadas || 0) >= novoPacote.totalSessoes) {
+      alert('⚠️ Todas as sessões deste pacote já foram realizadas.');
+      abrirPopover(cliente);
+      return;
+    }
+  }
+
+  const pacoteAntigo = AppStorage.sessoes.find(s => s.id === sessao.pacoteId && s.tipo === 'pacote');
+  if (pacoteAntigo) {
+    pacoteAntigo.sessoesRealizadas = Math.max(0, (pacoteAntigo.sessoesRealizadas || 0) - 1);
+  }
+
+  sessao.pacoteId = novoId;
+
+  if (novoId) {
+    const novoPacote = AppStorage.sessoes.find(s => s.id === novoId && s.tipo === 'pacote');
+    if (novoPacote) novoPacote.sessoesRealizadas = (novoPacote.sessoesRealizadas || 0) + 1;
+  }
+
+  AppStorage.salvarDados();
+  if (cliente) abrirPopover(cliente);
+
+  atualizarSessoesHoje();
+  renderCalendario();
+  renderDashboard();
 }
 
 function excluirPacote(clienteId, pacoteId) {
@@ -189,6 +322,7 @@ function excluirPacote(clienteId, pacoteId) {
 }
 
 function trocarAbaCliente(id, el) {
+  abaClienteAtiva = id;
   document.querySelectorAll('.aba-painel').forEach(p => p.style.display = 'none');
   document.querySelectorAll('.aba-btn').forEach(b => b.classList.remove('ativa'));
   document.getElementById('abaCliente-' + id).style.display = 'flex';
@@ -318,5 +452,11 @@ window.salvarPagamento = salvarPagamento;
 window.toggleExtrato = toggleExtrato;
 window.editarSessoesRealizadas = editarSessoesRealizadas;
 window.salvarStatusPacote = salvarStatusPacote;
+window.excluirSessao = excluirSessao;
+window.editarDataSessao = editarDataSessao;
+window.cancelarEdicaoDataSessao = cancelarEdicaoDataSessao;
+window.salvarDataSessao = salvarDataSessao;
+window.alterarPacoteSessao = alterarPacoteSessao;
+window.abrirPopoverSessaoCliente = abrirPopoverSessaoCliente;
 
 

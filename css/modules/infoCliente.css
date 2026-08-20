@@ -7,6 +7,21 @@
     margin-bottom: 10px;
     color: green;
 }
+
+.nova-sessao-btn {
+  background: #3a7a3a;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.nova-sessao-btn:hover {
+  background: #2e6b2e;
+}
   
   /* ==================== ABAS DO CLIENTE ==================== */
 .abas-cliente {

@@ -139,6 +139,7 @@ window.selecionarCliente = selecionarCliente;
 // ==================== POPOVER CLIENTE ====================
 function fecharPopover() {
   document.querySelector('.popoverCliente').style.display = 'none';
+  if (typeof clienteIdNoPopover !== 'undefined') clienteIdNoPopover = null;
 }
 
 function modoEditar(id) {
@@ -214,6 +215,7 @@ let tipoSessaoAtual      = 'avulsa';
 
 function abrirPopoverSessao() {
   document.getElementById('servicoSessao').removeAttribute('readonly');
+  document.getElementById('clienteSessao').removeAttribute('readonly');
   clienteSelecionadoId = null;
   pacoteAtualId        = null;
   editandoPacoteId     = null;
@@ -238,6 +240,7 @@ function fecharPopoverSessao() {
   pacoteAtualId        = null;
   editandoPacoteId     = null;
   document.getElementById('cadastrar-sessao').textContent = '✅ Cadastrar';
+  document.getElementById('clienteSessao').removeAttribute('readonly');
   document.getElementById('clienteSessao').value        = '';
   document.getElementById('servicoSessao').value        = '';
   document.getElementById('valorSessao').value          = '';
@@ -448,6 +451,11 @@ function cadastrarSessao() {
   if (typeof renderCalendario === 'function') renderCalendario();
   if (typeof renderHistorico === 'function') renderHistorico();
   
+  if (typeof clienteIdNoPopover !== 'undefined' && clienteIdNoPopover !== null && clienteIdNoPopover === clienteSelecionadoId) {
+    const c = AppStorage.clientes.find(c => c.id === clienteSelecionadoId);
+    if (c) abrirPopover(c);
+  }
+
   alert(`✅ ${tipoSessaoAtual === 'avulsa' ? 'Sessão cadastrada' : 'Pacote cadastrado'} para ${cliente.nome}!`);
   fecharPopoverSessao();
 }
