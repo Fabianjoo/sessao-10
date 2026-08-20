@@ -13,10 +13,12 @@
   color: #fff;
   border: none;
   border-radius: 6px;
-  padding: 6px 10px;
-  font-size: 0.8rem;
+  padding: 8px 14px;
+  font-size: 0.9rem;
   cursor: pointer;
   white-space: nowrap;
+  margin-left: 6px;
+  align-self: center;
 }
 
 .nova-sessao-btn:hover {

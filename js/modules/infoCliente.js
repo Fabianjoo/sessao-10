@@ -135,10 +135,7 @@ function abrirPopover(cliente) {
   const iniciais = cliente.nome.split(' ').map(n => n[0]).slice(0,2).join('').toUpperCase();
 
   info.innerHTML = `
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <h3>📋 Informações do Cliente</h3>
-      <button type="button" class="nova-sessao-btn" onclick="abrirPopoverSessaoCliente(${cliente.id})">➕ Nova Sessão</button>
-    </div>
+    <h3>📋 Informações do Cliente</h3>
 
     <!-- ABAS -->
     <div class="abas-cliente">
@@ -149,6 +146,7 @@ function abrirPopover(cliente) {
       <button class="aba-btn" data-aba="pacotes" onclick="trocarAbaCliente('pacotes', this)">
         Pacotes (${pacotes.length})
       </button>
+      <button type="button" class="nova-sessao-btn" onclick="abrirPopoverSessaoCliente(${cliente.id})">➕ Nova Sessão</button>
     </div>
 
     <!-- ABA INFO -->
