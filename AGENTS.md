@@ -16,7 +16,7 @@ Dependência importa porque módulos sobrescrevem funções globais:
 7. `js/utils/masks.js` — input masks via listeners
 8. `js/utils/formatters.js` — `parseMoeda`, `formatMoeda`
 9. `js/modules/infoCliente.js` — **sobrescreve** `abrirPopover()` de clientes.js (intencional) — exibe info do cliente + abas de sessões avulsas, pacotes e pagamentos
-10. `js/modules/relatorioPacote.js` — `imprimirRelatorioPacote()`: abre o relatório do pacote em aba A4 e chama a impressão
+10. `js/modules/relatorioPacote.js` — `imprimirRelatorioPacote()`: abre o relatório do pacote em aba A4 (a impressão fica no botão "Imprimir" da própria aba)
 11. `js/modules/sessoes.js` — hoje/calendário/histórico
 12. `js/modules/dashboard.js` — financeiro (inclui receita de pagamentos de pacotes)
 13. `js/modules/modal.js` — modal de cancelamento

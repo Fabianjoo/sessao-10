@@ -412,10 +412,6 @@ function montarHtmlRelatorioPacote(pacote, cliente) {
       <span class="rodape-linha"></span>
     </footer>
   </main>
-
-  <script>
-    window.addEventListener('load', () => document.fonts.ready.then(() => window.print()));
-  </script>
 </body>
 </html>`;
 }
