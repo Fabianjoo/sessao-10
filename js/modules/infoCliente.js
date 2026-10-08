@@ -122,9 +122,12 @@ function abrirPopover(cliente) {
                 : '<p style="margin:4px 0">Nenhum pagamento registrado.</p>'}
             </div>
             ${p.obs   ? `<p>📝 ${p.obs}</p>`   : ''}
-            <div class="sessao-acoes">
+            <div class="sessao-acoes" style="flex-direction:column;align-items:center">
               <button type="button" onclick="marcarSessaoPacote(${cliente.id}, ${p.id})">
                 ✅ Marcar sessão do pacote
+              </button>
+              <button type="button" onclick="imprimirRelatorioPacote(${cliente.id}, ${p.id})">
+                🖨️ Imprimir relatório
               </button>
             </div>
           </div>

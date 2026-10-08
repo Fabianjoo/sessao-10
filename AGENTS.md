@@ -16,11 +16,12 @@ Dependência importa porque módulos sobrescrevem funções globais:
 7. `js/utils/masks.js` — input masks via listeners
 8. `js/utils/formatters.js` — `parseMoeda`, `formatMoeda`
 9. `js/modules/infoCliente.js` — **sobrescreve** `abrirPopover()` de clientes.js (intencional) — exibe info do cliente + abas de sessões avulsas, pacotes e pagamentos
-10. `js/modules/sessoes.js` — hoje/calendário/histórico
-11. `js/modules/dashboard.js` — financeiro (inclui receita de pagamentos de pacotes)
-12. `js/modules/modal.js` — modal de cancelamento
-13. `js/utils/cep.js` — busca automática de endereço via ViaCEP
-14. `js/main.js` — inicialização (`DOMContentLoaded`)
+10. `js/modules/relatorioPacote.js` — `imprimirRelatorioPacote()`: abre o relatório do pacote em aba A4 e chama a impressão
+11. `js/modules/sessoes.js` — hoje/calendário/histórico
+12. `js/modules/dashboard.js` — financeiro (inclui receita de pagamentos de pacotes)
+13. `js/modules/modal.js` — modal de cancelamento
+14. `js/utils/cep.js` — busca automática de endereço via ViaCEP
+15. `js/main.js` — inicialização (`DOMContentLoaded`)
 
 ## Autenticação (Supabase Auth)
 - `AppAuth` (`js/core/auth.js`) gerencia login/signup/logout/forgot-password via Supabase Auth.
@@ -61,3 +62,4 @@ Dependência importa porque módulos sobrescrevem funções globais:
 - **Calendário** exibe todas as sessões independente de status, com distinção visual (cor, strikethrough) para não-ativas. Itens do calendário têm botão **"Confirmar sessão"**.
 - Grid layout usa `grid-template-areas` explícito para seções responsivas.
 - Botão "Cancelar sessão" abre modal em `modal.js` (a função `cancelarSessao` comentada em `clientes.js` não é usada).
+- **Relatório do pacote** (botão "Imprimir relatório" no card de pacote): lista as sessões ligadas ao pacote sem as canceladas, completa com vagas vazias até `totalSessoes`, e o título/selo seguem o `status` do pacote. O rodapé com nome e especialidades da profissional fica em `RELATORIO_ASSINATURA` (`relatorioPacote.js`).
