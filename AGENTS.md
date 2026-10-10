@@ -63,3 +63,17 @@ Dependência importa porque módulos sobrescrevem funções globais:
 - Grid layout usa `grid-template-areas` explícito para seções responsivas.
 - Botão "Cancelar sessão" abre modal em `modal.js` (a função `cancelarSessao` comentada em `clientes.js` não é usada).
 - **Relatório do pacote** (botão "Imprimir relatório" no card de pacote): lista as sessões ligadas ao pacote sem as canceladas, completa com vagas vazias até `totalSessoes`, e o título/selo seguem o `status` do pacote. O rodapé com nome e especialidades da profissional fica em `RELATORIO_ASSINATURA` (`relatorioPacote.js`).
+
+## Agent skills
+
+### Issue tracker
+
+Issues locais em markdown, em `.scratch/<feature>/` (sem GitHub Issues). Veja `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Os cinco papéis padrão (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`), gravados na linha `Status:` de cada issue. Veja `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: um `GLOSSARY.md` e `docs/adr/` na raiz. Veja `docs/agents/domain.md`.
