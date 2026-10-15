@@ -1,4 +1,4 @@
-/* RELATÓRIO DO PACOTE - abre o cronograma do pacote em uma aba A4 pronta para imprimir/salvar em PDF */
+/* RELATÓRIO DO PACOTE - abre o cronograma do pacote em uma aba A4 pronta para imprimir/salvar em PDF ou baixar como imagem */
 
 const RELATORIO_ASSINATURA = [
   'Lia Mara Grubert',
@@ -13,6 +13,8 @@ const RELATORIO_SELOS = {
   ativo:     { texto: 'Cronograma em andamento', icone: 'relogio' }
 };
 
+// A pintura dos SVGs vai em atributos (currentColor), não em regras CSS: o html-to-image
+// não leva o CSS dos filhos do SVG para a imagem baixada.
 const RELATORIO_ICONES = {
   check:   '<path d="M7 12.5l3.2 3.2L17 9" />',
   x:       '<path d="M8.5 8.5l7 7M15.5 8.5l-7 7" />',
@@ -76,7 +78,7 @@ function montarHtmlRelatorioPacote(pacote, cliente) {
       <span class="num">${l.numero}ª</span>
       <span class="sessao-data">
         <span>${l.data}</span>
-        ${l.estado === 'vazia' ? '' : `<svg class="marca" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" />${RELATORIO_ICONES[l.estado === 'concluida' ? 'check' : 'seta']}</svg>`}
+        ${l.estado === 'vazia' ? '' : `<svg class="marca" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10.5" stroke-width="1.4" />${RELATORIO_ICONES[l.estado === 'concluida' ? 'check' : 'seta']}</g></svg>`}
       </span>
     </li>`;
 
@@ -91,7 +93,7 @@ function montarHtmlRelatorioPacote(pacote, cliente) {
 <title>Relatório - ${escaparHtmlRelatorio(cliente.nome)} - ${escaparHtmlRelatorio(pacote.servico)}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet" crossorigin="anonymous">
 <style>
   @page { size: A4 portrait; margin: 0; }
 
@@ -173,9 +175,7 @@ function montarHtmlRelatorioPacote(pacote, cliente) {
     border-bottom: 1px solid var(--marrom);
   }
 
-  .logo { width: 20mm; height: 28mm; flex-shrink: 0; }
-  .logo path { fill: none; stroke: var(--dourado); stroke-width: 2.4; stroke-linecap: round; }
-  .logo circle { fill: var(--dourado); }
+  .logo { width: 20mm; height: 28mm; flex-shrink: 0; color: var(--dourado); }
 
   .divisor-v { width: 1px; align-self: stretch; background: var(--marrom); }
 
@@ -248,9 +248,7 @@ function montarHtmlRelatorioPacote(pacote, cliente) {
     font-size: 15pt;
   }
 
-  .marca { width: 6mm; height: 6mm; }
-  .marca circle { fill: none; stroke: var(--dourado); stroke-width: 1.4; }
-  .marca path { fill: none; stroke: var(--dourado); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .marca { width: 6mm; height: 6mm; color: var(--dourado); }
 
   .sessao-agendada .num { background: transparent; color: var(--marrom); border: 1.5px solid var(--marrom); }
   .sessao-vazia .num { background: transparent; color: var(--linha); border: 1px dashed var(--linha); }
@@ -275,9 +273,7 @@ function montarHtmlRelatorioPacote(pacote, cliente) {
     color: #fff;
   }
 
-  .selo svg { width: 10mm; height: 10mm; }
-  .selo svg > circle:first-child { fill: #fff; stroke: none; }
-  .selo svg path, .selo svg circle + circle { fill: none; stroke: var(--marrom); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .selo svg { width: 10mm; height: 10mm; color: var(--marrom); }
   .selo-div { width: 1px; height: 9mm; background: rgba(255,255,255,.6); }
   .selo-texto { font-size: 15pt; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; }
 
@@ -331,7 +327,8 @@ function montarHtmlRelatorioPacote(pacote, cliente) {
     body { padding: 10mm 0; }
     .folha { box-shadow: 0 2mm 8mm rgba(0,0,0,.15); }
     .barra {
-      display: block;
+      display: flex;
+      gap: 3mm;
       position: fixed;
       top: 5mm;
       right: 5mm;
@@ -346,22 +343,30 @@ function montarHtmlRelatorioPacote(pacote, cliente) {
       font: 600 11pt 'Sora', system-ui, sans-serif;
       cursor: pointer;
     }
+    .barra button:disabled { opacity: .6; cursor: wait; }
   }
 </style>
 </head>
 <body>
-  <div class="barra"><button type="button" onclick="window.print()">🖨️ Imprimir</button></div>
+  <div class="barra">
+    <button type="button" onclick="window.print()">🖨️ Imprimir</button>
+    <button type="button" onclick="baixarImagem(this)">🖼️ Baixar imagem</button>
+  </div>
 
   <main class="folha">
     <div class="decoracao"></div>
 
     <header class="cabecalho">
       <svg class="logo" viewBox="0 0 60 90" aria-hidden="true">
-        <path d="M24 4c0 7-3 10-10 12C7 18 5 24 6 32c1 8 7 13 6 24-1 11-5 19-3 30" />
-        <path d="M36 4c0 7 3 10 10 12 7 2 9 8 8 16-1 8-7 13-6 24 1 11 5 19 3 30" />
-        <path d="M14 16c-6 6-9 14-10 24" />
-        <path d="M46 16c6 6 9 14 10 24" />
-        ${[14, 21, 28, 35, 42, 49, 56, 63, 70, 77].map((y, i) => `<circle cx="30" cy="${y}" r="${(2.6 - i * 0.12).toFixed(2)}" />`).join('')}
+        <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+          <path d="M24 4c0 7-3 10-10 12C7 18 5 24 6 32c1 8 7 13 6 24-1 11-5 19-3 30" />
+          <path d="M36 4c0 7 3 10 10 12 7 2 9 8 8 16-1 8-7 13-6 24 1 11 5 19 3 30" />
+          <path d="M14 16c-6 6-9 14-10 24" />
+          <path d="M46 16c6 6 9 14 10 24" />
+        </g>
+        <g fill="currentColor">
+          ${[14, 21, 28, 35, 42, 49, 56, 63, 70, 77].map((y, i) => `<circle cx="30" cy="${y}" r="${(2.6 - i * 0.12).toFixed(2)}" />`).join('')}
+        </g>
       </svg>
       <div class="divisor-v"></div>
       <h1>
@@ -390,7 +395,7 @@ function montarHtmlRelatorioPacote(pacote, cliente) {
     <div class="selo-faixa">
       <span class="selo-linha"></span>
       <div class="selo">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" />${RELATORIO_ICONES[selo.icone]}</svg>
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#fff" /><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${RELATORIO_ICONES[selo.icone]}</g></svg>
         <span class="selo-div"></span>
         <span class="selo-texto">${selo.texto}</span>
       </div>
@@ -412,6 +417,33 @@ function montarHtmlRelatorioPacote(pacote, cliente) {
       <span class="rodape-linha"></span>
     </footer>
   </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.13/html-to-image.min.js"></script>
+  <script>
+    async function baixarImagem(botao) {
+      const rotulo = botao.textContent;
+      botao.disabled = true;
+      botao.textContent = '⏳ Gerando…';
+      try {
+        await document.fonts.ready;
+        const blob = await htmlToImage.toBlob(document.querySelector('.folha'), {
+          pixelRatio: 2,
+          style: { margin: '0', boxShadow: 'none' }
+        });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = document.title + '.png';
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+      } catch (erro) {
+        console.error(erro);
+        alert('⚠️ Não foi possível gerar a imagem do relatório.');
+      } finally {
+        botao.disabled = false;
+        botao.textContent = rotulo;
+      }
+    }
+  </script>
 </body>
 </html>`;
 }

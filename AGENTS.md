@@ -16,7 +16,7 @@ Dependência importa porque módulos sobrescrevem funções globais:
 7. `js/utils/masks.js` — input masks via listeners
 8. `js/utils/formatters.js` — `parseMoeda`, `formatMoeda`
 9. `js/modules/infoCliente.js` — **sobrescreve** `abrirPopover()` de clientes.js (intencional) — exibe info do cliente + abas de sessões avulsas, pacotes e pagamentos
-10. `js/modules/relatorioPacote.js` — `imprimirRelatorioPacote()`: abre o relatório do pacote em aba A4 (a impressão fica no botão "Imprimir" da própria aba)
+10. `js/modules/relatorioPacote.js` — `imprimirRelatorioPacote()`: abre o relatório do pacote em aba A4 (a impressão fica no botão "Imprimir" da própria aba; o botão "Baixar imagem" gera um PNG da folha via `html-to-image`, carregado da CDN dentro da aba)
 11. `js/modules/sessoes.js` — hoje/calendário/histórico
 12. `js/modules/dashboard.js` — financeiro (inclui receita de pagamentos de pacotes)
 13. `js/modules/modal.js` — modal de cancelamento
@@ -62,7 +62,7 @@ Dependência importa porque módulos sobrescrevem funções globais:
 - **Calendário** exibe todas as sessões independente de status, com distinção visual (cor, strikethrough) para não-ativas. Itens do calendário têm botão **"Confirmar sessão"**.
 - Grid layout usa `grid-template-areas` explícito para seções responsivas.
 - Botão "Cancelar sessão" abre modal em `modal.js` (a função `cancelarSessao` comentada em `clientes.js` não é usada).
-- **Relatório do pacote** (botão "Imprimir relatório" no card de pacote): lista as sessões ligadas ao pacote sem as canceladas, completa com vagas vazias até `totalSessoes`, e o título/selo seguem o `status` do pacote. O rodapé com nome e especialidades da profissional fica em `RELATORIO_ASSINATURA` (`relatorioPacote.js`).
+- **Relatório do pacote** (botão "Imprimir relatório" no card de pacote): lista as sessões ligadas ao pacote sem as canceladas, completa com vagas vazias até `totalSessoes`, e o título/selo seguem o `status` do pacote. O rodapé com nome e especialidades da profissional fica em `RELATORIO_ASSINATURA` (`relatorioPacote.js`). Cor e traço dos SVGs do relatório ficam em atributos (`currentColor`), não em regras CSS, porque o `html-to-image` não leva o CSS dos filhos do SVG para a imagem.
 
 ## Agent skills
 
